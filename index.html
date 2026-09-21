@@ -197,11 +197,35 @@
 <link rel="stylesheet" href="strudel-taller.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://unpkg.com/@strudel/embed@latest"></script>
-<script>document.addEventListener('DOMContentLoaded', () => { hljs.highlightAll(); document.querySelectorAll('.src-javascript').forEach(block => { const code = block.textContent; const editor = document.createElement('strudel-repl'); const container = block.closest('.org-src-container'); editor.innerHTML = '<!--\n' + code + '\n-->'; container.parentNode.replaceChild(editor, container); }); });</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  hljs.highlightAll();
+  document.querySelectorAll('.src-javascript').forEach(block => { const code = block.textContent; const editor = document.createElement('strudel-repl'); const container = block.closest('.org-src-container'); editor.innerHTML = '<!--\n' + code + '\n-->'; container.parentNode.replaceChild(editor, container); });
+  const title = document.querySelector('h1.title');
+  if (title) title.innerHTML += ' <img src="https://strudel.cc/logo.svg" style="height: 1.2em; vertical-align: middle; float: right; filter: brightness(0) invert(1); margin-top: -0.1em;">';
+  const tocHeading = document.querySelector('#table-of-contents h2');
+  const tocContent = document.querySelector('#text-table-of-contents');
+  if (tocHeading && tocContent) {
+    tocHeading.style.cursor = 'pointer';
+    tocHeading.innerHTML = '▶ ' + tocHeading.innerHTML;
+    tocContent.style.display = 'none';
+    tocHeading.addEventListener('click', () => {
+      const isHidden = tocContent.style.display === 'none';
+      tocContent.style.display = isHidden ? 'block' : 'none';
+      tocHeading.innerHTML = tocHeading.innerHTML.replace(isHidden ? '▶' : '▼', isHidden ? '▼' : '▶');
+    });
+  }
+});
+</script>
 </head>
 <body>
 <div id="content" class="content">
 <h1 class="title">Taller de Strudel</h1>
+
+<div style="background-color: #ffd700; color: #000; padding: 1em; border-radius: 8px; margin-bottom: 2em; font-weight: bold; display: flex; align-items: center; gap: 10px;">
+  <span style="font-size: 1.5em;">🚧</span>
+  <span>¡Aviso! Esta página web está <strong>en construcción</strong> (Work in Progress). El material, los apuntes y los códigos de ejemplo se irán actualizando y construyendo semana a semana a medida que avanza el taller.</span>
+</div>
 <div id="table-of-contents" role="doc-toc">
 <h2>&Iacute;ndice</h2>
 <div id="text-table-of-contents" role="doc-toc">
