@@ -203,18 +203,26 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.src-javascript').forEach(block => { const code = block.textContent; const editor = document.createElement('strudel-repl'); const container = block.closest('.org-src-container'); editor.innerHTML = '<!--\n' + code + '\n-->'; container.parentNode.replaceChild(editor, container); });
   const title = document.querySelector('h1.title');
   if (title) title.innerHTML += ' <img src="https://strudel.cc/logo.svg" style="height: 1.2em; vertical-align: middle; float: right; filter: brightness(0) invert(1); margin-top: -0.1em;">';
-  const tocHeading = document.querySelector('#table-of-contents h2');
-  const tocContent = document.querySelector('#text-table-of-contents');
-  if (tocHeading && tocContent) {
-    tocHeading.style.cursor = 'pointer';
-    tocHeading.innerHTML = '▶ ' + tocHeading.innerHTML;
-    tocContent.style.display = 'none';
-    tocHeading.addEventListener('click', () => {
-      const isHidden = tocContent.style.display === 'none';
-      tocContent.style.display = isHidden ? 'block' : 'none';
-      tocHeading.innerHTML = tocHeading.innerHTML.replace(isHidden ? '▶' : '▼', isHidden ? '▼' : '▶');
-    });
-  }
+  
+  const topLevelItems = document.querySelectorAll('#text-table-of-contents > ul > li');
+  topLevelItems.forEach(li => {
+    const subList = li.querySelector('ul');
+    if (subList) {
+      subList.style.display = 'none';
+      const toggleBtn = document.createElement('span');
+      toggleBtn.innerHTML = '▶ ';
+      toggleBtn.style.cursor = 'pointer';
+      toggleBtn.style.userSelect = 'none';
+      toggleBtn.style.fontSize = '0.8em';
+      li.insertBefore(toggleBtn, li.firstChild);
+      
+      toggleBtn.addEventListener('click', (e) => {
+        const isHidden = subList.style.display === 'none';
+        subList.style.display = isHidden ? 'block' : 'none';
+        toggleBtn.innerHTML = isHidden ? '▼ ' : '▶ ';
+      });
+    }
+  });
 });
 </script>
 </head>
