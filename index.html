@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<!-- 2026-09-21 lun 13:15 -->
+<!-- 2026-09-21 lun 22:42 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Taller de Strudel</title>
@@ -229,75 +229,82 @@ document.addEventListener('DOMContentLoaded', () => {
 <body>
 <div id="content" class="content">
 <h1 class="title">Taller de Strudel</h1>
-
-<div style="background-color: #ffd700; color: #000; padding: 1em; border-radius: 8px; margin-bottom: 2em; font-weight: bold; display: flex; align-items: center; gap: 10px;">
-  <span style="font-size: 1.5em;">🚧</span>
-  <span>¡Aviso! Esta página web está <strong>en construcción</strong>. El material, los apuntes y los códigos de ejemplo se irán actualizando y construyendo semana a semana a medida que avanza el taller.</span>
-</div>
 <div id="table-of-contents" role="doc-toc">
 <h2>&Iacute;ndice</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org9a5c101">1. Clase 1: Introducción a la programación y Strudel</a>
+<li><a href="#orgf265590">1. Clase 1: Introducción a la programación y Strudel</a>
 <ul>
-<li><a href="#orgec7fac7">1.1. ¿Qué es Strudel?</a></li>
-<li><a href="#orge7a7d07">1.2. Objetivo del taller</a></li>
-<li><a href="#org856a7c8">1.3. Para qué puede servir</a></li>
-<li><a href="#orgb7b20e9">1.4. Composición algorítmica</a>
+<li><a href="#org6cf4892">1.1. ¿Qué es Strudel?</a></li>
+<li><a href="#org4e451a9">1.2. Objetivo del taller</a></li>
+<li><a href="#org4bbd7a8">1.3. Para qué puede servir</a></li>
+<li><a href="#orga9cec4c">1.4. Composición algorítmica</a>
 <ul>
-<li><a href="#org1c7f409">1.4.1. ¿Qué es un algoritmo?</a></li>
+<li><a href="#org45dec71">1.4.1. ¿Qué es un algoritmo?</a></li>
 </ul>
 </li>
-<li><a href="#org9e22831">1.5. ¿Qué es programar?</a></li>
-<li><a href="#org658923c">1.6. La interfaz</a></li>
-<li><a href="#orgfa70366">1.7. Documentación</a></li>
-<li><a href="#orgf000b9a">1.8. Primeros sonidos</a></li>
-<li><a href="#org7902e74">1.9. Drums/Batería</a></li>
-<li><a href="#org49cf54d">1.10. Ciclos por segundo (cps)</a></li>
-<li><a href="#orgef810b9">1.11. De BPM a CPS</a></li>
-<li><a href="#org0bb2f5c">1.12. Cómo hacer sonar varios sonidos al mismo tiempo</a></li>
-<li><a href="#orgbd2266b">1.13. Mini-notación</a></li>
-<li><a href="#orgb5aae02">1.14. Atajos útiles</a></li>
-<li><a href="#org315a362">1.15. Lectura recomendada</a></li>
-<li><a href="#orgcd1e80d">1.16. Comentarios</a></li>
-</ul>
-</li>
-<li><a href="#orgb147e1d">2. Clase 2: Live Coding, Sintaxis, notas, acordes y efectos</a>
+<li><a href="#orgef17d5b">1.5. ¿Qué es programar?</a></li>
+<li><a href="#org608a6c9">1.6. La interfaz</a></li>
+<li><a href="#org41177f6">1.7. Documentación</a></li>
+<li><a href="#orgdb6475d">1.8. Primeros sonidos</a></li>
+<li><a href="#org27ffaa1">1.9. Drums o baterías</a></li>
+<li><a href="#org4b660c5">1.10. Cómo se mide el tiempo en Strudel</a>
 <ul>
-<li><a href="#orgc61a0d8">2.1. Repaso</a></li>
-<li><a href="#org4c8e540">2.2. La escena del live coding</a></li>
-<li><a href="#orgb52d6c1">2.3. Algoraves</a></li>
-<li><a href="#orgf4b077f">2.4. Vamos a Strudel</a></li>
-<li><a href="#orga9bfcfe">2.5. Retroalimentación</a></li>
-<li><a href="#org8364af1">2.6. Recomendaciones</a></li>
+<li><a href="#org4230d4c">1.10.1. De CPS a BPM</a></li>
 </ul>
 </li>
-<li><a href="#org9477bfa">3. Clase 3: Sampling via Github o de forma local y efectos visuales</a></li>
-<li><a href="#orgaf99c99">4. Clase 4: Síntesis</a></li>
-<li><a href="#org70b6053">5. Clase 5: Pattern Functions o funciones de patrones</a></li>
+<li><a href="#org4aebc12">1.11. Cómo hacer sonar varios sonidos al mismo tiempo</a></li>
+<li><a href="#org57ecca3">1.12. Mini-notación</a></li>
+<li><a href="#org914deeb">1.13. Atajos útiles</a></li>
+<li><a href="#org8f9d9a7">1.14. Lectura recomendada</a></li>
+<li><a href="#orgf2bb261">1.15. Comentarios</a></li>
+</ul>
+</li>
+<li><a href="#org4120664">2. Clase 2: Live Coding, Sintaxis, notas, acordes y efectos</a>
+<ul>
+<li><a href="#org78ae7c6">2.1. Repaso</a></li>
+<li><a href="#org1d7551f">2.2. La escena del live coding</a></li>
+<li><a href="#orgca16da4">2.3. Algoraves</a></li>
+<li><a href="#org7e405d5">2.4. Vamos a Strudel</a></li>
+<li><a href="#org7eb948c">2.5. Retroalimentación</a></li>
+<li><a href="#orgdb3c4be">2.6. Recomendaciones</a></li>
+</ul>
+</li>
+<li><a href="#orgc5779bb">3. Clase 3: Sampling via Github o de forma local y efectos visuales</a></li>
+<li><a href="#org96e317e">4. Clase 4: Síntesis</a></li>
+<li><a href="#org4406002">5. Clase 5: Pattern Functions o funciones de patrones</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org9a5c101" class="outline-2">
-<h2 id="org9a5c101"><span class="section-number-2">1.</span> Clase 1: Introducción a la programación y Strudel</h2>
+<blockquote>
+<p>
+🚧 <b>¡Aviso!</b> Esta página web está <b><b>en construcción</b></b>. El material, los apuntes y los códigos de ejemplo se irán actualizando y construyendo semana a semana a medida que avanza el taller.
+</p>
+</blockquote>
+<div id="outline-container-orgf265590" class="outline-2">
+<h2 id="orgf265590"><span class="section-number-2">1.</span> Clase 1: Introducción a la programación y Strudel</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgec7fac7" class="outline-3">
-<h3 id="orgec7fac7"><span class="section-number-3">1.1.</span> ¿Qué es Strudel?</h3>
+<div id="outline-container-org6cf4892" class="outline-3">
+<h3 id="org6cf4892"><span class="section-number-3">1.1.</span> ¿Qué es Strudel?</h3>
 <div class="outline-text-3" id="text-1-1">
 
-<div id="org00d79c4" class="figure">
-<p><img src="./images/www.gourmet.jpg" alt="www.gourmet.jpg">
+<div id="orgd743d31" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/www.gourmet.jpg" alt="www.gourmet.jpg">
 </p>
 </div>
 
 <p>
-Strudel es un entorno de programación en vivo. Usa un lenguaje de patrones algorítmicos basado en otro entorno llamado <i>Tidal Cycles</i>.
+Si bien tiene el mismo nombre que el postre alemán, Strudel es un entorno de programación en vivo. Usa un lenguaje de patrones algorítmicos basado en otro entorno llamado <i>Tidal Cycles</i>.
+</p>
+
+<p>
+<i>Dato curioso: En alemán, strudel significa remolino o torbellino.</i>
 </p>
 
 
-<div id="org8eb1669" class="figure">
-<p><img src="./images/strudel-live-coding-mars-college.jpg" alt="strudel-live-coding-mars-college.jpg">
+<div id="org12e7ac8" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/strudel-live-coding-mars-college.jpg" alt="strudel-live-coding-mars-college.jpg">
 </p>
 <p><span class="figure-number">Figura 1: </span>Imagen de una actuación en vivo donde se hace live coding con Strudel.</p>
 </div>
@@ -308,12 +315,12 @@ Ejemplos de uso de Strudel: <a href="https://www.youtube.com/playlist?list=PLEW6
 </p>
 </div>
 </div>
-<div id="outline-container-orge7a7d07" class="outline-3">
-<h3 id="orge7a7d07"><span class="section-number-3">1.2.</span> Objetivo del taller</h3>
+<div id="outline-container-org4e451a9" class="outline-3">
+<h3 id="org4e451a9"><span class="section-number-3">1.2.</span> Objetivo del taller</h3>
 <div class="outline-text-3" id="text-1-2">
 
-<div id="org7f60960" class="figure">
-<p><img src="./images/Captura de pantalla_20260907_113942.png" alt="Captura de pantalla_20260907_113942.png">
+<div id="org2c69847" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/Captura de pantalla_20260907_113942.png" alt="Captura de pantalla_20260907_113942.png">
 </p>
 </div>
 
@@ -323,17 +330,17 @@ El objetivo del taller es desarrollar habilidades de composición musical, pensa
 </p>
 </div>
 </div>
-<div id="outline-container-org856a7c8" class="outline-3">
-<h3 id="org856a7c8"><span class="section-number-3">1.3.</span> Para qué puede servir</h3>
+<div id="outline-container-org4bbd7a8" class="outline-3">
+<h3 id="org4bbd7a8"><span class="section-number-3">1.3.</span> Para qué puede servir</h3>
 <div class="outline-text-3" id="text-1-3">
 
-<div id="org8578d9b" class="figure">
-<p><img src="./images/music programming lang.jpg" alt="music programming lang.jpg">
+<div id="org0300ec9" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/music programming lang.jpg" alt="music programming lang.jpg">
 </p>
 </div>
 
 <p>
-Como herramienta pedagógica y como forma alternativa de crear y entender la lógica de la música, Strudel tiene diversas utilidades:
+Puede servir cómo una herramienta pedagógica y como forma alternativa de crear y entender la lógica de la música, Strudel tiene diversas utilidades:
 </p>
 
 <ul class="org-ul">
@@ -344,20 +351,16 @@ Como herramienta pedagógica y como forma alternativa de crear y entender la ló
 </ul>
 
 <p>
-Como estudiantes de pedagogía en música, la idea del taller es ofrecer un acercamiento exploratorio a esta herramienta, valorando su potencial en la sala de clases.
+Como estudiantes de pedagogía en música, la idea del taller es ofrecer un acercamiento exploratorio a esta herramienta, valorando su potencial en la sala de clases ¿Qué es la composición algorítmica?
 </p>
 </div>
 </div>
-<div id="outline-container-orgb7b20e9" class="outline-3">
-<h3 id="orgb7b20e9"><span class="section-number-3">1.4.</span> Composición algorítmica</h3>
+<div id="outline-container-orga9cec4c" class="outline-3">
+<h3 id="orga9cec4c"><span class="section-number-3">1.4.</span> Composición algorítmica</h3>
 <div class="outline-text-3" id="text-1-4">
-<p>
-Antes mencionamos la composición algorítmica, pero ¿Qué es?
-</p>
 
-
-<div id="orgeff25dc" class="figure">
-<p><img src="./images/algorithmic art.jpg" alt="algorithmic art.jpg">
+<div id="org46380a4" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/algorithmic art.jpg" alt="algorithmic art.jpg">
 </p>
 <p><span class="figure-number">Figura 2: </span>Los fractales son un ejemplo de arte algorítmico: la repetición de instrucciones produce formas complejas.</p>
 </div>
@@ -370,41 +373,48 @@ he gravitado a situaciones y sistemas que, cuando están operando,
 pueden crear música con poca o nula intervención de mi parte. 
 Eso es para decir, que tiendo hacia los roles de planificador y programador, 
 y luego me vuelvo una audiencia para los resultados&raquo; 
+— Brian Eno (Alpern, 1995) Traducido
 </p>
-<ul class="org-ul">
-<li>Brian Eno (Alpern, 1995) Traducido</li>
-</ul>
 </blockquote>
 
 <p>
 Conocida en inglés como <i>algorithmic composition</i> (composición algorítmica) o <i>automated composition</i> (composición automatizada), la composición algorítmica en la música es la aplicación de un procedimiento formal para hacer música con la mínima intervención humana (Alpern, 1995)
 </p>
 </div>
-<div id="outline-container-org1c7f409" class="outline-4">
-<h4 id="org1c7f409"><span class="section-number-4">1.4.1.</span> ¿Qué es un algoritmo?</h4>
+<div id="outline-container-org45dec71" class="outline-4">
+<h4 id="org45dec71"><span class="section-number-4">1.4.1.</span> ¿Qué es un algoritmo?</h4>
 <div class="outline-text-4" id="text-1-4-1">
 <p>
 Un algoritmo es una secuencia de pasos lógicos o instrucciones para resolver un problema o ejecutar una tarea. Uno de los ejemplos en nuestra área son las reglas del contrapunto. Para crear un ejercicio de contrapunto que cumpla con las reglas de la tradición hay que aplicar una serie de pasos:
 </p>
 
 
-<div id="orgdc75bf5" class="figure">
-<p><img src="./images/contrapunto.png" alt="contrapunto.png">
+<div id="org45520a1" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/contrapunto.png" alt="contrapunto.png">
+</p>
+</div>
+
+<ol class="org-ol">
+<li>Evitar quintas y octavas paralelas</li>
+<li>Ajustar al rango vocal de las voces</li>
+</ol>
+
+<p>
+Y así. La verdad es que no recuerdo muy bien las reglas del contrapunto a estas alturas, pero por ahí va la idea.
 </p>
 </div>
 </div>
 </div>
-</div>
-<div id="outline-container-org9e22831" class="outline-3">
-<h3 id="org9e22831"><span class="section-number-3">1.5.</span> ¿Qué es programar?</h3>
+<div id="outline-container-orgef17d5b" class="outline-3">
+<h3 id="orgef17d5b"><span class="section-number-3">1.5.</span> ¿Qué es programar?</h3>
 <div class="outline-text-3" id="text-1-5">
 <p>
 Programar es dar instrucciones a una computadora para resolver un problema, o cumplir un objetivo. La programación y los algoritmos están envueltos en muchas cosas de nuestro día a día, las aplicaciones que usamos en nuestros teléfonos, los tókens en el sistema de transporte (sea micro o metro), el funcionamiento de los semáforos y muchas más cosas.
 </p>
 
 
-<div id="org26c1979" class="figure">
-<p><img src="./images/Captura de pantalla_20260907_145658.png" alt="Captura de pantalla_20260907_145658.png">
+<div id="org059ded2" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/Captura de pantalla_20260907_145658.png" alt="Captura de pantalla_20260907_145658.png">
 </p>
 </div>
 
@@ -413,8 +423,8 @@ Como dato curioso, la foto de arriba es de uno de los momentos que definió un t
 </p>
 
 
-<div id="org9721f62" class="figure">
-<p><img src="./images/gracehopperhardvard.jpg" alt="gracehopperhardvard.jpg">
+<div id="org1c8221c" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/gracehopperhardvard.jpg" alt="gracehopperhardvard.jpg">
 </p>
 </div>
 
@@ -423,20 +433,47 @@ En ese momento las instrucciones a las computadoras se daban con perforaciones e
 </p>
 
 <p>
-En Strudel vamos a hacer algo muy similar: darle instrucciones a una computadora para que genere música.
+Entonces, en Strudel estaremos programando música. Haciendo música con código.
 </p>
 </div>
 </div>
-<div id="outline-container-org658923c" class="outline-3">
-<h3 id="org658923c"><span class="section-number-3">1.6.</span> La interfaz</h3>
+<div id="outline-container-org608a6c9" class="outline-3">
+<h3 id="org608a6c9"><span class="section-number-3">1.6.</span> La interfaz</h3>
 <div class="outline-text-3" id="text-1-6">
 <p>
 Para empezar, ingresemos desde nuestra computadora a <a href="https://strudel.cc/">la página web de Strudel</a> y mantengamos esa pestaña abierta.
 </p>
+
+
+<div id="org371fd79" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/Captura desde 2026-09-21 21-52-52.png" alt="Captura desde 2026-09-21 21-52-52.png">
+</p>
+</div>
+
+<p>
+En la esquina derecha tenemos cinco elementos:
+</p>
+
+<dl class="org-dl">
+<dt>Play / Stop</dt><dd>Reproduce sonido generado por el código en tiempo real, o lo para.</dd>
+<dt>Update</dt><dd>Actualiza la reproducción en tiempo real, si silenciamos una elemento y apretamos update, no se escuchará.</dd>
+<dt>Share</dt><dd>Permite compartir un link del estado actual del proyecto. Útil para compartir código, mostrar a amigos, o hacer el código público.</dd>
+<dt>Learn</dt><dd>Es el botón que nos permite acceder a la <b>documentación</b> de Strudel en inglés.</dd>
+</dl>
+
+<p>
+El último elemento que queda son las tres barritas en la esquina derecha. Ese es un menú que iremos explorando más tarde, pero que como noción general nos permite configurar audio en strudel, exportar audio, importar y exportar patrones, e importar samples.
+</p>
+
+
+<div id="orgc453c03" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/Captura desde 2026-09-21 21-57-35.png" alt="Captura desde 2026-09-21 21-57-35.png">
+</p>
 </div>
 </div>
-<div id="outline-container-orgfa70366" class="outline-3">
-<h3 id="orgfa70366"><span class="section-number-3">1.7.</span> Documentación</h3>
+</div>
+<div id="outline-container-org41177f6" class="outline-3">
+<h3 id="org41177f6"><span class="section-number-3">1.7.</span> Documentación</h3>
 <div class="outline-text-3" id="text-1-7">
 <p>
 La documentación será nuestra mejor amiga en este proceso, pero ¿Qué es la documentación?
@@ -447,8 +484,8 @@ Son las instrucciones, comentarios e información para usar un sistema particula
 </p>
 
 
-<div id="org069916c" class="figure">
-<p><img src="./images/Captura de pantalla_20260907_141207.png" alt="Captura de pantalla_20260907_141207.png">
+<div id="orgeaf3b38" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/Captura de pantalla_20260907_141207.png" alt="Captura de pantalla_20260907_141207.png">
 </p>
 <p><span class="figure-number">Figura 3: </span>La documentación de Strudel, sección <i>Getting Started</i>.</p>
 </div>
@@ -462,29 +499,83 @@ Uno de los grandes problemas de la documentación de Strudel a día de hoy es qu
 </p>
 </div>
 </div>
-<div id="outline-container-orgf000b9a" class="outline-3">
-<h3 id="orgf000b9a"><span class="section-number-3">1.8.</span> Primeros sonidos</h3>
+<div id="outline-container-orgdb6475d" class="outline-3">
+<h3 id="orgdb6475d"><span class="section-number-3">1.8.</span> Primeros sonidos</h3>
 <div class="outline-text-3" id="text-1-8">
 <p>
 Para lograr hacer nuestros primeros sonidos, nos ayudaremos de la <a href="https://strudel.cc/workshop/first-sounds/">sección de primeros sonidos</a> en la documentación.
 </p>
 
-<ul class="org-ul">
-<li>Escribe <code>sound("casio")</code> y dale al botón de play</li>
-<li><code>sound("casio:2")</code> elige otro sample</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-org7902e74" class="outline-3">
-<h3 id="org7902e74"><span class="section-number-3">1.9.</span> Drums/Batería</h3>
-<div class="outline-text-3" id="text-1-9">
+<div class="desafio" id="orgbac41b3">
 <p>
-<img src="./images/Captura de pantalla_20260907_140006.png" alt="Captura de pantalla_20260907_140006.png">
-Strudel viene con sonidos por defecto:
+<b>Desafío -1: Primeros sonidos</b>
 </p>
+
+<ol class="org-ol">
+<li>Reproduce el código de abajo</li>
+
+<li>Modifica el código para elegir otro sonido, reemplazando <code>casio</code> por cualquiera de estos:</li>
+</ol>
+
+
+<div id="orgd709242" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/Captura desde 2026-09-21 22-06-28.png" alt="Captura desde 2026-09-21 22-06-28.png">
+</p>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"casio"</span>)
+</code></pre>
+</div>
+
+</div>
+
+
+<div class="desafio" id="orgf40f8fb">
+<p>
+<b>Desafío 0: Cambiar sample</b>
+</p>
+
+<ol class="org-ol">
+<li>Reproduce el código de abajo</li>
+
+<li>Modifica el número después de el <code>:</code>. Observa que sucede.</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"casio:1"</span>)
+</code></pre>
+</div>
+
+</div>
+
+<p>
+Al hacer eso podemos elegir un sonido dentro de la librería de sonido casio, que como podemos ver en la sección de la configuración de Strudel -&gt; Sounds -&gt; Samples, tiene tres sonidos disponibles. Dice <code>casio(3)</code>.
+</p>
+
+
+<div id="org1f8d79c" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/Captura desde 2026-09-21 22-10-56.png " alt="Captura desde 2026-09-21 22-10-56.png ">
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org27ffaa1" class="outline-3">
+<h3 id="org27ffaa1"><span class="section-number-3">1.9.</span> Drums o baterías</h3>
+<div class="outline-text-3" id="text-1-9">
+
+<div id="org616f2ca" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/Captura de pantalla_20260907_140006.png" alt="Captura de pantalla_20260907_140006.png">
+</p>
+</div>
+
+<p>
+Strudel viene con sonidos por defecto para crear baterías:
+</p>
+
 <ul class="org-ul">
-<li>bd = bass drum</li>
-<li>sd = snare drum</li>
+<li>bd = bombo, bass drum o kick</li>
+<li>sd = caja o snare drum</li>
 <li>rim = rimshot</li>
 <li>hh = hihat</li>
 <li>oh = open hihat</li>
@@ -495,73 +586,141 @@ Strudel viene con sonidos por defecto:
 <li>cr = crash cymbal</li>
 
 <li>Creemos un patrón:</li>
-
-<li><code>sound("bd bd bd bd")</code> divide el ciclo en cuatro partes.</li>
-
-<li>Cambiemos el banco de sonido: sounds -&gt; drum machines -&gt; RolandTR909</li>
-
-<li><code>sound("bd bd bd bd").bank("RolandTR909")</code></li>
 </ul>
 
-<div class="desafio" id="org2e8fb1f">
+<p>
+En el patrón de abajo los cuatro bombos se reparten equitativamente en el ciclo. Prueba añadir un <code>bd</code> más.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"bd bd bd bd"</span>) <span style="color: #989898;">// </span><span style="color: #989898;">Cuatro bombos</span>
+</code></pre>
+</div>
+
+<ol class="org-ol">
+<li>Cambiemos el banco de sonido: sounds -&gt; drum machines -&gt; RolandTR909</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"bd bd bd bd"</span>).bank(<span style="color: #79a8ff;">"RolandTR909"</span>) <span style="color: #989898;">// </span><span style="color: #989898;">Selecciona un banco de sonido</span>
+</code></pre>
+</div>
+
+<p>
+Podemos encontrar otros bancos de sonido de baterías en la configuración de Strudel -&gt; Sounds -&gt; drum-machines
+</p>
+
+
+<div id="orgbd76501" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/Captura desde 2026-09-21 22-17-49.png" alt="Captura desde 2026-09-21 22-17-49.png">
+</p>
+</div>
+
+<p>
+Cambia el banco del cuadro anterior por otro de los que está en <code>drum-machines</code>.
+</p>
+
+<div class="desafio" id="org1a4ce44">
 <p>
 <b>Desafío 1: Crea tu propio patrón</b>
 </p>
 
 <p>
-En 5 minutos, crea tu propio patrón de baterías.
+Crea un patrón de baterías modificando los sonidos, o añadiendole más.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code><span style="color: #989898;">// </span><span style="color: #989898;">Desaf&#237;o 1: Crea tu propio patr&#243;n de bater&#237;as
-</span>$: sound(<span style="color: #79a8ff;">"bd hh sd oh"</span>)
+<pre class="src src-javascript"><code>$: sound(<span style="color: #79a8ff;">"bd hh sd oh"</span>)
 </code></pre>
 </div>
 
 </div>
 </div>
 </div>
-<div id="outline-container-org49cf54d" class="outline-3">
-<h3 id="org49cf54d"><span class="section-number-3">1.10.</span> Ciclos por segundo (cps)</h3>
+<div id="outline-container-org4b660c5" class="outline-3">
+<h3 id="org4b660c5"><span class="section-number-3">1.10.</span> Cómo se mide el tiempo en Strudel</h3>
 <div class="outline-text-3" id="text-1-10">
+<p>
+En la mayoría de programas de música se usa la unidad BPM (Beats por minuto). Strudel expresa el tiempo en CPS (ciclos por segundo) con un valor por defecto de 0.5 cps.
+</p>
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"bd"</span>)
+</code></pre>
+</div>
 
-<div id="orgc8358c3" class="figure">
-<p><img src="./images/Captura de pantalla_20260907_111554.png" alt="Captura de pantalla_20260907_111554.png">
+<p>
+Acá el kick se repite cada dos segundos. Hagamos que sean cuatro kicks.
+</p>
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"bd bd bd bd"</span>)
+</code></pre>
+</div>
+
+<p>
+Ahora hay cuatro kicks por ciclo, pero el patrón aún se reproduce a 0.5CPS, en términos de BPM diríamos que es cercano a 120 BPM. Veamos el siguiente:
+</p>
+
+
+
+<div id="org5a09b6f" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/Captura de pantalla_20260907_111554.png" alt="Captura de pantalla_20260907_111554.png">
 </p>
 </div>
 
-<ul class="org-ul">
-<li>No se usa BPM</li>
-<li>Ciclos por segundo</li>
-<li>Default 0.5</li>
-<li>El tiempo es <b>cíclico</b>, no linear</li>
-</ul>
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"hh hh*2 hh*3 hh*4"</span>)
+</code></pre>
+</div>
+
+<p>
+El ciclo se divide equitativamente en la cantidad de elementos dentro de sound separados por un espacio. Podría decirse que el ejemplo de arriba está en 4/4, y si le añadieramos dos sonidos más separados por espacios:
+</p>
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"hh hh*2 hh*3 hh*4 hh hh"</span>)
+</code></pre>
+</div>
+
+<p>
+Quedaría en 6/4 o 6/8.
+</p>
+
+<p>
+Entonces, es importante tomar en cuenta que el tiempo en Studel es cíclico, no linear. Para ahorrarnos el dolor de cabeza de pensar en CPS cuando estamos acostumbrados a BPM, podemos hacer otra cosa.
+</p>
+</div>
+<div id="outline-container-org4230d4c" class="outline-4">
+<h4 id="org4230d4c"><span class="section-number-4">1.10.1.</span> De CPS a BPM</h4>
+<div class="outline-text-4" id="text-1-10-1">
+<p>
+Podemos usar la función <code>setcpm(110)</code> para establecer el tempo global en ciclos por minuto. <code>setcpm(110/4)</code> significa 110 ciclos por minuto y 4 beats por ciclo. El divisor son los beats por ciclo.
+</p>
+
+<p>
+Siguiendo esta relación, la equivalencia entre cpm y cps sería que <code>setcpm(x)</code> es lo mismo que <code>setcps(x / 60)</code>. Otra equivalencia es que <code>setcps(110/60/4)</code> es lo mismo que <code>setcpm(110/4)</code>. Modifica los valores del ejemplo:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>setcpm(120/4)
+s(<span style="color: #79a8ff;">"casio"</span>)._pianoroll() <span style="color: #989898;">// </span><span style="color: #989898;">._pianoroll() nos permite visualizar el sonido, as&#237; vemos el ciclo en este caso</span>
+</code></pre>
+</div>
+
+<p>
+Ahora, añadamos una batería para poder observar la subdivisión dentro de un ciclo:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>setcpm(120/4)
+$: s(<span style="color: #79a8ff;">"casio"</span>)._pianoroll()
+$: s(<span style="color: #79a8ff;">"bd sd bd sd"</span>)._pianoroll() <span style="color: #989898;">// </span><span style="color: #989898;">Divide el ciclo en cuatro partes iguales</span>
+</code></pre>
 </div>
 </div>
-<div id="outline-container-orgef810b9" class="outline-3">
-<h3 id="orgef810b9"><span class="section-number-3">1.11.</span> De BPM a CPS</h3>
+</div>
+</div>
+<div id="outline-container-org4aebc12" class="outline-3">
+<h3 id="org4aebc12"><span class="section-number-3">1.11.</span> Cómo hacer sonar varios sonidos al mismo tiempo</h3>
 <div class="outline-text-3" id="text-1-11">
-<ul class="org-ul">
-<li>Podemos usar la función <code>setcpm(110)</code> para establecer el tempo global en ciclos por minuto.</li>
-<li><code>setcpm(110/4)</code> significa 110 cpm y 4 beats por ciclo.</li>
-<li><code>setcpm(x)</code> es lo mismo que <code>setcps(x / 60)</code></li>
-<li><code>setcps(110/60/4)</code> es lo mismo que <code>setcpm(110/4)</code></li>
-</ul>
-
-
-<div id="org9229f37" class="figure">
-<p><img src="./images/Captura de pantalla_20260907_113416.png" alt="Captura de pantalla_20260907_113416.png">
-</p>
-</div>
-
-<ul class="org-ul">
-<li class="off"><code>[&nbsp;]</code> Experimenta cambiando los cps o cpm de tu proyecto</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-org0bb2f5c" class="outline-3">
-<h3 id="org0bb2f5c"><span class="section-number-3">1.12.</span> Cómo hacer sonar varios sonidos al mismo tiempo</h3>
-<div class="outline-text-3" id="text-1-12">
 <ul class="org-ul">
 <li>Usar <code>$:</code> antes de cada instrumento</li>
 <li>Ejemplo: (copialo y pégalo si quieres escucharlo)</li>
@@ -594,7 +753,7 @@ $: sound(<span style="color: #79a8ff;">"casio(3,8)-"</span>)
   .room(0.5)
 </code></pre>
 </div>
-<div class="desafio" id="org0c98794">
+<div class="desafio" id="org54b5598">
 <p>
 <b>Desafío 2: Crear patrón con batería y otro sonido</b>
 </p>
@@ -604,7 +763,7 @@ En 5 minutos, crea dos patrones que suenen al mismo tiempo: uno con batería y o
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code><span style="color: #989898;">// </span><span style="color: #989898;">Desaf&#237;o 2: Patr&#243;n de bater&#237;a y otro sonido
+<pre class="src src-javascript"><code><span style="color: #989898;">// </span><span style="color: #989898;">Desafio 2: Patron de bateria y otro sonido
 </span>$: sound(<span style="color: #79a8ff;">"bd*4"</span>)
 
 $: sound(<span style="color: #79a8ff;">"casio"</span>)
@@ -614,9 +773,9 @@ $: sound(<span style="color: #79a8ff;">"casio"</span>)
 </div>
 </div>
 </div>
-<div id="outline-container-orgbd2266b" class="outline-3">
-<h3 id="orgbd2266b"><span class="section-number-3">1.13.</span> Mini-notación</h3>
-<div class="outline-text-3" id="text-1-13">
+<div id="outline-container-org57ecca3" class="outline-3">
+<h3 id="org57ecca3"><span class="section-number-3">1.12.</span> Mini-notación</h3>
+<div class="outline-text-3" id="text-1-12">
 <ul class="org-ul">
 <li><code>[ ]</code> subdivisiones dentro del tiempo del ciclo</li>
 <li><code>-</code> silencio</li>
@@ -636,12 +795,12 @@ $: sound(<span style="color: #79a8ff;">"casio"</span>)
 </ol>
 </div>
 </div>
-<div id="outline-container-orgb5aae02" class="outline-3">
-<h3 id="orgb5aae02"><span class="section-number-3">1.14.</span> Atajos útiles</h3>
-<div class="outline-text-3" id="text-1-14">
+<div id="outline-container-org914deeb" class="outline-3">
+<h3 id="org914deeb"><span class="section-number-3">1.13.</span> Atajos útiles</h3>
+<div class="outline-text-3" id="text-1-13">
 
-<div id="orge457a0d" class="figure">
-<p><img src="./images/Captura de pantalla_20260907_123314.png" alt="Captura de pantalla_20260907_123314.png">
+<div id="org001e37e" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/Captura de pantalla_20260907_123314.png" alt="Captura de pantalla_20260907_123314.png">
 </p>
 </div>
 
@@ -652,7 +811,7 @@ $: sound(<span style="color: #79a8ff;">"casio"</span>)
 <li class="off"><code>[&nbsp;]</code> Silencia una línea de código y luego actualiza la reproducción.</li>
 </ul>
 
-<div class="desafio" id="org21e7512">
+<div class="desafio" id="org2275921">
 <p>
 <b>Desafío 3: Crear notas</b>
 </p>
@@ -664,14 +823,14 @@ $: sound(<span style="color: #79a8ff;">"casio"</span>)
 </ul>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code><span style="color: #989898;">// </span><span style="color: #989898;">Desaf&#237;o 3: Crear notas
+<pre class="src src-javascript"><code><span style="color: #989898;">// </span><span style="color: #989898;">Desafio 3: Crear notas
 </span>$: sound(<span style="color: #79a8ff;">"casio"</span>)
 </code></pre>
 </div>
 
 </div>
 
-<div class="desafio" id="org05f9eed">
+<div class="desafio" id="org322394a">
 <p>
 <b>Desafío 4: Modificar un ejemplo, cambiar notas y ritmo</b>
 </p>
@@ -689,14 +848,14 @@ También puedes explorar:
 </ul>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code><span style="color: #989898;">// </span><span style="color: #989898;">Desaf&#237;o 4: Pega aqu&#237; el c&#243;digo de un ejemplo y modif&#237;calo
+<pre class="src src-javascript"><code><span style="color: #989898;">// </span><span style="color: #989898;">Desafio 4: Pega aqui el codigo de un ejemplo y modificalo
 </span>
 </code></pre>
 </div>
 
 </div>
 
-<div class="desafio" id="orgfc8dbf1">
+<div class="desafio" id="orge081217">
 <p>
 <b>Desafío 5: Para la próxima semana</b>
 </p>
@@ -706,7 +865,7 @@ Haz una versión de alguna canción que te guste en Strudel. No debe ser necesar
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code><span style="color: #989898;">// </span><span style="color: #989898;">Desaf&#237;o 5: Tu cover de una canci&#243;n
+<pre class="src src-javascript"><code><span style="color: #989898;">// </span><span style="color: #989898;">Desafio 5: Tu cover de una cancion
 </span>
 </code></pre>
 </div>
@@ -714,17 +873,17 @@ Haz una versión de alguna canción que te guste en Strudel. No debe ser necesar
 </div>
 </div>
 </div>
-<div id="outline-container-org315a362" class="outline-3">
-<h3 id="org315a362"><span class="section-number-3">1.15.</span> Lectura recomendada</h3>
-<div class="outline-text-3" id="text-1-15">
+<div id="outline-container-org8f9d9a7" class="outline-3">
+<h3 id="org8f9d9a7"><span class="section-number-3">1.14.</span> Lectura recomendada</h3>
+<div class="outline-text-3" id="text-1-14">
 <ul class="org-ul">
 <li><a href="https://ualresearchonline.arts.ac.uk/id/eprint/20946/1/c002900_9780262372633.pdf">¿Por qué la gente hace live coding?</a> — artículo académico (en inglés)</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgcd1e80d" class="outline-3">
-<h3 id="orgcd1e80d"><span class="section-number-3">1.16.</span> Comentarios</h3>
-<div class="outline-text-3" id="text-1-16">
+<div id="outline-container-orgf2bb261" class="outline-3">
+<h3 id="orgf2bb261"><span class="section-number-3">1.15.</span> Comentarios</h3>
+<div class="outline-text-3" id="text-1-15">
 <ul class="org-ul">
 <li>¿Qué les pareció esta primera clase?</li>
 <li>¿Qué fue lo más dificil?</li>
@@ -732,12 +891,12 @@ Haz una versión de alguna canción que te guste en Strudel. No debe ser necesar
 </div>
 </div>
 </div>
-<div id="outline-container-orgb147e1d" class="outline-2">
-<h2 id="orgb147e1d"><span class="section-number-2">2.</span> Clase 2: Live Coding, Sintaxis, notas, acordes y efectos</h2>
+<div id="outline-container-org4120664" class="outline-2">
+<h2 id="org4120664"><span class="section-number-2">2.</span> Clase 2: Live Coding, Sintaxis, notas, acordes y efectos</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orgc61a0d8" class="outline-3">
-<h3 id="orgc61a0d8"><span class="section-number-3">2.1.</span> Repaso</h3>
+<div id="outline-container-org78ae7c6" class="outline-3">
+<h3 id="org78ae7c6"><span class="section-number-3">2.1.</span> Repaso</h3>
 <div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
 <li>Composición algorítmica</li>
@@ -750,12 +909,12 @@ Haz una versión de alguna canción que te guste en Strudel. No debe ser necesar
 </ul>
 </div>
 </div>
-<div id="outline-container-org4c8e540" class="outline-3">
-<h3 id="org4c8e540"><span class="section-number-3">2.2.</span> La escena del live coding</h3>
+<div id="outline-container-org1d7551f" class="outline-3">
+<h3 id="org1d7551f"><span class="section-number-3">2.2.</span> La escena del live coding</h3>
 <div class="outline-text-3" id="text-2-2">
 
-<div id="orgec93ff5" class="figure">
-<p><img src="./images/Captura desde 2026-09-21 10-20-15.png" alt="Captura desde 2026-09-21 10-20-15.png">
+<div id="org0971868" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/Captura desde 2026-09-21 10-20-15.png" alt="Captura desde 2026-09-21 10-20-15.png">
 </p>
 </div>
 
@@ -766,12 +925,12 @@ Haz una versión de alguna canción que te guste en Strudel. No debe ser necesar
 </ul>
 </div>
 </div>
-<div id="outline-container-orgb52d6c1" class="outline-3">
-<h3 id="orgb52d6c1"><span class="section-number-3">2.3.</span> Algoraves</h3>
+<div id="outline-container-orgca16da4" class="outline-3">
+<h3 id="orgca16da4"><span class="section-number-3">2.3.</span> Algoraves</h3>
 <div class="outline-text-3" id="text-2-3">
 
-<div id="org4967436" class="figure">
-<p><img src="./images/Algorave_Club_Fierce_2014_1.png" alt="Algorave_Club_Fierce_2014_1.png">
+<div id="org4a0dd46" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/Algorave_Club_Fierce_2014_1.png" alt="Algorave_Club_Fierce_2014_1.png">
 </p>
 </div>
 
@@ -792,14 +951,14 @@ Algunos ejemplos de video:
 <li><a href="https://www.youtube.com/watch?v=7qfCeIgtllY">Algorave en vivo — 4</a></li>
 </ul>
 
-<div id="orgf133a57" class="figure">
-<p><img src="./images/Algorave_logo.png" alt="Algorave_logo.png">
+<div id="orga4ab72a" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/Algorave_logo.png" alt="Algorave_logo.png">
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-orgf4b077f" class="outline-3">
-<h3 id="orgf4b077f"><span class="section-number-3">2.4.</span> Vamos a Strudel</h3>
+<div id="outline-container-org7e405d5" class="outline-3">
+<h3 id="org7e405d5"><span class="section-number-3">2.4.</span> Vamos a Strudel</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 Para esta sección, puede ser útil revisar el <a href="https://strudel.cc/workshop/recap/">repaso en la documentación</a>.
@@ -810,14 +969,14 @@ Vamos a <a href="https://strudel.cc/#Ly8gUHJlYmFrZSBzY3JpcHQKLy8KLy8gVGhpcyBpcyB
 </p>
 
 
-<div id="orgd7c9d05" class="figure">
-<p><img src="./images/434-4346115_sticker-censurerisibank-mr-robot-hack-elliot-png-hoodie.jpg" alt="434-4346115_sticker-censurerisibank-mr-robot-hack-elliot-png-hoodie.jpg">
+<div id="org14bd759" class="figure">
+<p><img src="file:///home/diego/org/.attach/58/10a3d4-a82e-47ab-ae23-dbbae208f763/434-4346115_sticker-censurerisibank-mr-robot-hack-elliot-png-hoodie.jpg" alt="434-4346115_sticker-censurerisibank-mr-robot-hack-elliot-png-hoodie.jpg">
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-orga9bfcfe" class="outline-3">
-<h3 id="orga9bfcfe"><span class="section-number-3">2.5.</span> Retroalimentación</h3>
+<div id="outline-container-org7eb948c" class="outline-3">
+<h3 id="org7eb948c"><span class="section-number-3">2.5.</span> Retroalimentación</h3>
 <div class="outline-text-3" id="text-2-5">
 <ul class="org-ul">
 <li>¿Que fue lo que más les costó?</li>
@@ -825,8 +984,8 @@ Vamos a <a href="https://strudel.cc/#Ly8gUHJlYmFrZSBzY3JpcHQKLy8KLy8gVGhpcyBpcyB
 </ul>
 </div>
 </div>
-<div id="outline-container-org8364af1" class="outline-3">
-<h3 id="org8364af1"><span class="section-number-3">2.6.</span> Recomendaciones</h3>
+<div id="outline-container-orgdb3c4be" class="outline-3">
+<h3 id="orgdb3c4be"><span class="section-number-3">2.6.</span> Recomendaciones</h3>
 <div class="outline-text-3" id="text-2-6">
 <ul class="org-ul">
 <li>Si quedan interesados por más, pueden revisar en YouTube los canales de Switch Angel, DJ<sub>Dave</sub>, Groovin in G y matt mull.</li>
@@ -835,19 +994,19 @@ Vamos a <a href="https://strudel.cc/#Ly8gUHJlYmFrZSBzY3JpcHQKLy8KLy8gVGhpcyBpcyB
 </div>
 </div>
 </div>
-<div id="outline-container-org9477bfa" class="outline-2">
-<h2 id="org9477bfa"><span class="section-number-2">3.</span> Clase 3: Sampling via Github o de forma local y efectos visuales</h2>
+<div id="outline-container-orgc5779bb" class="outline-2">
+<h2 id="orgc5779bb"><span class="section-number-2">3.</span> Clase 3: Sampling via Github o de forma local y efectos visuales</h2>
 </div>
-<div id="outline-container-orgaf99c99" class="outline-2">
-<h2 id="orgaf99c99"><span class="section-number-2">4.</span> Clase 4: Síntesis</h2>
+<div id="outline-container-org96e317e" class="outline-2">
+<h2 id="org96e317e"><span class="section-number-2">4.</span> Clase 4: Síntesis</h2>
 </div>
-<div id="outline-container-org70b6053" class="outline-2">
-<h2 id="org70b6053"><span class="section-number-2">5.</span> Clase 5: Pattern Functions o funciones de patrones</h2>
+<div id="outline-container-org4406002" class="outline-2">
+<h2 id="org4406002"><span class="section-number-2">5.</span> Clase 5: Pattern Functions o funciones de patrones</h2>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Autor: Diego Aliaga</p>
-<p class="date">Created: 2026-09-21 lun 13:15</p>
+<p class="date">Created: 2026-09-21 lun 22:42</p>
 </div>
 </body>
 </html>
