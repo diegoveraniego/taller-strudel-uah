@@ -1,197 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<!-- 2026-09-21 lun 22:42 -->
+<!-- 2026-09-28 lun 14:09 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Taller de Strudel</title>
 <meta name="author" content="Diego Aliaga" />
 <meta name="generator" content="Org Mode" />
-<style type="text/css">
-  #content { max-width: 60em; margin: auto; }
-  .title  { text-align: center;
-             margin-bottom: .2em; }
-  .subtitle { text-align: center;
-              font-size: medium;
-              font-weight: bold;
-              margin-top:0; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { font-family: monospace; color: green; }
-  .priority { font-family: monospace; color: orange; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
-  pre {
-    border: 1px solid #e6e6e6;
-    border-radius: 3px;
-    background-color: #f2f2f2;
-    padding: 8pt;
-    font-family: monospace;
-    overflow: auto;
-    margin: 1.2em;
-  }
-  pre.src {
-    position: relative;
-    overflow: auto;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    top: -8px;
-    right: 12px;
-    padding: 3px;
-    color: #555;
-    background-color: #f2f2f299;
-  }
-  pre.src:hover:before { display: inline; margin-top: 14px;}
-  /* Languages per Org manual */
-  pre.src-asymptote:before { content: 'Asymptote'; }
-  pre.src-awk:before { content: 'Awk'; }
-  pre.src-authinfo::before { content: 'Authinfo'; }
-  pre.src-c:before { content: 'C'; }
-  pre.src-C:before { content: 'C'; }
-  /* pre.src-C++ doesn't work in CSS */
-  pre.src-clojure:before { content: 'Clojure'; }
-  pre.src-css:before { content: 'CSS'; }
-  pre.src-D:before { content: 'D'; }
-  pre.src-ditaa:before { content: 'ditaa'; }
-  pre.src-dot:before { content: 'Graphviz'; }
-  pre.src-calc:before { content: 'Emacs Calc'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-fortran:before { content: 'Fortran'; }
-  pre.src-gnuplot:before { content: 'gnuplot'; }
-  pre.src-haskell:before { content: 'Haskell'; }
-  pre.src-hledger:before { content: 'hledger'; }
-  pre.src-java:before { content: 'Java'; }
-  pre.src-js:before { content: 'JavaScript'; }
-  pre.src-latex:before { content: 'LaTeX'; }
-  pre.src-ledger:before { content: 'Ledger'; }
-  pre.src-lisp:before { content: 'Lisp'; }
-  pre.src-lilypond:before { content: 'Lilypond'; }
-  pre.src-lua:before { content: 'Lua'; }
-  pre.src-matlab:before { content: 'MATLAB'; }
-  pre.src-mscgen:before { content: 'Mscgen'; }
-  pre.src-ocaml:before { content: 'Objective Caml'; }
-  pre.src-octave:before { content: 'Octave'; }
-  pre.src-org:before { content: 'Org mode'; }
-  pre.src-oz:before { content: 'OZ'; }
-  pre.src-plantuml:before { content: 'Plantuml'; }
-  pre.src-processing:before { content: 'Processing.js'; }
-  pre.src-python:before { content: 'Python'; }
-  pre.src-R:before { content: 'R'; }
-  pre.src-ruby:before { content: 'Ruby'; }
-  pre.src-sass:before { content: 'Sass'; }
-  pre.src-scheme:before { content: 'Scheme'; }
-  pre.src-screen:before { content: 'Gnu Screen'; }
-  pre.src-sed:before { content: 'Sed'; }
-  pre.src-sh:before { content: 'shell'; }
-  pre.src-sql:before { content: 'SQL'; }
-  pre.src-sqlite:before { content: 'SQLite'; }
-  /* additional languages in org.el's org-babel-load-languages alist */
-  pre.src-forth:before { content: 'Forth'; }
-  pre.src-io:before { content: 'IO'; }
-  pre.src-J:before { content: 'J'; }
-  pre.src-makefile:before { content: 'Makefile'; }
-  pre.src-maxima:before { content: 'Maxima'; }
-  pre.src-perl:before { content: 'Perl'; }
-  pre.src-picolisp:before { content: 'Pico Lisp'; }
-  pre.src-scala:before { content: 'Scala'; }
-  pre.src-shell:before { content: 'Shell Script'; }
-  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
-  /* additional language identifiers per "defun org-babel-execute"
-       in ob-*.el */
-  pre.src-cpp:before  { content: 'C++'; }
-  pre.src-abc:before  { content: 'ABC'; }
-  pre.src-coq:before  { content: 'Coq'; }
-  pre.src-groovy:before  { content: 'Groovy'; }
-  /* additional language identifiers from org-babel-shell-names in
-     ob-shell.el: ob-shell is the only babel language using a lambda to put
-     the execution function name together. */
-  pre.src-bash:before  { content: 'bash'; }
-  pre.src-csh:before  { content: 'csh'; }
-  pre.src-ash:before  { content: 'ash'; }
-  pre.src-dash:before  { content: 'dash'; }
-  pre.src-ksh:before  { content: 'ksh'; }
-  pre.src-mksh:before  { content: 'mksh'; }
-  pre.src-posh:before  { content: 'posh'; }
-  /* Additional Emacs modes also supported by the LaTeX listings package */
-  pre.src-ada:before { content: 'Ada'; }
-  pre.src-asm:before { content: 'Assembler'; }
-  pre.src-caml:before { content: 'Caml'; }
-  pre.src-delphi:before { content: 'Delphi'; }
-  pre.src-html:before { content: 'HTML'; }
-  pre.src-idl:before { content: 'IDL'; }
-  pre.src-mercury:before { content: 'Mercury'; }
-  pre.src-metapost:before { content: 'MetaPost'; }
-  pre.src-modula-2:before { content: 'Modula-2'; }
-  pre.src-pascal:before { content: 'Pascal'; }
-  pre.src-ps:before { content: 'PostScript'; }
-  pre.src-prolog:before { content: 'Prolog'; }
-  pre.src-simula:before { content: 'Simula'; }
-  pre.src-tcl:before { content: 'tcl'; }
-  pre.src-tex:before { content: 'TeX'; }
-  pre.src-plain-tex:before { content: 'Plain TeX'; }
-  pre.src-verilog:before { content: 'Verilog'; }
-  pre.src-vhdl:before { content: 'VHDL'; }
-  pre.src-xml:before { content: 'XML'; }
-  pre.src-nxml:before { content: 'XML'; }
-  /* add a generic configuration mode; LaTeX export needs an additional
-     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
-  pre.src-conf:before { content: 'Configuration File'; }
-
-  table { border-collapse:collapse; }
-  caption.t-above { caption-side: top; }
-  caption.t-bottom { caption-side: bottom; }
-  td, th { vertical-align:top;  }
-  th.org-right  { text-align: center;  }
-  th.org-left   { text-align: center;   }
-  th.org-center { text-align: center; }
-  td.org-right  { text-align: right;  }
-  td.org-left   { text-align: left;   }
-  td.org-center { text-align: center; }
-  dt { font-weight: bold; }
-  .footpara { display: inline; }
-  .footdef  { margin-bottom: 1em; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  .equation-container {
-    display: table;
-    text-align: center;
-    width: 100%;
-  }
-  .equation {
-    vertical-align: middle;
-  }
-  .equation-label {
-    display: table-cell;
-    text-align: right;
-    vertical-align: middle;
-  }
-  .inlinetask {
-    padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { }
-</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="strudel-taller.css">
@@ -199,30 +14,22 @@
 <script src="https://unpkg.com/@strudel/embed@latest"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  hljs.highlightAll();
-  document.querySelectorAll('.src-javascript').forEach(block => { const code = block.textContent; const editor = document.createElement('strudel-repl'); const container = block.closest('.org-src-container'); editor.innerHTML = '<!--\n' + code + '\n-->'; container.parentNode.replaceChild(editor, container); });
-  const title = document.querySelector('h1.title');
-  if (title) title.innerHTML += ` <svg width="1.2em" height="1.2em" viewBox="0 0 250 256" fill="white" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; float: right; margin-top: -0.1em;"><path d="M199.905,102.467c-0,17.959 -3.695,33.45 -11.078,46.468c-7.369,13.024 -17.9,23.079 -31.586,30.173c-13.673,7.093 -29.994,10.64 -48.961,10.64c-19.964,0 -37.183,-3.874 -51.66,-11.617c-14.482,-7.749 -25.592,-18.775 -33.334,-33.103c-7.749,-14.322 -11.617,-31.407 -11.617,-51.248l17.143,-0c-0,16.95 3.187,31.503 9.561,43.666c6.373,12.15 15.485,21.48 27.346,27.989c11.874,6.509 26.061,9.766 42.561,9.766c15.485,0 28.798,-2.898 39.94,-8.687c11.154,-5.789 19.693,-14.11 25.624,-24.956c5.943,-10.858 8.918,-23.812 8.918,-38.86c-0,-20.85 -5.5,-37.202 -16.5,-49.063c-11,-11.874 -26.344,-17.811 -46.031,-17.811c-17.515,-0 -31.266,4.883 -41.251,14.649c-9.991,9.767 -14.983,23.337 -14.983,40.711c-0,15.781 4.015,28.13 12.054,37.035c8.031,8.893 19.07,13.339 33.103,13.339c12.452,0 22.186,-3.431 29.196,-10.306c7.023,-6.888 10.538,-16.333 10.538,-28.348c-0,-10.281 -2.57,-18.415 -7.711,-24.416c-5.14,-6.014 -12.413,-9.021 -21.82,-9.021c-7.813,-0 -13.93,2.178 -18.351,6.528c-4.407,4.337 -6.605,10.197 -6.605,17.579c0,1.44 0.064,2.815 0.206,4.112c4.485,-7.363 11.141,-11.051 19.97,-11.051c5.5,-0 9.875,1.561 13.133,4.678c3.27,3.103 4.909,7.324 4.909,12.67c-0,5.796 -1.966,10.506 -5.886,14.136c-3.906,3.617 -9.265,5.423 -16.063,5.423c-8.533,-0 -15.337,-2.814 -20.407,-8.456c-5.076,-5.654 -7.607,-13.114 -7.607,-22.386c-0,-11.135 3.431,-19.957 10.306,-26.472c6.888,-6.528 16.121,-9.792 27.706,-9.792c13.467,0 24.03,4.164 31.689,12.491c7.672,8.327 11.515,19.584 11.515,33.771c-0,16.057 -4.884,28.753 -14.65,38.089c-9.767,9.343 -23.195,14.008 -40.274,14.008c-12.594,-0 -23.491,-2.603 -32.692,-7.814c-9.188,-5.204 -16.243,-12.625 -21.178,-22.257c-4.921,-9.625 -7.376,-21.023 -7.376,-34.182c0,-14.342 2.93,-26.64 8.79,-36.907c5.873,-10.281 14.271,-18.203 25.187,-23.774c10.93,-5.584 23.928,-8.379 38.989,-8.379c16.359,0 30.469,3.258 42.33,9.767c11.874,6.515 20.985,15.819 27.346,27.911c6.374,12.08 9.561,26.518 9.561,43.307Zm-86.408,-6.939c-7.235,-0 -11.867,4.491 -13.904,13.467c2.756,3.033 6.528,4.549 11.308,4.549c7.659,0 11.489,-3.11 11.489,-9.329c-0,-2.757 -0.797,-4.89 -2.39,-6.4c-1.581,-1.523 -3.746,-2.287 -6.503,-2.287Z"></path></svg>`;
-  
-  const topLevelItems = document.querySelectorAll('#text-table-of-contents > ul > li');
-  topLevelItems.forEach(li => {
-    const subList = li.querySelector('ul');
-    if (subList) {
-      subList.style.display = 'none';
-      const toggleBtn = document.createElement('span');
-      toggleBtn.innerHTML = '▶ ';
-      toggleBtn.style.cursor = 'pointer';
-      toggleBtn.style.userSelect = 'none';
-      toggleBtn.style.fontSize = '0.8em';
-      li.insertBefore(toggleBtn, li.firstChild);
-      
-      toggleBtn.addEventListener('click', (e) => {
-        const isHidden = subList.style.display === 'none';
-        subList.style.display = isHidden ? 'block' : 'none';
-        toggleBtn.innerHTML = isHidden ? '▼ ' : '▶ ';
-      });
-    }
-  });
+hljs.highlightAll();
+document.querySelectorAll('.src-javascript').forEach(block => { const code = block.textContent; const editor = document.createElement('strudel-repl'); const container = block.closest('.org-src-container'); editor.innerHTML = '<!--\n' + code + '\n-->'; container.parentNode.replaceChild(editor, container); });
+const title = document.querySelector('h1.title');
+if (title) title.innerHTML += ' <img src="https://strudel.cc/logo.svg" style="height: 1.2em; vertical-align: middle; float: right; filter: brightness(0) invert(1); margin-top: -0.1em;">';
+const tocHeading = document.querySelector('#table-of-contents h2');
+const tocContent = document.querySelector('#text-table-of-contents');
+if (tocHeading && tocContent) {
+tocHeading.style.cursor = 'pointer';
+tocHeading.innerHTML = '▶ ' + tocHeading.innerHTML;
+tocContent.style.display = 'none';
+tocHeading.addEventListener('click', () => {
+const isHidden = tocContent.style.display === 'none';
+tocContent.style.display = isHidden ? 'block' : 'none';
+tocHeading.innerHTML = tocHeading.innerHTML.replace(isHidden ? '▶' : '▼', isHidden ? '▼' : '▶');
+});
+}
 });
 </script>
 </head>
@@ -233,64 +40,132 @@ document.addEventListener('DOMContentLoaded', () => {
 <h2>&Iacute;ndice</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgf265590">1. Clase 1: Introducción a la programación y Strudel</a>
+<li><a href="#orge8e3d5f">1. Clase 1: Introducción a la programación y Strudel</a>
 <ul>
-<li><a href="#org6cf4892">1.1. ¿Qué es Strudel?</a></li>
-<li><a href="#org4e451a9">1.2. Objetivo del taller</a></li>
-<li><a href="#org4bbd7a8">1.3. Para qué puede servir</a></li>
-<li><a href="#orga9cec4c">1.4. Composición algorítmica</a>
+<li><a href="#org917e24c">1.1. ¿Qué es Strudel?</a></li>
+<li><a href="#orgd3c7cac">1.2. Objetivo del taller</a></li>
+<li><a href="#orgd6fd3e5">1.3. Para qué puede servir</a></li>
+<li><a href="#org86d5047">1.4. Composición algorítmica</a>
 <ul>
-<li><a href="#org45dec71">1.4.1. ¿Qué es un algoritmo?</a></li>
+<li><a href="#orga7e1587">1.4.1. ¿Qué es un algoritmo?</a></li>
 </ul>
 </li>
-<li><a href="#orgef17d5b">1.5. ¿Qué es programar?</a></li>
-<li><a href="#org608a6c9">1.6. La interfaz</a></li>
-<li><a href="#org41177f6">1.7. Documentación</a></li>
-<li><a href="#orgdb6475d">1.8. Primeros sonidos</a></li>
-<li><a href="#org27ffaa1">1.9. Drums o baterías</a></li>
-<li><a href="#org4b660c5">1.10. Cómo se mide el tiempo en Strudel</a>
+<li><a href="#org43e605e">1.5. ¿Qué es programar?</a></li>
+<li><a href="#org08bf8e8">1.6. La interfaz</a></li>
+<li><a href="#org145a4f8">1.7. Documentación</a></li>
+<li><a href="#org5819528">1.8. Primeros sonidos</a></li>
+<li><a href="#org7d28a9a">1.9. Drums o baterías</a></li>
+<li><a href="#org726dd6b">1.10. Cómo se mide el tiempo en Strudel</a>
 <ul>
-<li><a href="#org4230d4c">1.10.1. De CPS a BPM</a></li>
+<li><a href="#orge5b9f15">1.10.1. De CPS a BPM</a></li>
 </ul>
 </li>
-<li><a href="#org4aebc12">1.11. Cómo hacer sonar varios sonidos al mismo tiempo</a></li>
-<li><a href="#org57ecca3">1.12. Mini-notación</a></li>
-<li><a href="#org914deeb">1.13. Atajos útiles</a></li>
-<li><a href="#org8f9d9a7">1.14. Lectura recomendada</a></li>
-<li><a href="#orgf2bb261">1.15. Comentarios</a></li>
+<li><a href="#org02df04a">1.11. Cómo hacer sonar varios sonidos al mismo tiempo</a></li>
+<li><a href="#orgd069826">1.12. Mini-notación</a></li>
+<li><a href="#orgb917bf2">1.13. Atajos útiles</a></li>
+<li><a href="#org0d3d1aa">1.14. Repaso — Clase 1</a></li>
+<li><a href="#org2b96cd8">1.15. Lectura recomendada</a></li>
+<li><a href="#org4c0a2d4">1.16. Comentarios</a></li>
 </ul>
 </li>
-<li><a href="#org4120664">2. Clase 2: Live Coding, Sintaxis, notas, acordes y efectos</a>
+<li><a href="#orgb406f6e">2. Clase 2: Live Coding, Sintaxis, notas, acordes y efectos</a>
 <ul>
-<li><a href="#org78ae7c6">2.1. Repaso</a></li>
-<li><a href="#org1d7551f">2.2. La escena del live coding</a></li>
-<li><a href="#orgca16da4">2.3. Algoraves</a></li>
-<li><a href="#org7e405d5">2.4. Vamos a Strudel</a></li>
-<li><a href="#org7eb948c">2.5. Retroalimentación</a></li>
-<li><a href="#orgdb3c4be">2.6. Recomendaciones</a></li>
+<li><a href="#orgf48d7ef">2.1. Repaso</a></li>
+<li><a href="#org13dc63e">2.2. La escena del live coding</a></li>
+<li><a href="#org332bfea">2.3. Algoraves</a></li>
+<li><a href="#org50373b2">2.4. Vamos a Strudel</a></li>
+<li><a href="#org7a9125a">2.5. Repaso — Clase 2</a></li>
+<li><a href="#org9eac785">2.6. Retroalimentación</a></li>
+<li><a href="#org8a492fc">2.7. Recomendaciones</a></li>
 </ul>
 </li>
-<li><a href="#orgc5779bb">3. Clase 3: Sampling via Github o de forma local y efectos visuales</a></li>
-<li><a href="#org96e317e">4. Clase 4: Síntesis</a></li>
-<li><a href="#org4406002">5. Clase 5: Pattern Functions o funciones de patrones</a></li>
+<li><a href="#org3c61b3b">3. Clase 2.5: Efectos de audio y modulación</a>
+<ul>
+<li><a href="#org4151efe">3.1. Calentamiento: Análisis de código (10 min)</a></li>
+<li><a href="#org55cec21">3.2. Filtros</a>
+<ul>
+<li><a href="#orge85284d">3.2.1. Filtro paso bajo: <code>lpf</code></a></li>
+<li><a href="#org36cefbd">3.2.2. Filtro paso alto: <code>hpf</code></a></li>
+</ul>
+</li>
+<li><a href="#org47b72ff">3.3. Timbre y dinámica</a>
+<ul>
+<li><a href="#org3450700">3.3.1. Filtro formante: <code>vowel</code></a></li>
+<li><a href="#orgfa3e67c">3.3.2. Volumen: <code>gain</code></a></li>
+</ul>
+</li>
+<li><a href="#orge890393">3.4. Efectos espaciales</a>
+<ul>
+<li><a href="#orgf67a49c">3.4.1. Reverberación: <code>room</code></a></li>
+<li><a href="#org68f0c00">3.4.2. Eco: <code>delay</code></a></li>
+<li><a href="#org211eb01">3.4.3. Paneo: <code>pan</code></a></li>
+</ul>
+</li>
+<li><a href="#org32f9206">3.5. Envolvente: ADSR</a></li>
+<li><a href="#org283ba5e">3.6. Tempo del patrón: <code>fast</code> y <code>slow</code></a></li>
+<li><a href="#org0d09096">3.7. Modulación con ondas (Signals)</a>
+<ul>
+<li><a href="#org07cc85a">3.7.1. Rango: <code>range</code></a></li>
+</ul>
+</li>
+<li><a href="#org25be177">3.8. Repaso — Clase 2.5</a></li>
+<li><a href="#orge80d6e1">3.9. Retroalimentación</a></li>
+</ul>
+</li>
+<li><a href="#org852eaf8">4. Clase 3: Sampling y efectos de sampler</a>
+<ul>
+<li><a href="#org00b6e23">4.1. Calentamiento: Análisis de código (10 min)</a></li>
+<li><a href="#org47587f2">4.2. ¿Qué son los samples?</a></li>
+<li><a href="#org41ea20a">4.3. Samples por defecto</a></li>
+<li><a href="#orgbc70464">4.4. Bancos de sonido</a></li>
+<li><a href="#org03b81aa">4.5. Seleccionar sonidos</a></li>
+<li><a href="#orgbbfe0a3">4.6. Cargando samples personalizados</a></li>
+<li><a href="#orgedabc0d">4.7. De forma local</a>
+<ul>
+<li><a href="#orgb61c2b7">4.7.1. Desde un repositorio</a></li>
+</ul>
+</li>
+<li><a href="#orgf07a550">4.8. Efectos de Sampler</a>
+<ul>
+<li><a href="#orgc1949db">4.8.1. Recortar: <code>begin</code> y <code>end</code></a></li>
+<li><a href="#orgb56e2bc">4.8.2. Detener samples: <code>cut</code></a></li>
+<li><a href="#orgdabd8d8">4.8.3. Velocidad y tono: <code>speed</code></a></li>
+<li><a href="#org713009d">4.8.4. Síntesis granular: <code>chop</code></a></li>
+<li><a href="#org57cf736">4.8.5. Granular avanzado: <code>slice</code> y <code>splice</code></a></li>
+</ul>
+</li>
+<li><a href="#orgd273b18">4.9. ¡Proyecto de la Clase 3! Añadir samples al proyecto</a></li>
+<li><a href="#org33a961e">4.10. Grabar tus propios samples: Tab Sampler</a>
+<ul>
+<li><a href="#orgda96bb4">4.10.1. ¿Cómo funciona el sampling?</a></li>
+<li><a href="#org25f7b41">4.10.2. ¿Hay que cuantizar?</a></li>
+<li><a href="#org3f87c16">4.10.3. Workflow con Tab Sampler</a></li>
+</ul>
+</li>
+<li><a href="#org830fc80">4.11. Repaso — Clase 3</a></li>
+<li><a href="#org56c7653">4.12. Retroalimentación</a></li>
+</ul>
+</li>
+<li><a href="#orgec15333">5. Clase 4: Síntesis</a></li>
+<li><a href="#org465ab2f">6. Clase 5: Pattern Functions o funciones de patrones</a></li>
 </ul>
 </div>
 </div>
 <blockquote>
 <p>
-🚧 <b>¡Aviso!</b> Esta página web está <b><b>en construcción</b></b>. El material, los apuntes y los códigos de ejemplo se irán actualizando y construyendo semana a semana a medida que avanza el taller.
+🚧 <b>¡Aviso!</b> Esta página web está <b><b>en construcción</b></b> (<i>Work in Progress</i>). El material, los apuntes y los códigos de ejemplo se irán actualizando y construyendo semana a semana a medida que avanza el taller.
 </p>
 </blockquote>
-<div id="outline-container-orgf265590" class="outline-2">
-<h2 id="orgf265590"><span class="section-number-2">1.</span> Clase 1: Introducción a la programación y Strudel</h2>
+<div id="outline-container-orge8e3d5f" class="outline-2">
+<h2 id="orge8e3d5f"><span class="section-number-2">1.</span> Clase 1: Introducción a la programación y Strudel</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org6cf4892" class="outline-3">
-<h3 id="org6cf4892"><span class="section-number-3">1.1.</span> ¿Qué es Strudel?</h3>
+<div id="outline-container-org917e24c" class="outline-3">
+<h3 id="org917e24c"><span class="section-number-3">1.1.</span> ¿Qué es Strudel?</h3>
 <div class="outline-text-3" id="text-1-1">
 
-<div id="orgd743d31" class="figure">
-<p><img src="./images/www.gourmet.jpg" alt="www.gourmet.jpg">
+<div id="orgfb3f9b4" class="figure">
+<p><img src="file:///home/diego/org/roam/www.gourmet.jpg" alt="www.gourmet.jpg">
 </p>
 </div>
 
@@ -303,8 +178,8 @@ Si bien tiene el mismo nombre que el postre alemán, Strudel es un entorno de pr
 </p>
 
 
-<div id="org12e7ac8" class="figure">
-<p><img src="./images/strudel-live-coding-mars-college.jpg" alt="strudel-live-coding-mars-college.jpg">
+<div id="org30d827b" class="figure">
+<p><img src="file:///home/diego/org/roam/strudel-live-coding-mars-college.jpg" alt="strudel-live-coding-mars-college.jpg">
 </p>
 <p><span class="figure-number">Figura 1: </span>Imagen de una actuación en vivo donde se hace live coding con Strudel.</p>
 </div>
@@ -315,12 +190,12 @@ Ejemplos de uso de Strudel: <a href="https://www.youtube.com/playlist?list=PLEW6
 </p>
 </div>
 </div>
-<div id="outline-container-org4e451a9" class="outline-3">
-<h3 id="org4e451a9"><span class="section-number-3">1.2.</span> Objetivo del taller</h3>
+<div id="outline-container-orgd3c7cac" class="outline-3">
+<h3 id="orgd3c7cac"><span class="section-number-3">1.2.</span> Objetivo del taller</h3>
 <div class="outline-text-3" id="text-1-2">
 
-<div id="org2c69847" class="figure">
-<p><img src="./images/Captura de pantalla_20260907_113942.png" alt="Captura de pantalla_20260907_113942.png">
+<div id="org0cf08c2" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura de pantalla_20260907_113942.png" alt="Captura de pantalla_20260907_113942.png">
 </p>
 </div>
 
@@ -330,12 +205,12 @@ El objetivo del taller es desarrollar habilidades de composición musical, pensa
 </p>
 </div>
 </div>
-<div id="outline-container-org4bbd7a8" class="outline-3">
-<h3 id="org4bbd7a8"><span class="section-number-3">1.3.</span> Para qué puede servir</h3>
+<div id="outline-container-orgd6fd3e5" class="outline-3">
+<h3 id="orgd6fd3e5"><span class="section-number-3">1.3.</span> Para qué puede servir</h3>
 <div class="outline-text-3" id="text-1-3">
 
-<div id="org0300ec9" class="figure">
-<p><img src="./images/music programming lang.jpg" alt="music programming lang.jpg">
+<div id="orgdd6081b" class="figure">
+<p><img src="file:///home/diego/org/roam/music programming lang.jpg" alt="music programming lang.jpg">
 </p>
 </div>
 
@@ -355,12 +230,12 @@ Como estudiantes de pedagogía en música, la idea del taller es ofrecer un acer
 </p>
 </div>
 </div>
-<div id="outline-container-orga9cec4c" class="outline-3">
-<h3 id="orga9cec4c"><span class="section-number-3">1.4.</span> Composición algorítmica</h3>
+<div id="outline-container-org86d5047" class="outline-3">
+<h3 id="org86d5047"><span class="section-number-3">1.4.</span> Composición algorítmica</h3>
 <div class="outline-text-3" id="text-1-4">
 
-<div id="org46380a4" class="figure">
-<p><img src="./images/algorithmic art.jpg" alt="algorithmic art.jpg">
+<div id="orgc149612" class="figure">
+<p><img src="file:///home/diego/org/roam/algorithmic art.jpg" alt="algorithmic art.jpg">
 </p>
 <p><span class="figure-number">Figura 2: </span>Los fractales son un ejemplo de arte algorítmico: la repetición de instrucciones produce formas complejas.</p>
 </div>
@@ -368,11 +243,11 @@ Como estudiantes de pedagogía en música, la idea del taller es ofrecer un acer
 
 <blockquote>
 <p>
-&laquo;Como siempre he preferido hacer planes antes que ejecutarlos, 
+"Como siempre he preferido hacer planes antes que ejecutarlos, 
 he gravitado a situaciones y sistemas que, cuando están operando, 
 pueden crear música con poca o nula intervención de mi parte. 
 Eso es para decir, que tiendo hacia los roles de planificador y programador, 
-y luego me vuelvo una audiencia para los resultados&raquo; 
+y luego me vuelvo una audiencia para los resultados" 
 — Brian Eno (Alpern, 1995) Traducido
 </p>
 </blockquote>
@@ -381,16 +256,16 @@ y luego me vuelvo una audiencia para los resultados&raquo;
 Conocida en inglés como <i>algorithmic composition</i> (composición algorítmica) o <i>automated composition</i> (composición automatizada), la composición algorítmica en la música es la aplicación de un procedimiento formal para hacer música con la mínima intervención humana (Alpern, 1995)
 </p>
 </div>
-<div id="outline-container-org45dec71" class="outline-4">
-<h4 id="org45dec71"><span class="section-number-4">1.4.1.</span> ¿Qué es un algoritmo?</h4>
+<div id="outline-container-orga7e1587" class="outline-4">
+<h4 id="orga7e1587"><span class="section-number-4">1.4.1.</span> ¿Qué es un algoritmo?</h4>
 <div class="outline-text-4" id="text-1-4-1">
 <p>
 Un algoritmo es una secuencia de pasos lógicos o instrucciones para resolver un problema o ejecutar una tarea. Uno de los ejemplos en nuestra área son las reglas del contrapunto. Para crear un ejercicio de contrapunto que cumpla con las reglas de la tradición hay que aplicar una serie de pasos:
 </p>
 
 
-<div id="org45520a1" class="figure">
-<p><img src="./images/contrapunto.png" alt="contrapunto.png">
+<div id="org2d6782c" class="figure">
+<p><img src="file:///home/diego/org/roam/contrapunto.png" alt="contrapunto.png">
 </p>
 </div>
 
@@ -405,16 +280,16 @@ Y así. La verdad es que no recuerdo muy bien las reglas del contrapunto a estas
 </div>
 </div>
 </div>
-<div id="outline-container-orgef17d5b" class="outline-3">
-<h3 id="orgef17d5b"><span class="section-number-3">1.5.</span> ¿Qué es programar?</h3>
+<div id="outline-container-org43e605e" class="outline-3">
+<h3 id="org43e605e"><span class="section-number-3">1.5.</span> ¿Qué es programar?</h3>
 <div class="outline-text-3" id="text-1-5">
 <p>
 Programar es dar instrucciones a una computadora para resolver un problema, o cumplir un objetivo. La programación y los algoritmos están envueltos en muchas cosas de nuestro día a día, las aplicaciones que usamos en nuestros teléfonos, los tókens en el sistema de transporte (sea micro o metro), el funcionamiento de los semáforos y muchas más cosas.
 </p>
 
 
-<div id="org059ded2" class="figure">
-<p><img src="./images/Captura de pantalla_20260907_145658.png" alt="Captura de pantalla_20260907_145658.png">
+<div id="orgc780733" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura de pantalla_20260907_145658.png" alt="Captura de pantalla_20260907_145658.png">
 </p>
 </div>
 
@@ -423,8 +298,8 @@ Como dato curioso, la foto de arriba es de uno de los momentos que definió un t
 </p>
 
 
-<div id="org1c8221c" class="figure">
-<p><img src="./images/gracehopperhardvard.jpg" alt="gracehopperhardvard.jpg">
+<div id="orge6fca87" class="figure">
+<p><img src="file:///home/diego/org/roam/gracehopperhardvard.jpg" alt="gracehopperhardvard.jpg">
 </p>
 </div>
 
@@ -437,16 +312,16 @@ Entonces, en Strudel estaremos programando música. Haciendo música con código
 </p>
 </div>
 </div>
-<div id="outline-container-org608a6c9" class="outline-3">
-<h3 id="org608a6c9"><span class="section-number-3">1.6.</span> La interfaz</h3>
+<div id="outline-container-org08bf8e8" class="outline-3">
+<h3 id="org08bf8e8"><span class="section-number-3">1.6.</span> La interfaz</h3>
 <div class="outline-text-3" id="text-1-6">
 <p>
 Para empezar, ingresemos desde nuestra computadora a <a href="https://strudel.cc/">la página web de Strudel</a> y mantengamos esa pestaña abierta.
 </p>
 
 
-<div id="org371fd79" class="figure">
-<p><img src="./images/Captura desde 2026-09-21 21-52-52.png" alt="Captura desde 2026-09-21 21-52-52.png">
+<div id="orgdb12a28" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura desde 2026-09-21 21-52-52.png" alt="Captura desde 2026-09-21 21-52-52.png">
 </p>
 </div>
 
@@ -466,14 +341,14 @@ El último elemento que queda son las tres barritas en la esquina derecha. Ese e
 </p>
 
 
-<div id="orgc453c03" class="figure">
-<p><img src="./images/Captura desde 2026-09-21 21-57-35.png" alt="Captura desde 2026-09-21 21-57-35.png">
+<div id="org2bd2d8e" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura desde 2026-09-21 21-57-35.png" alt="Captura desde 2026-09-21 21-57-35.png">
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org41177f6" class="outline-3">
-<h3 id="org41177f6"><span class="section-number-3">1.7.</span> Documentación</h3>
+<div id="outline-container-org145a4f8" class="outline-3">
+<h3 id="org145a4f8"><span class="section-number-3">1.7.</span> Documentación</h3>
 <div class="outline-text-3" id="text-1-7">
 <p>
 La documentación será nuestra mejor amiga en este proceso, pero ¿Qué es la documentación?
@@ -484,8 +359,8 @@ Son las instrucciones, comentarios e información para usar un sistema particula
 </p>
 
 
-<div id="orgeaf3b38" class="figure">
-<p><img src="./images/Captura de pantalla_20260907_141207.png" alt="Captura de pantalla_20260907_141207.png">
+<div id="org9e55109" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura de pantalla_20260907_141207.png" alt="Captura de pantalla_20260907_141207.png">
 </p>
 <p><span class="figure-number">Figura 3: </span>La documentación de Strudel, sección <i>Getting Started</i>.</p>
 </div>
@@ -499,14 +374,14 @@ Uno de los grandes problemas de la documentación de Strudel a día de hoy es qu
 </p>
 </div>
 </div>
-<div id="outline-container-orgdb6475d" class="outline-3">
-<h3 id="orgdb6475d"><span class="section-number-3">1.8.</span> Primeros sonidos</h3>
+<div id="outline-container-org5819528" class="outline-3">
+<h3 id="org5819528"><span class="section-number-3">1.8.</span> Primeros sonidos</h3>
 <div class="outline-text-3" id="text-1-8">
 <p>
 Para lograr hacer nuestros primeros sonidos, nos ayudaremos de la <a href="https://strudel.cc/workshop/first-sounds/">sección de primeros sonidos</a> en la documentación.
 </p>
 
-<div class="desafio" id="orgbac41b3">
+<div class="desafio" id="orgfff491c">
 <p>
 <b>Desafío -1: Primeros sonidos</b>
 </p>
@@ -518,20 +393,20 @@ Para lograr hacer nuestros primeros sonidos, nos ayudaremos de la <a href="https
 </ol>
 
 
-<div id="orgd709242" class="figure">
-<p><img src="./images/Captura desde 2026-09-21 22-06-28.png" alt="Captura desde 2026-09-21 22-06-28.png">
+<div id="orgc038f2b" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura desde 2026-09-21 22-06-28.png" alt="Captura desde 2026-09-21 22-06-28.png">
 </p>
 </div>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"casio"</span>)
+<pre class="src src-javascript"><code>sound("casio")
 </code></pre>
 </div>
 
 </div>
 
 
-<div class="desafio" id="orgf40f8fb">
+<div class="desafio" id="orgf9b81ba">
 <p>
 <b>Desafío 0: Cambiar sample</b>
 </p>
@@ -543,7 +418,7 @@ Para lograr hacer nuestros primeros sonidos, nos ayudaremos de la <a href="https
 </ol>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"casio:1"</span>)
+<pre class="src src-javascript"><code>sound("casio:1")
 </code></pre>
 </div>
 
@@ -554,18 +429,18 @@ Al hacer eso podemos elegir un sonido dentro de la librería de sonido casio, qu
 </p>
 
 
-<div id="org1f8d79c" class="figure">
-<p><img src="./images/Captura desde 2026-09-21 22-10-56.png " alt="Captura desde 2026-09-21 22-10-56.png ">
+<div id="org833cb92" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura desde 2026-09-21 22-10-56.png " alt="Captura desde 2026-09-21 22-10-56.png ">
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org27ffaa1" class="outline-3">
-<h3 id="org27ffaa1"><span class="section-number-3">1.9.</span> Drums o baterías</h3>
+<div id="outline-container-org7d28a9a" class="outline-3">
+<h3 id="org7d28a9a"><span class="section-number-3">1.9.</span> Drums o baterías</h3>
 <div class="outline-text-3" id="text-1-9">
 
-<div id="org616f2ca" class="figure">
-<p><img src="./images/Captura de pantalla_20260907_140006.png" alt="Captura de pantalla_20260907_140006.png">
+<div id="orga76ce40" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura de pantalla_20260907_140006.png" alt="Captura de pantalla_20260907_140006.png">
 </p>
 </div>
 
@@ -593,7 +468,7 @@ En el patrón de abajo los cuatro bombos se reparten equitativamente en el ciclo
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"bd bd bd bd"</span>) <span style="color: #989898;">// </span><span style="color: #989898;">Cuatro bombos</span>
+<pre class="src src-javascript"><code>sound("bd bd bd bd") // Cuatro bombos
 </code></pre>
 </div>
 
@@ -602,7 +477,7 @@ En el patrón de abajo los cuatro bombos se reparten equitativamente en el ciclo
 </ol>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"bd bd bd bd"</span>).bank(<span style="color: #79a8ff;">"RolandTR909"</span>) <span style="color: #989898;">// </span><span style="color: #989898;">Selecciona un banco de sonido</span>
+<pre class="src src-javascript"><code>sound("bd bd bd bd").bank("RolandTR909") // Selecciona un banco de sonido
 </code></pre>
 </div>
 
@@ -611,8 +486,8 @@ Podemos encontrar otros bancos de sonido de baterías en la configuración de St
 </p>
 
 
-<div id="orgbd76501" class="figure">
-<p><img src="./images/Captura desde 2026-09-21 22-17-49.png" alt="Captura desde 2026-09-21 22-17-49.png">
+<div id="org56ef62b" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura desde 2026-09-21 22-17-49.png" alt="Captura desde 2026-09-21 22-17-49.png">
 </p>
 </div>
 
@@ -620,7 +495,7 @@ Podemos encontrar otros bancos de sonido de baterías en la configuración de St
 Cambia el banco del cuadro anterior por otro de los que está en <code>drum-machines</code>.
 </p>
 
-<div class="desafio" id="org1a4ce44">
+<div class="desafio" id="org4d1393a">
 <p>
 <b>Desafío 1: Crea tu propio patrón</b>
 </p>
@@ -630,21 +505,21 @@ Crea un patrón de baterías modificando los sonidos, o añadiendole más.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code>$: sound(<span style="color: #79a8ff;">"bd hh sd oh"</span>)
+<pre class="src src-javascript"><code>$: sound("bd hh sd oh")
 </code></pre>
 </div>
 
 </div>
 </div>
 </div>
-<div id="outline-container-org4b660c5" class="outline-3">
-<h3 id="org4b660c5"><span class="section-number-3">1.10.</span> Cómo se mide el tiempo en Strudel</h3>
+<div id="outline-container-org726dd6b" class="outline-3">
+<h3 id="org726dd6b"><span class="section-number-3">1.10.</span> Cómo se mide el tiempo en Strudel</h3>
 <div class="outline-text-3" id="text-1-10">
 <p>
 En la mayoría de programas de música se usa la unidad BPM (Beats por minuto). Strudel expresa el tiempo en CPS (ciclos por segundo) con un valor por defecto de 0.5 cps.
 </p>
 <div class="org-src-container">
-<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"bd"</span>)
+<pre class="src src-javascript"><code>sound("bd")
 </code></pre>
 </div>
 
@@ -652,7 +527,7 @@ En la mayoría de programas de música se usa la unidad BPM (Beats por minuto). 
 Acá el kick se repite cada dos segundos. Hagamos que sean cuatro kicks.
 </p>
 <div class="org-src-container">
-<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"bd bd bd bd"</span>)
+<pre class="src src-javascript"><code>sound("bd bd bd bd")
 </code></pre>
 </div>
 
@@ -662,13 +537,13 @@ Ahora hay cuatro kicks por ciclo, pero el patrón aún se reproduce a 0.5CPS, en
 
 
 
-<div id="org5a09b6f" class="figure">
-<p><img src="./images/Captura de pantalla_20260907_111554.png" alt="Captura de pantalla_20260907_111554.png">
+<div id="org38b38a7" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura de pantalla_20260907_111554.png" alt="Captura de pantalla_20260907_111554.png">
 </p>
 </div>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"hh hh*2 hh*3 hh*4"</span>)
+<pre class="src src-javascript"><code>sound("hh hh*2 hh*3 hh*4")
 </code></pre>
 </div>
 
@@ -676,7 +551,7 @@ Ahora hay cuatro kicks por ciclo, pero el patrón aún se reproduce a 0.5CPS, en
 El ciclo se divide equitativamente en la cantidad de elementos dentro de sound separados por un espacio. Podría decirse que el ejemplo de arriba está en 4/4, y si le añadieramos dos sonidos más separados por espacios:
 </p>
 <div class="org-src-container">
-<pre class="src src-javascript"><code>sound(<span style="color: #79a8ff;">"hh hh*2 hh*3 hh*4 hh hh"</span>)
+<pre class="src src-javascript"><code>sound("hh hh*2 hh*3 hh*4 hh hh")
 </code></pre>
 </div>
 
@@ -688,8 +563,8 @@ Quedaría en 6/4 o 6/8.
 Entonces, es importante tomar en cuenta que el tiempo en Studel es cíclico, no linear. Para ahorrarnos el dolor de cabeza de pensar en CPS cuando estamos acostumbrados a BPM, podemos hacer otra cosa.
 </p>
 </div>
-<div id="outline-container-org4230d4c" class="outline-4">
-<h4 id="org4230d4c"><span class="section-number-4">1.10.1.</span> De CPS a BPM</h4>
+<div id="outline-container-orge5b9f15" class="outline-4">
+<h4 id="orge5b9f15"><span class="section-number-4">1.10.1.</span> De CPS a BPM</h4>
 <div class="outline-text-4" id="text-1-10-1">
 <p>
 Podemos usar la función <code>setcpm(110)</code> para establecer el tempo global en ciclos por minuto. <code>setcpm(110/4)</code> significa 110 ciclos por minuto y 4 beats por ciclo. El divisor son los beats por ciclo.
@@ -701,7 +576,7 @@ Siguiendo esta relación, la equivalencia entre cpm y cps sería que <code>setcp
 
 <div class="org-src-container">
 <pre class="src src-javascript"><code>setcpm(120/4)
-s(<span style="color: #79a8ff;">"casio"</span>)._pianoroll() <span style="color: #989898;">// </span><span style="color: #989898;">._pianoroll() nos permite visualizar el sonido, as&#237; vemos el ciclo en este caso</span>
+s("casio")._pianoroll() // ._pianoroll() nos permite visualizar el sonido, así vemos el ciclo en este caso
 </code></pre>
 </div>
 
@@ -711,15 +586,15 @@ Ahora, añadamos una batería para poder observar la subdivisión dentro de un c
 
 <div class="org-src-container">
 <pre class="src src-javascript"><code>setcpm(120/4)
-$: s(<span style="color: #79a8ff;">"casio"</span>)._pianoroll()
-$: s(<span style="color: #79a8ff;">"bd sd bd sd"</span>)._pianoroll() <span style="color: #989898;">// </span><span style="color: #989898;">Divide el ciclo en cuatro partes iguales</span>
+$: s("casio")._pianoroll()
+$: s("bd sd bd sd")._pianoroll() // Divide el ciclo en cuatro partes iguales
 </code></pre>
 </div>
 </div>
 </div>
 </div>
-<div id="outline-container-org4aebc12" class="outline-3">
-<h3 id="org4aebc12"><span class="section-number-3">1.11.</span> Cómo hacer sonar varios sonidos al mismo tiempo</h3>
+<div id="outline-container-org02df04a" class="outline-3">
+<h3 id="org02df04a"><span class="section-number-3">1.11.</span> Cómo hacer sonar varios sonidos al mismo tiempo</h3>
 <div class="outline-text-3" id="text-1-11">
 <ul class="org-ul">
 <li>Usar <code>$:</code> antes de cada instrumento</li>
@@ -729,31 +604,31 @@ $: s(<span style="color: #79a8ff;">"bd sd bd sd"</span>)._pianoroll() <span styl
 <div class="org-src-container">
 <pre class="src src-javascript"><code>setcpm(130/4)
 
-$: sound(<span style="color: #79a8ff;">"bd:2(3,8)"</span>)
-  .lpf(<span style="color: #79a8ff;">"100"</span>)
-  .hpf(<span style="color: #79a8ff;">"1000"</span>)
+$: sound("bd:2(3,8)")
+  .lpf("100")
+  .hpf("1000")
 
-$: sound(<span style="color: #79a8ff;">"bd:6*4"</span>)
-  .lpf(<span style="color: #79a8ff;">"100"</span>)
+$: sound("bd:6*4")
+  .lpf("100")
 
-$: sound(<span style="color: #79a8ff;">"&lt; - - - sd&gt;*4&lt; - - - [sd sd]&gt;*2"</span>)
-  .lpf(<span style="color: #79a8ff;">"100"</span>)
+$: sound("&lt; - - - sd&gt;*4&lt; - - - [sd sd]&gt;*2")
+  .lpf("100")
 
-$: sound(<span style="color: #79a8ff;">"hh*4"</span>)
+$: sound("hh*4")
 
-$: note(<span style="color: #79a8ff;">"[0,3,7] [0,5,9]"</span>
-  .add(<span style="color: #79a8ff;">"20"</span>))
-  .sound(<span style="color: #79a8ff;">"sine"</span>)
+$: note("[0,3,7] [0,5,9]"
+  .add("20"))
+  .sound("sine")
   .room(.8)
-  .lpf(<span style="color: #79a8ff;">"1000"</span>)
-  .fm(<span style="color: #79a8ff;">"10"</span>)
-  .fme(<span style="color: #79a8ff;">"100"</span>)
+  .lpf("1000")
+  .fm("10")
+  .fme("100")
 
-$: sound(<span style="color: #79a8ff;">"casio(3,8)-"</span>)
+$: sound("casio(3,8)-")
   .room(0.5)
 </code></pre>
 </div>
-<div class="desafio" id="org54b5598">
+<div class="desafio" id="org778c622">
 <p>
 <b>Desafío 2: Crear patrón con batería y otro sonido</b>
 </p>
@@ -763,18 +638,18 @@ En 5 minutos, crea dos patrones que suenen al mismo tiempo: uno con batería y o
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code><span style="color: #989898;">// </span><span style="color: #989898;">Desafio 2: Patron de bateria y otro sonido
-</span>$: sound(<span style="color: #79a8ff;">"bd*4"</span>)
+<pre class="src src-javascript"><code>// Desafio 2: Patron de bateria y otro sonido
+$: sound("bd*4")
 
-$: sound(<span style="color: #79a8ff;">"casio"</span>)
+$: sound("casio")
 </code></pre>
 </div>
 
 </div>
 </div>
 </div>
-<div id="outline-container-org57ecca3" class="outline-3">
-<h3 id="org57ecca3"><span class="section-number-3">1.12.</span> Mini-notación</h3>
+<div id="outline-container-orgd069826" class="outline-3">
+<h3 id="orgd069826"><span class="section-number-3">1.12.</span> Mini-notación</h3>
 <div class="outline-text-3" id="text-1-12">
 <ul class="org-ul">
 <li><code>[ ]</code> subdivisiones dentro del tiempo del ciclo</li>
@@ -795,12 +670,12 @@ $: sound(<span style="color: #79a8ff;">"casio"</span>)
 </ol>
 </div>
 </div>
-<div id="outline-container-org914deeb" class="outline-3">
-<h3 id="org914deeb"><span class="section-number-3">1.13.</span> Atajos útiles</h3>
+<div id="outline-container-orgb917bf2" class="outline-3">
+<h3 id="orgb917bf2"><span class="section-number-3">1.13.</span> Atajos útiles</h3>
 <div class="outline-text-3" id="text-1-13">
 
-<div id="org001e37e" class="figure">
-<p><img src="./images/Captura de pantalla_20260907_123314.png" alt="Captura de pantalla_20260907_123314.png">
+<div id="orgd386c50" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura de pantalla_20260907_123314.png" alt="Captura de pantalla_20260907_123314.png">
 </p>
 </div>
 
@@ -811,7 +686,7 @@ $: sound(<span style="color: #79a8ff;">"casio"</span>)
 <li class="off"><code>[&nbsp;]</code> Silencia una línea de código y luego actualiza la reproducción.</li>
 </ul>
 
-<div class="desafio" id="org2275921">
+<div class="desafio" id="orgabaeef2">
 <p>
 <b>Desafío 3: Crear notas</b>
 </p>
@@ -823,14 +698,14 @@ $: sound(<span style="color: #79a8ff;">"casio"</span>)
 </ul>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code><span style="color: #989898;">// </span><span style="color: #989898;">Desafio 3: Crear notas
-</span>$: sound(<span style="color: #79a8ff;">"casio"</span>)
+<pre class="src src-javascript"><code>// Desafio 3: Crear notas
+$: sound("casio")
 </code></pre>
 </div>
 
 </div>
 
-<div class="desafio" id="org322394a">
+<div class="desafio" id="org1dab6aa">
 <p>
 <b>Desafío 4: Modificar un ejemplo, cambiar notas y ritmo</b>
 </p>
@@ -848,14 +723,14 @@ También puedes explorar:
 </ul>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code><span style="color: #989898;">// </span><span style="color: #989898;">Desafio 4: Pega aqui el codigo de un ejemplo y modificalo
-</span>
+<pre class="src src-javascript"><code>// Desafio 4: Pega aqui el codigo de un ejemplo y modificalo
+
 </code></pre>
 </div>
 
 </div>
 
-<div class="desafio" id="orge081217">
+<div class="desafio" id="org3347b0c">
 <p>
 <b>Desafío 5: Para la próxima semana</b>
 </p>
@@ -865,25 +740,103 @@ Haz una versión de alguna canción que te guste en Strudel. No debe ser necesar
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code><span style="color: #989898;">// </span><span style="color: #989898;">Desafio 5: Tu cover de una cancion
-</span>
+<pre class="src src-javascript"><code>// Desafio 5: Tu cover de una cancion
+
 </code></pre>
 </div>
 
 </div>
 </div>
 </div>
-<div id="outline-container-org8f9d9a7" class="outline-3">
-<h3 id="org8f9d9a7"><span class="section-number-3">1.14.</span> Lectura recomendada</h3>
+<div id="outline-container-org0d3d1aa" class="outline-3">
+<h3 id="org0d3d1aa"><span class="section-number-3">1.14.</span> Repaso — Clase 1</h3>
 <div class="outline-text-3" id="text-1-14">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Función</th>
+<th scope="col" class="org-left">¿Qué hace?</th>
+<th scope="col" class="org-left">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>sound()</code> / <code>s()</code></td>
+<td class="org-left">Selecciona un sample o sonido</td>
+<td class="org-left"><code>s("bd hh sd")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>bank()</code></td>
+<td class="org-left">Cambia el banco de sonido</td>
+<td class="org-left"><code>s("bd").bank("RolandTR909")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>note()</code></td>
+<td class="org-left">Define altura (nota o número)</td>
+<td class="org-left"><code>note("c e g b")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>setcpm()</code></td>
+<td class="org-left">Ciclos por minuto</td>
+<td class="org-left"><code>setcpm(120/4)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>$:</code></td>
+<td class="org-left">Ejecuta patrones en paralelo</td>
+<td class="org-left"><code>$: s("bd*4")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>[ ]</code></td>
+<td class="org-left">Sub-secuencias</td>
+<td class="org-left"><code>s("bd [hh hh] sd")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>*</code></td>
+<td class="org-left">Repetir más rápido</td>
+<td class="org-left"><code>s("hh*4")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>/</code></td>
+<td class="org-left">Repetir más lento</td>
+<td class="org-left"><code>s("hh/2")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>-</code></td>
+<td class="org-left">Silencio</td>
+<td class="org-left"><code>s("bd - sd -")</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org2b96cd8" class="outline-3">
+<h3 id="org2b96cd8"><span class="section-number-3">1.15.</span> Lectura recomendada</h3>
+<div class="outline-text-3" id="text-1-15">
 <ul class="org-ul">
 <li><a href="https://ualresearchonline.arts.ac.uk/id/eprint/20946/1/c002900_9780262372633.pdf">¿Por qué la gente hace live coding?</a> — artículo académico (en inglés)</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgf2bb261" class="outline-3">
-<h3 id="orgf2bb261"><span class="section-number-3">1.15.</span> Comentarios</h3>
-<div class="outline-text-3" id="text-1-15">
+<div id="outline-container-org4c0a2d4" class="outline-3">
+<h3 id="org4c0a2d4"><span class="section-number-3">1.16.</span> Comentarios</h3>
+<div class="outline-text-3" id="text-1-16">
 <ul class="org-ul">
 <li>¿Qué les pareció esta primera clase?</li>
 <li>¿Qué fue lo más dificil?</li>
@@ -891,12 +844,12 @@ Haz una versión de alguna canción que te guste en Strudel. No debe ser necesar
 </div>
 </div>
 </div>
-<div id="outline-container-org4120664" class="outline-2">
-<h2 id="org4120664"><span class="section-number-2">2.</span> Clase 2: Live Coding, Sintaxis, notas, acordes y efectos</h2>
+<div id="outline-container-orgb406f6e" class="outline-2">
+<h2 id="orgb406f6e"><span class="section-number-2">2.</span> Clase 2: Live Coding, Sintaxis, notas, acordes y efectos</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org78ae7c6" class="outline-3">
-<h3 id="org78ae7c6"><span class="section-number-3">2.1.</span> Repaso</h3>
+<div id="outline-container-orgf48d7ef" class="outline-3">
+<h3 id="orgf48d7ef"><span class="section-number-3">2.1.</span> Repaso</h3>
 <div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
 <li>Composición algorítmica</li>
@@ -909,12 +862,12 @@ Haz una versión de alguna canción que te guste en Strudel. No debe ser necesar
 </ul>
 </div>
 </div>
-<div id="outline-container-org1d7551f" class="outline-3">
-<h3 id="org1d7551f"><span class="section-number-3">2.2.</span> La escena del live coding</h3>
+<div id="outline-container-org13dc63e" class="outline-3">
+<h3 id="org13dc63e"><span class="section-number-3">2.2.</span> La escena del live coding</h3>
 <div class="outline-text-3" id="text-2-2">
 
-<div id="org0971868" class="figure">
-<p><img src="./images/Captura desde 2026-09-21 10-20-15.png" alt="Captura desde 2026-09-21 10-20-15.png">
+<div id="orgaf94ca6" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura desde 2026-09-21 10-20-15.png" alt="Captura desde 2026-09-21 10-20-15.png">
 </p>
 </div>
 
@@ -925,12 +878,12 @@ Haz una versión de alguna canción que te guste en Strudel. No debe ser necesar
 </ul>
 </div>
 </div>
-<div id="outline-container-orgca16da4" class="outline-3">
-<h3 id="orgca16da4"><span class="section-number-3">2.3.</span> Algoraves</h3>
+<div id="outline-container-org332bfea" class="outline-3">
+<h3 id="org332bfea"><span class="section-number-3">2.3.</span> Algoraves</h3>
 <div class="outline-text-3" id="text-2-3">
 
-<div id="org4a0dd46" class="figure">
-<p><img src="./images/Algorave_Club_Fierce_2014_1.png" alt="Algorave_Club_Fierce_2014_1.png">
+<div id="org3b8b78c" class="figure">
+<p><img src="file:///home/diego/org/roam/Algorave_Club_Fierce_2014_1.png" alt="Algorave_Club_Fierce_2014_1.png">
 </p>
 </div>
 
@@ -951,14 +904,14 @@ Algunos ejemplos de video:
 <li><a href="https://www.youtube.com/watch?v=7qfCeIgtllY">Algorave en vivo — 4</a></li>
 </ul>
 
-<div id="orga4ab72a" class="figure">
-<p><img src="./images/Algorave_logo.png" alt="Algorave_logo.png">
+<div id="org90c9f46" class="figure">
+<p><img src="file:///home/diego/org/roam/Algorave_logo.png" alt="Algorave_logo.png">
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org7e405d5" class="outline-3">
-<h3 id="org7e405d5"><span class="section-number-3">2.4.</span> Vamos a Strudel</h3>
+<div id="outline-container-org50373b2" class="outline-3">
+<h3 id="org50373b2"><span class="section-number-3">2.4.</span> Vamos a Strudel</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 Para esta sección, puede ser útil revisar el <a href="https://strudel.cc/workshop/recap/">repaso en la documentación</a>.
@@ -969,24 +922,126 @@ Vamos a <a href="https://strudel.cc/#Ly8gUHJlYmFrZSBzY3JpcHQKLy8KLy8gVGhpcyBpcyB
 </p>
 
 
-<div id="org14bd759" class="figure">
-<p><img src="./images/434-4346115_sticker-censurerisibank-mr-robot-hack-elliot-png-hoodie.jpg" alt="434-4346115_sticker-censurerisibank-mr-robot-hack-elliot-png-hoodie.jpg">
+<div id="orgf8d97b8" class="figure">
+<p><img src="file:///home/diego/org/roam/434-4346115_sticker-censurerisibank-mr-robot-hack-elliot-png-hoodie.jpg" alt="434-4346115_sticker-censurerisibank-mr-robot-hack-elliot-png-hoodie.jpg">
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org7eb948c" class="outline-3">
-<h3 id="org7eb948c"><span class="section-number-3">2.5.</span> Retroalimentación</h3>
+<div id="outline-container-org7a9125a" class="outline-3">
+<h3 id="org7a9125a"><span class="section-number-3">2.5.</span> Repaso — Clase 2</h3>
 <div class="outline-text-3" id="text-2-5">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Función</th>
+<th scope="col" class="org-left">¿Qué hace?</th>
+<th scope="col" class="org-left">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>note()</code></td>
+<td class="org-left">Nota en letras o números</td>
+<td class="org-left"><code>note("c e g b")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>scale()</code></td>
+<td class="org-left">Interpreta n() como grado de escala</td>
+<td class="org-left"><code>n("0 2 4").scale("c:major")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>chord()</code></td>
+<td class="org-left">Acorde por nombre</td>
+<td class="org-left"><code>chord("&lt;C G Am F&gt;")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>&lt;&gt;</code></td>
+<td class="org-left">Un elemento por ciclo</td>
+<td class="org-left"><code>note("&lt;c e g&gt;")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>@</code></td>
+<td class="org-left">Alargar duración</td>
+<td class="org-left"><code>note("c e@2 g")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>!</code></td>
+<td class="org-left">Replicar</td>
+<td class="org-left"><code>note("c!2 e g")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>,</code></td>
+<td class="org-left">Sonar al mismo tiempo</td>
+<td class="org-left"><code>note("c,e,g")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>room()</code></td>
+<td class="org-left">Reverberación</td>
+<td class="org-left"><code>note("c").room(0.5)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>delay()</code></td>
+<td class="org-left">Eco / delay</td>
+<td class="org-left"><code>s("bd").delay(0.5)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>lpf()</code></td>
+<td class="org-left">Filtro paso bajo</td>
+<td class="org-left"><code>s("sawtooth").lpf(800)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>hpf()</code></td>
+<td class="org-left">Filtro paso alto</td>
+<td class="org-left"><code>s("sawtooth").hpf(200)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>pan()</code></td>
+<td class="org-left">Paneo estéreo</td>
+<td class="org-left"><code>s("bd").pan(0.8)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>gain()</code></td>
+<td class="org-left">Volumen</td>
+<td class="org-left"><code>s("hh").gain(0.5)</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org9eac785" class="outline-3">
+<h3 id="org9eac785"><span class="section-number-3">2.6.</span> Retroalimentación</h3>
+<div class="outline-text-3" id="text-2-6">
 <ul class="org-ul">
 <li>¿Que fue lo que más les costó?</li>
 <li>¿Qué otras cosas les gustaría aprender a hacer en strudel?</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgdb3c4be" class="outline-3">
-<h3 id="orgdb3c4be"><span class="section-number-3">2.6.</span> Recomendaciones</h3>
-<div class="outline-text-3" id="text-2-6">
+<div id="outline-container-org8a492fc" class="outline-3">
+<h3 id="org8a492fc"><span class="section-number-3">2.7.</span> Recomendaciones</h3>
+<div class="outline-text-3" id="text-2-7">
 <ul class="org-ul">
 <li>Si quedan interesados por más, pueden revisar en YouTube los canales de Switch Angel, DJ<sub>Dave</sub>, Groovin in G y matt mull.</li>
 <li>Revisar esta <a href="https://www.youtube.com/playlist?list=PLEW6tgjJl5yY">playlist de ejemplos y tutoriales</a> con live coding, eventos en vivo y más.</li>
@@ -994,19 +1049,1240 @@ Vamos a <a href="https://strudel.cc/#Ly8gUHJlYmFrZSBzY3JpcHQKLy8KLy8gVGhpcyBpcyB
 </div>
 </div>
 </div>
-<div id="outline-container-orgc5779bb" class="outline-2">
-<h2 id="orgc5779bb"><span class="section-number-2">3.</span> Clase 3: Sampling via Github o de forma local y efectos visuales</h2>
+<div id="outline-container-org3c61b3b" class="outline-2">
+<h2 id="org3c61b3b"><span class="section-number-2">3.</span> Clase 2.5: Efectos de audio y modulación</h2>
+<div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org96e317e" class="outline-2">
-<h2 id="org96e317e"><span class="section-number-2">4.</span> Clase 4: Síntesis</h2>
+<div id="outline-container-org4151efe" class="outline-3">
+<h3 id="org4151efe"><span class="section-number-3">3.1.</span> Calentamiento: Análisis de código (10 min)</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+<b>¿Qué creen que hace este código? Léanlo línea por línea antes de ejecutarlo.</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>setcpm(120/4)
+
+$: s("hh*8").gain("[.25 1]*4")
+$: s("bd*4, [~ sd:1]*2")
+$: note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
+  .sound("sawtooth").lpf("200 1000 200 1000")
+$: note("&lt;[c3,g3,e4] [bb2,f3,d4] [a2,f3,c4] [bb2,g3,eb4]&gt;")
+  .sound("sawtooth").vowel("&lt;a e i o&gt;")
+</code></pre>
 </div>
-<div id="outline-container-org4406002" class="outline-2">
-<h2 id="org4406002"><span class="section-number-2">5.</span> Clase 5: Pattern Functions o funciones de patrones</h2>
+
+<p>
+Preguntas:
+</p>
+<ol class="org-ol">
+<li>¿Por qué el <code>gain</code> tiene <code>[.25 1]*4</code>? ¿Qué efecto rítmico crea?</li>
+<li>¿Qué hace <code>lpf("200 1000 200 1000")</code> distinto a <code>lpf(800)</code>?</li>
+<li>¿Qué son las vocales en <code>vowel</code>? ¿Conocen ese efecto en música electrónica?</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org55cec21" class="outline-3">
+<h3 id="org55cec21"><span class="section-number-3">3.2.</span> Filtros</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Los filtros permiten recortar frecuencias del sonido, como si abriéramos o cerráramos una ventana al ruido. Son herramientas fundamentales en la música electrónica.
+</p>
+</div>
+<div id="outline-container-orge85284d" class="outline-4">
+<h4 id="orge85284d"><span class="section-number-4">3.2.1.</span> Filtro paso bajo: <code>lpf</code></h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+<code>lpf</code> = <i>low pass filter</i>. Deja pasar las frecuencias bajas y corta las altas. Cuanto más bajo el valor, más muffleado (apagado) suena. Pensalo como estar afuera del boliche con la puerta cerrada 🚪.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
+  .sound("sawtooth").lpf(800)
+</code></pre>
+</div>
+
+<div class="desafio" id="orgbee2ed6">
+<p>
+<b>Desafío A: Abrir la puerta</b>
+</p>
+
+<p>
+Cambia el valor de <code>lpf</code>:
+</p>
+<ul class="org-ul">
+<li>A 200: ¿cómo suena?</li>
+<li>A 5000: ¿cómo suena?</li>
+<li>En patrón: <code>"200 1000 200 1000"</code></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
+  .sound("sawtooth").lpf(800)
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+<div id="outline-container-org36cefbd" class="outline-4">
+<h4 id="org36cefbd"><span class="section-number-4">3.2.2.</span> Filtro paso alto: <code>hpf</code></h4>
+<div class="outline-text-4" id="text-3-2-2">
+<p>
+<code>hpf</code> = <i>high pass filter</i>. Lo opuesto: deja pasar las frecuencias altas y corta las bajas. Útil para crear efectos de radio o teléfono, o para que un instrumento no pise el rango del bajo.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>$: note("c e g b").sound("sawtooth")
+  .hpf("&lt;200 1000 3000&gt;") // escuchá cómo se va vaciando el sonido
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org47b72ff" class="outline-3">
+<h3 id="org47b72ff"><span class="section-number-3">3.3.</span> Timbre y dinámica</h3>
+<div class="outline-text-3" id="text-3-3">
+</div>
+<div id="outline-container-org3450700" class="outline-4">
+<h4 id="org3450700"><span class="section-number-4">3.3.1.</span> Filtro formante: <code>vowel</code></h4>
+<div class="outline-text-4" id="text-3-3-1">
+<p>
+<code>vowel</code> aplica un filtro formante que hace que el sonido imite la resonancia de las vocales. Muy usado en música electrónica y house.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>note("&lt;[c3,g3,e4] [bb2,f3,d4] [a2,f3,c4] [bb2,g3,eb4]&gt;")
+  .sound("sawtooth").vowel("&lt;a e i o&gt;")
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgfa3e67c" class="outline-4">
+<h4 id="orgfa3e67c"><span class="section-number-4">3.3.2.</span> Volumen: <code>gain</code></h4>
+<div class="outline-text-4" id="text-3-3-2">
+<p>
+<code>gain</code> controla el volumen. En música, la dinámica (los cambios de volumen) es fundamental para crear interés rítmico.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>$: sound("hh*16").gain("[.25 1]*4")
+$: sound("bd*4, [~ sd:1]*2")
+</code></pre>
+</div>
+
+<div class="desafio" id="org4b5597d">
+<p>
+<b>Desafío B: Dinámica</b>
+</p>
+
+<ol class="org-ol">
+<li>Sacá el <code>.gain(...)</code> del hihat. ¿Cómo suena?</li>
+<li>Volvelo a poner (Ctrl+Z)</li>
+<li>Probá con <code>"[.1 .5 1]*4"</code> o inventá tu propio patrón de volumen</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>$: sound("hh*16").gain("[.25 1]*4")
+$: sound("bd*4, [~ sd:1]*2")
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orge890393" class="outline-3">
+<h3 id="orge890393"><span class="section-number-3">3.4.</span> Efectos espaciales</h3>
+<div class="outline-text-3" id="text-3-4">
+</div>
+<div id="outline-container-orgf67a49c" class="outline-4">
+<h4 id="orgf67a49c"><span class="section-number-4">3.4.1.</span> Reverberación: <code>room</code></h4>
+<div class="outline-text-4" id="text-3-4-1">
+<p>
+<code>room</code> simula el espacio acústico donde suena el instrumento. Valores altos = sala grande (catedral). Valores bajos = sala pequeña o sin reverb.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>n("&lt;4 [3@3 4] [&lt;2 0&gt; ~@16] ~&gt;")
+  .scale("D4:minor").sound("gm_accordion:2")
+  .room(2)
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org68f0c00" class="outline-4">
+<h4 id="org68f0c00"><span class="section-number-4">3.4.2.</span> Eco: <code>delay</code></h4>
+<div class="outline-text-4" id="text-3-4-2">
+<p>
+<code>delay</code> agrega ecos del sonido. El primer número es la cantidad de delay (0 a 1). Se puede especificar más:
+</p>
+<ul class="org-ul">
+<li><code>.delay(".8:.125")</code> → el segundo número es el tiempo entre ecos</li>
+<li><code>.delay(".8:.06:.8")</code> → el tercero es cuánto se desvanece cada eco</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>$: note("[~ [&lt;[d3,a3,f4]!2 [d3,bb3,g4]!2&gt; ~]]*2")
+  .sound("gm_electric_guitar_muted").delay(.5)
+$: sound("bd rim").bank("RolandTR707").delay(".5")
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org211eb01" class="outline-4">
+<h4 id="org211eb01"><span class="section-number-4">3.4.3.</span> Paneo: <code>pan</code></h4>
+<div class="outline-text-4" id="text-3-4-3">
+<p>
+<code>pan</code> controla la posición en el campo estéreo. 0 = completamente izquierda, 1 = completamente derecha, 0.5 = centro.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound("numbers:1 numbers:2 numbers:3 numbers:4")
+  .pan("0 0.3 .6 1")
+</code></pre>
+</div>
+
+<div class="desafio" id="org1d62375">
+<p>
+<b>Desafío C: Pequeña canción con efectos</b>
+</p>
+
+<p>
+Combina <code>lpf</code>, <code>gain</code>, <code>vowel</code>, <code>room</code> y <code>delay</code> en un patrón. Probá quitar y agregar cada efecto para escuchar la diferencia.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>setcpm(120/4)
+
+$: sound("hh*8").gain("[.25 1]*4")
+$: sound("bd*4,[~ sd:1]*2")
+$: note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
+  .sound("sawtooth")
+  // .lpf(?)
+  // .vowel(?)
+$: note("&lt;[c3,g3,e4] [bb2,f3,d4] [a2,f3,c4] [bb2,g3,eb4]&gt;")
+  .sound("sawtooth")
+  // .room(?)
+  // .delay(?)
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org32f9206" class="outline-3">
+<h3 id="org32f9206"><span class="section-number-3">3.5.</span> Envolvente: ADSR</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+La envolvente controla cómo evoluciona el volumen de una nota en el tiempo. ADSR = Attack / Decay / Sustain / Release.
+</p>
+
+<dl class="org-dl">
+<dt><b>Attack</b></dt><dd>cuánto tarda en llegar al volumen máximo</dd>
+<dt><b>Decay</b></dt><dd>cuánto tarda en bajar al nivel de sustain</dd>
+<dt><b>Sustain</b></dt><dd>nivel de volumen mientras se mantiene la nota</dd>
+<dt><b>Release</b></dt><dd>cuánto tarda en silenciarse cuando termina la nota</dd>
+</dl>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>note("c3 bb2 f3 eb3")
+  .sound("sawtooth").lpf(600)
+  .attack(.1)
+  .decay(.1)
+  .sustain(.25)
+  .release(.2)
+</code></pre>
+</div>
+
+<div class="desafio" id="orgab5a684">
+<p>
+<b>Desafío D: Explorar ADSR</b>
+</p>
+
+<p>
+Modificá los valores uno por uno y escuchá el resultado:
+</p>
+<ul class="org-ul">
+<li><code>attack</code>: prueba <code>.5</code> vs <code>0</code></li>
+<li><code>decay</code>: prueba <code>.5</code> vs <code>0</code></li>
+<li><code>sustain</code>: prueba <code>1</code> vs <code>.25</code> vs <code>0</code></li>
+<li><code>release</code>: prueba <code>0</code> vs <code>.5</code> vs <code>1</code></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>note("c3 bb2 f3 eb3")
+  .sound("sawtooth").lpf(600)
+  .attack(.1)
+  .decay(.1)
+  .sustain(.25)
+  .release(.2)
+</code></pre>
+</div>
+
+<p>
+Notación abreviada: <code>.adsr("attack:decay:sustain:release")</code>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>note("c3 bb2 f3 eb3")
+  .sound("sawtooth").lpf(600)
+  .adsr(".1:.1:.5:.2")
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+<div id="outline-container-org283ba5e" class="outline-3">
+<h3 id="org283ba5e"><span class="section-number-3">3.6.</span> Tempo del patrón: <code>fast</code> y <code>slow</code></h3>
+<div class="outline-text-3" id="text-3-6">
+<p>
+<code>fast</code> y <code>slow</code> cambian la velocidad de un patrón. Son equivalentes a <code>*</code> y <code>/</code> en mini-notation, pero aplicados a todo el patrón.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound("bd*4, ~ rim ~ cp").slow(2)   // el doble de lento
+</code></pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// También acepta patrones:
+sound("[bd*4,~ rim ~ cp]*&lt;1 [2 4]&gt;")
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org0d09096" class="outline-3">
+<h3 id="org0d09096"><span class="section-number-3">3.7.</span> Modulación con ondas (Signals)</h3>
+<div class="outline-text-3" id="text-3-7">
+<p>
+En lugar de poner un valor fijo, podemos usar una <i>onda</i> como valor. Esto hace que el parámetro cambie continuamente en el tiempo, de forma automática.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound("hh*16").gain(sine)   // el volumen sube y baja como una ola
+</code></pre>
+</div>
+
+<p>
+Las ondas disponibles son:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Onda</th>
+<th scope="col" class="org-left">Forma</th>
+<th scope="col" class="org-left">Sonido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>sine</code></td>
+<td class="org-left">Senoidal suave</td>
+<td class="org-left">Cambio gradual y cíclico</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>saw</code></td>
+<td class="org-left">Diente de sierra</td>
+<td class="org-left">Sube gradual, baja abrupto</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>square</code></td>
+<td class="org-left">Cuadrada</td>
+<td class="org-left">Alterna entre dos valores</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>tri</code></td>
+<td class="org-left">Triangular</td>
+<td class="org-left">Sube y baja linealmente</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>rand</code></td>
+<td class="org-left">Aleatoria</td>
+<td class="org-left">Valores al azar cada ciclo</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>perlin</code></td>
+<td class="org-left">Aleatoria suave</td>
+<td class="org-left">Valores aleatorios pero continuos</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="outline-container-org07cc85a" class="outline-4">
+<h4 id="org07cc85a"><span class="section-number-4">3.7.1.</span> Rango: <code>range</code></h4>
+<div class="outline-text-4" id="text-3-7-1">
+<p>
+Por defecto las ondas oscilan entre 0 y 1. Con <code>range</code> podemos cambiar eso:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound("hh*16").lpf(saw.range(500, 2000))
+</code></pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Con slow para que el ciclo dure más:
+note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
+  .sound("sawtooth")
+  .lpf(sine.range(100, 2000).slow(4))
+</code></pre>
+</div>
+
+<div class="desafio" id="org648aaa5">
+<p>
+<b>Desafío E: Automatizar con ondas</b>
+</p>
+
+<p>
+Agregale una onda a alguno de los efectos de abajo. Probá <code>sine</code>, <code>saw</code>, <code>rand</code> y <code>perlin</code>. Usá <code>.range()</code> para que el valor tenga sentido musical.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>setcpm(120/4)
+
+$: sound("hh*8").gain(sine)        // ← onda en gain
+$: note("c e g b").sound("sawtooth")
+  .lpf(sine.range(200, 3000))      // ← onda en lpf
+  .room(0.3)
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org25be177" class="outline-3">
+<h3 id="org25be177"><span class="section-number-3">3.8.</span> Repaso — Clase 2.5</h3>
+<div class="outline-text-3" id="text-3-8">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Función</th>
+<th scope="col" class="org-left">¿Qué hace?</th>
+<th scope="col" class="org-left">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>lpf()</code></td>
+<td class="org-left">Filtro paso bajo (oscurece)</td>
+<td class="org-left"><code>.lpf(800)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>hpf()</code></td>
+<td class="org-left">Filtro paso alto (adelgaza)</td>
+<td class="org-left"><code>.hpf(500)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>vowel()</code></td>
+<td class="org-left">Filtro formante de vocal</td>
+<td class="org-left"><code>.vowel("&lt;a e i o&gt;")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>gain()</code></td>
+<td class="org-left">Volumen / dinámica</td>
+<td class="org-left"><code>.gain("[.25 1]*4")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>room()</code></td>
+<td class="org-left">Reverberación</td>
+<td class="org-left"><code>.room(2)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>delay()</code></td>
+<td class="org-left">Eco</td>
+<td class="org-left"><code>.delay(".5:.125")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>pan()</code></td>
+<td class="org-left">Paneo estéreo</td>
+<td class="org-left"><code>.pan("0 1")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>attack()</code></td>
+<td class="org-left">Tiempo de ataque (ADSR)</td>
+<td class="org-left"><code>.attack(.1)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>decay()</code></td>
+<td class="org-left">Decaimiento (ADSR)</td>
+<td class="org-left"><code>.decay(.1)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>sustain()</code></td>
+<td class="org-left">Sostenido (ADSR)</td>
+<td class="org-left"><code>.sustain(.5)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>release()</code></td>
+<td class="org-left">Liberación (ADSR)</td>
+<td class="org-left"><code>.release(.2)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>adsr()</code></td>
+<td class="org-left">ADSR abreviado</td>
+<td class="org-left"><code>.adsr(".1:.1:.5:.2")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>fast()</code></td>
+<td class="org-left">Acelerar patrón</td>
+<td class="org-left"><code>.fast(2)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>slow()</code></td>
+<td class="org-left">Ralentizar patrón</td>
+<td class="org-left"><code>.slow(2)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>sine</code> / <code>saw</code> / <code>rand</code></td>
+<td class="org-left">Modulación con onda</td>
+<td class="org-left"><code>.gain(sine)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.range(a,b)</code></td>
+<td class="org-left">Rango de una onda</td>
+<td class="org-left"><code>sine.range(200,2000)</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-orge80d6e1" class="outline-3">
+<h3 id="orge80d6e1"><span class="section-number-3">3.9.</span> Retroalimentación</h3>
+<div class="outline-text-3" id="text-3-9">
+<ul class="org-ul">
+<li>¿Qué efecto les resultó más interesante?</li>
+<li>¿Cómo podrían usar <code>gain</code> con ondas para hacer algo musical?</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org852eaf8" class="outline-2">
+<h2 id="org852eaf8"><span class="section-number-2">4.</span> Clase 3: Sampling y efectos de sampler</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org00b6e23" class="outline-3">
+<h3 id="org00b6e23"><span class="section-number-3">4.1.</span> Calentamiento: Análisis de código (10 min)</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+Antes de empezar con material nuevo, vamos a leer código juntos. El objetivo es que puedan leer un patrón de Strudel y predecir qué va a hacer <i>antes</i> de ejecutarlo.
+</p>
+
+<p>
+<b>¿Qué creen que hace este código? Léanlo línea por línea.</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>setcpm(130/4)
+
+$: s("bd(3,8), hh*8, [~ sd]*2")
+  .bank("RolandTR909")
+
+$: note("&lt;[c3,g3,e4] [f3,c4,a4]&gt;")
+  .s("piano")
+  .room(0.4)
+  .clip(0.7)
+
+$: note("c2 ~ f2 ~".slow(2))
+  .s("sine")
+  .lpf(400)
+</code></pre>
+</div>
+
+<p>
+Preguntas para guiar el análisis:
+</p>
+<ol class="org-ol">
+<li>¿Cuántos patrones suenan al mismo tiempo?</li>
+<li>¿Qué hace el <code>(3,8)</code> en la batería?</li>
+<li>¿Qué está haciendo <code>&lt;&gt;</code> en la melodía?</li>
+<li>¿Qué efecto tiene <code>clip(0.7)</code>?</li>
+<li>¿Qué pasa con el bajo si sacamos el <code>.slow(2)</code>?</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org47587f2" class="outline-3">
+<h3 id="org47587f2"><span class="section-number-3">4.2.</span> ¿Qué son los samples?</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+Un sample es una pieza de audio que es usada como la base de la generación de un sonido, que pasa por varias transformaciones. La música hecha con samples puede ser pensada como un collage de sonido.
+</p>
+
+<p>
+<img src="file:///home/diego/org/roam/94f42b8e35ccd39cf42054ddeaad44d3.jpg" alt="94f42b8e35ccd39cf42054ddeaad44d3.jpg"> <img src="file:///home/diego/org/roam/albeton.jpg" alt="albeton.jpg">
+</p>
+
+<p>
+Un ejemplo de una canción popular que use samples es Somebody That i Used To Know de Gotye <a href="https://youtu.be/ra7uxAbsvFY?si=6NYaf0uXjVkXjKGO">https://youtu.be/ra7uxAbsvFY?si=6NYaf0uXjVkXjKGO</a> o One More Time de Daft Punk <a href="https://www.youtube.com/watch?v=5QwOpRh-IfI">https://www.youtube.com/watch?v=5QwOpRh-IfI</a>.
+</p>
+</div>
+</div>
+<div id="outline-container-org41ea20a" class="outline-3">
+<h3 id="org41ea20a"><span class="section-number-3">4.3.</span> Samples por defecto</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+En el caso de Strudel, ya viene con un mapa de samples que a estas alturas ya conocemos.
+Recurso útil: <a href="https://www.youtube.com/watch?v=CNJKqWRCLM8&amp;t=923s">https://www.youtube.com/watch?v=CNJKqWRCLM8&amp;t=923s</a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>$: s("bd sd [~ bd] sd,hh*16, misc")
+</code></pre>
+</div>
+
+<p>
+Acá añadimos la función <code>s</code> para reproducir diferentes samples y hacer un beat de batería.
+</p>
+</div>
+</div>
+<div id="outline-container-orgbc70464" class="outline-3">
+<h3 id="orgbc70464"><span class="section-number-3">4.4.</span> Bancos de sonido</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+Si abrimos la pestaña de <i>sounds</i> y luego <i>drum-machines</i> podemos ver que todos los samples de batería tienen un prefijo de nombres de <i>drum-machines</i>: <code>RolandTR808_bd</code>, <code>RolandTR808_sd</code>, <code>RolandTR808_hh</code> etc..
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>$: s("RolandTR808_bd RolandTR808_sd,RolandTR808_hh*16")
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org03b81aa" class="outline-3">
+<h3 id="org03b81aa"><span class="section-number-3">4.5.</span> Seleccionar sonidos</h3>
+<div class="outline-text-3" id="text-4-5">
+<p>
+Dentro de <i>sounds</i> &gt; <i>drum-machines</i> podemos ver que cada sample tiene un número antes de cada nombre indicando cuantos samples individuales hay disponibles. Por ejemplo <code>RolandTR909_hh(4)</code> significa que hay cuatro samples de un hi-hat de TR909 disponibles. Por defecto, <code>s</code> reproducirá el primer sample, pero podemos seleccionar otros usando <code>n</code> partiendo desde 0.
+</p>
+
+<p>
+<i>Tip: En general en la programación las listas y los conteos de números siempre empiezan desde 0, es decir que 0 es el primer elemento.</i>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>$: s("hh*8").bank("RolandTR909").n("0 1 2 3") // hay 4 samples disponibles
+_$: s("hh*8").bank("RolandTR909").n("0 1 2 3 4 5 6 7") // si pasan el último se devuelve al primero. Saca el guión para desmutear
+</code></pre>
+</div>
+
+<p>
+Los números que sobrepasen el número máximo de samples (en este caso 4, si contamos desde 0, 1, 2, 3) pasarán de vuelta al primero y seguirán así de forma consecutiva.
+</p>
+
+<p>
+Otra forma que ya hemos visto para seleccionar los sonidos es con mini notation.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("bd*4,hh:0 hh:1 hh:2 hh:3 hh:4 hh:5 hh:6 hh:7")
+.bank("RolandTR909")
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgbbfe0a3" class="outline-3">
+<h3 id="orgbbfe0a3"><span class="section-number-3">4.6.</span> Cargando samples personalizados</h3>
+<div class="outline-text-3" id="text-4-6">
+<p>
+Puedes cargar samples usando la función <code>samples</code>.
+</p>
+</div>
+</div>
+<div id="outline-container-orgedabc0d" class="outline-3">
+<h3 id="orgedabc0d"><span class="section-number-3">4.7.</span> De forma local</h3>
+<div class="outline-text-3" id="text-4-7">
+<p>
+Puedes cargar samples de forma local desde la interfaz. Vamos al botón de opciones en Strudel (las tres líneas horizontales) &gt; sounds &gt; import-sounds.
+</p>
+
+
+<div id="orga4f3792" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura desde 2026-09-28 13-33-16.png" alt="Captura desde 2026-09-28 13-33-16.png">
+</p>
+</div>
+
+<p>
+Luego apretamos el botón de <i>import sounds folder</i> y ahí seleccionamos una carpeta que tengamos con samples.
+</p>
+
+
+<div id="org48e5aaa" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura desde 2026-09-28 13-35-31.png" alt="Captura desde 2026-09-28 13-35-31.png">
+</p>
+</div>
+
+<p>
+Luego de apretar el botón de subir (dependiendo de tu sistema operativo puede cambiar la interfaz) ya podemos usar los samples, y podemos verlo desde el botón <code>sounds &gt; user</code>.
+</p>
+
+
+<div id="org2674930" class="figure">
+<p><img src="file:///home/diego/Imágenes/Capturas de pantalla/Captura desde 2026-09-28 13-36-53.png" alt="Captura desde 2026-09-28 13-36-53.png">
+</p>
+</div>
+
+<p>
+En este caso es el sonido <code>gustos_taller(4)</code>.
+</p>
+
+<div class="desafio" id="org61eee23">
+<p>
+Descarga la carpeta de sonidos <code>gustos_taller</code> e importala a Strudel, para luego usarla. Será enviada por Whatsapp.
+</p>
+
+</div>
+</div>
+<div id="outline-container-orgb61c2b7" class="outline-4">
+<h4 id="orgb61c2b7"><span class="section-number-4">4.7.1.</span> Desde un repositorio</h4>
+<div class="outline-text-4" id="text-4-7-1">
+<p>
+Además de poder hacerse de forma local, se puede hacer desde repositorios online. En este caso la más común es <i>Github</i> (<a href="https://github.com/">https://github.com/</a>). Es una plataforma que permite almacenar, administrar y colaborar en proyectos de programación usando un sistema de control de versiones. Es parecido a Google Docs, en el sentido de que si alguien hace un cambio en el documento, aparecera en las versiones.
+</p>
+
+<p>
+En Github normalmente suben repositorios con samples listos, desde drum breaks, hasta samples en general. Un ejemplo de esto es <a href="https://github.com/yaxu/clean-breaks">https://github.com/yaxu/clean-breaks</a>.
+</p>
+
+
+<div id="orgc1e050a" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura desde 2026-09-28 13-44-08.png" alt="Captura desde 2026-09-28 13-44-08.png">
+</p>
+</div>
+
+<p>
+Dentro de la carpeta sounds podemos encontrar cada sample.
+</p>
+
+
+<div id="org2cae686" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura desde 2026-09-28 13-44-42.png" alt="Captura desde 2026-09-28 13-44-42.png">
+</p>
+</div>
+
+<p>
+Y si volvemos atrás y clickeamos el archivo <code>strudel.json</code> podemos ver un diccionario que nos dice <code>nombre: archivo_sample</code>. En strudel los usaremos de la siguiente forma:
+</p>
+
+
+<div id="org13b62b3" class="figure">
+<p><img src="file:///home/diego/org/roam/Captura desde 2026-09-28 13-48-18.png" alt="Captura desde 2026-09-28 13-48-18.png">
+</p>
+</div>
+
+<p>
+Es importante que nos fijemos que la estructura será <code>samples(github:nombre_de_usuario/nombre_de_repositorio)</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>samples('github:yaxu/clean-breaks')
+s("amen")
+</code></pre>
+</div>
+
+<div class="desafio" id="org47025e5">
+<p>
+Importa los samples desde el repositorio a Strudel, y selecciona uno de los sonidos dentro del <code>json</code>.
+</p>
+
+<p>
+<i>Tip: Dentro de sounds podemos ver los sonidos importados una vez que carga el repositorio dentro de Strudel, no avisa pero se carga unos segundos para mostrarte todos los samples disponibles</i>.
+</p>
+
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf07a550" class="outline-3">
+<h3 id="orgf07a550"><span class="section-number-3">4.8.</span> Efectos de Sampler</h3>
+<div class="outline-text-3" id="text-4-8">
+<p>
+Los efectos de sampler son funciones que modifican <i>cómo</i> se reproduce un sample: dónde empieza, dónde termina, a qué velocidad, cómo se divide. Son distintos de los efectos de audio (reverb, delay, filtros), que modifican el <i>sonido ya reproducido</i>.
+</p>
+</div>
+<div id="outline-container-orgc1949db" class="outline-4">
+<h4 id="orgc1949db"><span class="section-number-4">4.8.1.</span> Recortar: <code>begin</code> y <code>end</code></h4>
+<div class="outline-text-4" id="text-4-8-1">
+<p>
+Todo sample tiene un punto de inicio (<code>begin</code>) y un punto de fin (<code>end</code>). Por defecto, se reproduce el sample completo (0 = inicio, 1 = fin del sample). Podemos mover esos puntos para usar solo una parte.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// end recorta el final del sample
+// 1 = sample completo, .5 = primera mitad, .1 = solo el inicio
+s("bd*2, oh*4").end("&lt;.1 .2 .5 1&gt;").fast(2)
+</code></pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// begin mueve el punto de inicio
+samples('github:tidalcycles/dirt-samples')
+s("breaks165").begin("&lt;0 .25 .5 .75&gt;").slow(2)
+</code></pre>
+</div>
+
+<div class="desafio" id="org7bb499c">
+<p>
+<b>Desafío 6: Recortar samples</b>
+</p>
+
+<p>
+Usá <code>begin</code> y <code>end</code> para recortar el break de abajo. Probá distintos valores entre 0 y 1. ¿Qué ritmo nuevo podés crear?
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>samples('github:tidalcycles/dirt-samples')
+$: s("breaks165").slow(2)
+  // .begin(?)   -- ¿dónde empieza?
+  // .end(?)     -- ¿dónde termina?
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+<div id="outline-container-orgb56e2bc" class="outline-4">
+<h4 id="orgb56e2bc"><span class="section-number-4">4.8.2.</span> Detener samples: <code>cut</code></h4>
+<div class="outline-text-4" id="text-4-8-2">
+<p>
+En el estilo de las drum-machines clásicas, <code>cut</code> detiene un sample en reproducción cuando otro del mismo grupo de corte empieza a sonar. El ejemplo típico es el hihat abierto que se silencia cuando llega el hihat cerrado. Ambos deben tener el mismo número de grupo.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("[oh hh]*4").cut(1)
+</code></pre>
+</div>
+
+<div class="desafio" id="org896bff3">
+<p>
+<b>Desafío 7: Hihat abierto y cerrado</b>
+</p>
+
+<p>
+Probá el código con y sin <code>.cut(1)</code>. ¿Qué cambia en el sonido? Luego experimentá con el timing del <code>oh</code> y el <code>hh</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>$: s("oh hh oh [oh hh]")
+  // añadí .cut(1) a ambos y escuchá la diferencia
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+<div id="outline-container-orgdabd8d8" class="outline-4">
+<h4 id="orgdabd8d8"><span class="section-number-4">4.8.3.</span> Velocidad y tono: <code>speed</code></h4>
+<div class="outline-text-4" id="text-4-8-3">
+<p>
+<code>speed</code> cambia la velocidad de reproducción del sample. Velocidad más alta = tono más agudo. Velocidad negativa = reproducción al revés.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>$: s("bd*6").speed("1 2 4 1 -2 -4")
+</code></pre>
+</div>
+
+<div class="desafio" id="org3952df0">
+<p>
+<b>Desafío 8: Melodía con speed</b>
+</p>
+
+<p>
+Usá <code>speed</code> para crear una melodía con el sample de abajo. Velocidad 1 = tono original, 2 = octava arriba, 0.5 = octava abajo. Los números negativos reproducen al revés.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>samples({ rhodes: 'https://cdn.freesound.org/previews/132/132051_316502-lq.mp3' })
+$: s("rhodes*4").speed("1 1.5 2 0.75")
+  // probá otros valores, incluso negativos
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+<div id="outline-container-org713009d" class="outline-4">
+<h4 id="org713009d"><span class="section-number-4">4.8.4.</span> Síntesis granular: <code>chop</code></h4>
+<div class="outline-text-4" id="text-4-8-4">
+<p>
+<code>chop</code> divide el sample en N partes iguales y las reproduce en orden. Es una técnica llamada <i>síntesis granular</i>: tomamos un sonido y lo "picamos" en granos más pequeños, creando texturas y ritmos nuevos a partir de cualquier audio.
+</p>
+
+<p>
+<code>loopAt(n)</code> ajusta la velocidad del sample para que dure exactamente N ciclos, sincronizándolo con el tempo.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>samples({ rhodes: 'https://cdn.freesound.org/previews/132/132051_316502-lq.mp3' })
+$: s("rhodes")
+  .chop(4)      // divide en 4 partes
+  .rev()        // invierte el orden de las partes
+  .loopAt(2)    // ajusta para que dure 2 ciclos
+</code></pre>
+</div>
+
+<div class="desafio" id="orgc22c0ed">
+<p>
+<b>Desafío 9: Granular con chop</b>
+</p>
+
+<p>
+Experimentá con <code>chop</code> en el break de abajo. Cambiá el número de cortes, agregá <code>.rev()</code>, probá <code>.loopAt()</code> con distintos valores.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>samples('github:tidalcycles/dirt-samples')
+$: s("breaks165")
+  .chop(8)     // probá: 4, 8, 16, 32
+  // .rev()
+  // .loopAt(2)
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+<div id="outline-container-org57cf736" class="outline-4">
+<h4 id="org57cf736"><span class="section-number-4">4.8.5.</span> Granular avanzado: <code>slice</code> y <code>splice</code></h4>
+<div class="outline-text-4" id="text-4-8-5">
+<p>
+<code>slice</code> divide el sample en N partes y las reproduce según una secuencia de números que vos elegís, dándote control total sobre el orden de los granos. Podés remezclar un break sin tocar nada.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>samples('github:tidalcycles/dirt-samples')
+$: s("breaks165")
+  .slice(8, "0 1 &lt;2 2*2&gt; 3 [4 0] 5 6 7".every(3, rev))
+  .slow(0.75)
+</code></pre>
+</div>
+
+<p>
+<code>splice</code> funciona igual pero ajusta la velocidad de cada trozo para que dure exactamente lo que le corresponde en el patrón:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>samples('github:tidalcycles/dirt-samples')
+$: s("breaks165")
+  .splice(8, "0 1 [2 3 0]@2 3 0@2 7")
+</code></pre>
+</div>
+
+<div class="desafio" id="org55092b2">
+<p>
+<b>Desafío 10: Remezclar un break con slice</b>
+</p>
+
+<p>
+Reordenar los trozos del break cambiando la secuencia. Los números van de 0 a N-1 (si cortás en 8, de 0 a 7). Podés usar mini-notation en la secuencia.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>samples('github:tidalcycles/dirt-samples')
+$: s("breaks165")
+  .slice(8, "0 1 2 3 4 5 6 7")  // reordenalo acá
+  .slow(2)
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgd273b18" class="outline-3">
+<h3 id="orgd273b18"><span class="section-number-3">4.9.</span> ¡Proyecto de la Clase 3! Añadir samples al proyecto</h3>
+<div class="outline-text-3" id="text-4-9">
+<p>
+Tomá el proyecto que venías construyendo (con batería, melodía y bajo) y añadile samples. La idea es combinar las técnicas de sampling con lo que ya sabés de patrones y efectos.
+</p>
+
+<p>
+<b>Requisitos mínimos:</b>
+</p>
+<ol class="org-ol">
+<li>Cargar al menos un sample desde GitHub</li>
+<li>Aplicar <code>chop()</code> o <code>slice()</code> a algún sample</li>
+<li>Usar <code>cut()</code> en la batería (ej: hihat abierto/cerrado)</li>
+<li>Modificar algún sample con <code>begin</code> o <code>end</code></li>
+</ol>
+
+<p>
+<b>Andamiaje: si no sabés por dónde empezar, copiá esto y modificalo:</b>
+</p>
+
+<div class="desafio" id="orgb67041e">
+<p>
+<b>Proyecto Clase 3: Mi canción con samples</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Proyecto Clase 3 — Copiá acá tu proyecto y añadile samples
+
+samples('github:tidalcycles/dirt-samples')
+setcpm(120/4)
+
+// --- BATERÍA ---
+$: s("bd*4")
+$: s("sd*2").room(.3)
+$: s("oh hh oh [oh hh]").cut(1)   // ← cut en hihats
+
+// --- MELODÍA ---
+$: note("c e g b")
+
+// --- BAJO ---
+$: note("c2*4")
+
+// --- SAMPLE GRANULAR ---
+// $: s("breaks165").chop(8).loopAt(2)
+
+// --- SAMPLE CON BEGIN/END ---
+// $: s("breaks165").begin(0.5).end(0.75).slow(2)
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+<div id="outline-container-org33a961e" class="outline-3">
+<h3 id="org33a961e"><span class="section-number-3">4.10.</span> Grabar tus propios samples: Tab Sampler</h3>
+<div class="outline-text-3" id="text-4-10">
+<p>
+Tab Sampler es una extensión del navegador que te permite grabar el audio de cualquier pestaña (YouTube, SoundCloud, Spotify, etc.) y guardarlo como archivo para usar en Strudel.
+</p>
+
+<ul class="org-ul">
+<li>Chrome: <a href="https://chromewebstore.google.com/detail/tab-sampler/fggedmihjidjinmmkdfpmfjnehijdjgp">Tab Sampler en Chrome Web Store</a></li>
+<li>Firefox: <a href="https://addons.mozilla.org/es-ES/firefox/addon/quick-tab-sampler/">Quick Tab Sampler en Firefox Add-ons</a></li>
+</ul>
+</div>
+<div id="outline-container-orgda96bb4" class="outline-4">
+<h4 id="orgda96bb4"><span class="section-number-4">4.10.1.</span> ¿Cómo funciona el sampling?</h4>
+<div class="outline-text-4" id="text-4-10-1">
+<p>
+Cuando sampleamos una canción, tenemos varias opciones:
+</p>
+
+<ol class="org-ol">
+<li><b>Sample completo</b>: grabás toda la canción o un fragmento largo, y luego usás <code>begin~/~end</code> en Strudel para moverte por él.</li>
+<li><b>Sample cortado</b>: grabás solo la parte que querés — un compás, una frase, un golpe de batería — e importás eso directamente.</li>
+<li><b>Loop rítmico (drum break)</b>: grabás exactamente N compases (ej: 2 o 4) y usás <code>loopAt(N)</code> para que Strudel lo sincronice con el tempo.</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org25f7b41" class="outline-4">
+<h4 id="org25f7b41"><span class="section-number-4">4.10.2.</span> ¿Hay que cuantizar?</h4>
+<div class="outline-text-4" id="text-4-10-2">
+<p>
+En Strudel no hay cuantización automática como en un DAW. Pero <code>loopAt</code> y <code>fit</code> compensan: ajustan la velocidad del sample para que encaje con el ciclo. Lo importante es que si querés usar un loop rítmico:
+</p>
+<ul class="org-ul">
+<li>Grabá lo más exacto posible (desde el primer golpe hasta el final del último compás)</li>
+<li>Usá <code>loopAt(n)</code> donde N es el número de ciclos que querés que dure</li>
+</ul>
+
+<p>
+Si el sample no es rítmico (voz, textura, efecto), no importa tanto la precisión.
+</p>
+</div>
+</div>
+<div id="outline-container-org3f87c16" class="outline-4">
+<h4 id="org3f87c16"><span class="section-number-4">4.10.3.</span> Workflow con Tab Sampler</h4>
+<div class="outline-text-4" id="text-4-10-3">
+<ol class="org-ol">
+<li>Instalá la extensión y fijala en la barra del navegador</li>
+<li>Abrí la canción que querés samplear (YouTube, SoundCloud, etc.)</li>
+<li>Reproducí la canción y activá la grabación cuando empiece el fragmento</li>
+<li>Detené cuando termine el fragmento que querés</li>
+<li>Descargá el archivo (WAV o MP3)</li>
+<li>Importalo a Strudel desde el menú ≡ → Sounds → Import Sounds</li>
+<li>Usalo con <code>s("nombre_de_tu_sample")</code></li>
+</ol>
+
+<div class="desafio" id="org63f6fcf">
+<p>
+Grabá un sample de algo que les guste usando Tab Sampler e importalo a Strudel. Luego aplicale algún efecto de sampler (<code>chop</code>, <code>begin~/~end</code>, <code>speed</code>).
+</p>
+
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org830fc80" class="outline-3">
+<h3 id="org830fc80"><span class="section-number-3">4.11.</span> Repaso — Clase 3</h3>
+<div class="outline-text-3" id="text-4-11">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Función</th>
+<th scope="col" class="org-left">¿Qué hace?</th>
+<th scope="col" class="org-left">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>samples('github:...')</code></td>
+<td class="org-left">Carga samples desde GitHub</td>
+<td class="org-left"><code>samples('github:yaxu/clean-breaks')</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>begin()</code></td>
+<td class="org-left">Punto de inicio del sample</td>
+<td class="org-left"><code>s("amen").begin(.25)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>end()</code></td>
+<td class="org-left">Punto de fin del sample</td>
+<td class="org-left"><code>s("amen").end(.75)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>cut()</code></td>
+<td class="org-left">Corta sample al llegar otro del mismo grupo</td>
+<td class="org-left"><code>s("oh hh").cut(1)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>speed()</code></td>
+<td class="org-left">Cambia velocidad/tono</td>
+<td class="org-left"><code>s("bd").speed(2)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>chop()</code></td>
+<td class="org-left">Síntesis granular (partes iguales)</td>
+<td class="org-left"><code>s("amen").chop(8)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>loopAt()</code></td>
+<td class="org-left">Sincroniza loop al ciclo</td>
+<td class="org-left"><code>s("amen").loopAt(2)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>slice()</code></td>
+<td class="org-left">Granular con secuencia propia</td>
+<td class="org-left"><code>s("amen").slice(8,"0 1 3 2")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>splice()</code></td>
+<td class="org-left">Como slice pero ajusta velocidad</td>
+<td class="org-left"><code>s("amen").splice(8,"0 1 3")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>loop()</code></td>
+<td class="org-left">Loop continuo</td>
+<td class="org-left"><code>s("amen").loop(1)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>fit()</code></td>
+<td class="org-left">Ajuste automático al evento</td>
+<td class="org-left"><code>s("amen").fit()</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>rev()</code></td>
+<td class="org-left">Invierte el orden</td>
+<td class="org-left"><code>s("amen").chop(8).rev()</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org56c7653" class="outline-3">
+<h3 id="org56c7653"><span class="section-number-3">4.12.</span> Retroalimentación</h3>
+<div class="outline-text-3" id="text-4-12">
+<ul class="org-ul">
+<li>¿Qué fue lo que más les costó de esta sesión?</li>
+<li>¿Hubo algún efecto que les pareció especialmente interesante?</li>
+<li>¿Qué ideas tienen para usar sampling en su proyecto?</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgec15333" class="outline-2">
+<h2 id="orgec15333"><span class="section-number-2">5.</span> Clase 4: Síntesis</h2>
+</div>
+<div id="outline-container-org465ab2f" class="outline-2">
+<h2 id="org465ab2f"><span class="section-number-2">6.</span> Clase 5: Pattern Functions o funciones de patrones</h2>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Autor: Diego Aliaga</p>
-<p class="date">Created: 2026-09-21 lun 22:42</p>
+<p class="date">Created: 2026-09-28 lun 14:09</p>
 </div>
+<a id="back-to-top" href="#" title="Volver al inicio" aria-label="Volver al inicio">↑</a>
+<script>
+(function() {
+  var btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 400) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+  });
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
 </body>
 </html>
