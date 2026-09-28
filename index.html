@@ -121,21 +121,6 @@ if (holders.size) {
       .forEach(unmountRepl);
   };
   window.addEventListener('scroll', trim, { passive: true });
-
-  const stopAll = document.createElement('button');
-  stopAll.id = 'stop-all';
-  stopAll.type = 'button';
-  stopAll.textContent = '■';
-  stopAll.setAttribute('aria-label', 'Detener audio');
-  stopAll.title = 'Detener audio';
-  stopAll.addEventListener('click', () => {
-    activeHolder = null;
-    holders.forEach(h => {
-      h.classList.remove('is-active');
-      silence(h);
-    });
-  });
-  document.body.appendChild(stopAll);
 }
 const title = document.querySelector('h1.title');
 if (title) title.innerHTML += ' <img src="images/spiral.svg" alt="Strudel" style="height: 1.5em; vertical-align: middle; float: right; margin-top: -0.15em;">';
@@ -157,13 +142,13 @@ function initNavDrawer() {
   const toc = document.querySelector('#text-table-of-contents');
   if (!toc) return;
 
-  // 1. Botón pestaña fijo en el lateral izquierdo
+  // 1. Botón pestaña fijo en el lateral izquierdo con icono estilo GNOME
   const toggleBtn = document.createElement('button');
   toggleBtn.id = 'drawer-toggle';
   toggleBtn.type = 'button';
-  toggleBtn.setAttribute('aria-label', 'Abrir ÍNDICE (Alt+I)');
-  toggleBtn.title = 'ÍNDICE (Alt+I)';
-  toggleBtn.innerHTML = '<span>ÍNDICE</span>';
+  toggleBtn.setAttribute('aria-label', 'Abrir índice (Alt+I)');
+  toggleBtn.title = 'Índice (Alt+I)';
+  toggleBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" role="img" aria-hidden="true"><path d="m 6 13 v -10 h -3 c -0.550781 0 -1 0.449219 -1 1 v 8 c 0 0.550781 0.449219 1 1 1 z m 0 0" fill-opacity="0.35"/><path d="m 3 1 c -1.644531 0 -3 1.355469 -3 3 v 8 c 0 1.644531 1.355469 3 3 3 h 10 c 1.644531 0 3 -1.355469 3 -3 v -8 c 0 -1.644531 -1.355469 -3 -3 -3 z m 0 2 h 3 v 10 h -3 c -0.570312 0 -1 -0.429688 -1 -1 v -8 c 0 -0.570312 0.429688 -1 1 -1 z m 4 0 h 6 c 0.570312 0 1 0.429688 1 1 v 8 c 0 0.570312 -0.429688 1 -1 1 h -6 z m 0 0"/></svg>';
   document.body.appendChild(toggleBtn);
 
   // 2. Backdrop difuminado
@@ -2444,15 +2429,12 @@ Tab Sampler es una extensión del navegador que te permite grabar el audio de cu
 <!-- Video original: ~/2026-09-28 14-21-53.mp4 (11:32), subido a YouTube.
      ID fY225UpOr0k. Se embebe con youtube-nocookie (sin cookies de seguimiento). -->
 <div class="video-embed">
-<iframe
-  src="https://www.youtube-nocookie.com/embed/fY225UpOr0k"
-  title="Demo: importar un sample con Tab Sampler y aplicarle efectos en Strudel"
-  frameborder="0"
-  loading="lazy"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  allowfullscreen></iframe>
+  <video controls preload="metadata" playsinline>
+    <source src="images/tab-sampler-demo.mp4" type="video/mp4">
+    Tu navegador no soporta el elemento de video.
+  </video>
 </div>
-<p class="video-caption">Demostración del proceso completo: grabar un fragmento con Tab Sampler, importarlo a Strudel y transformarlo con efectos de sampler.</p>
+<p class="video-caption">Demostración del proceso completo: grabar un fragmento con Tab Sampler, importarlo a Strudel y transformarlo con efectos de sampler. (<a href="https://www.youtube.com/watch?v=fY225UpOr0k" target="_blank" rel="noopener">Ver en YouTube</a>)</p>
 </div>
 <div id="outline-container-orgda96bb4" class="outline-4">
 <h4 id="orgda96bb4"><span class="section-number-4">4.10.1.</span> ¿Cómo funciona el sampling?</h4>
