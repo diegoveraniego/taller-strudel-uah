@@ -161,9 +161,9 @@ function initNavDrawer() {
   const toggleBtn = document.createElement('button');
   toggleBtn.id = 'drawer-toggle';
   toggleBtn.type = 'button';
-  toggleBtn.setAttribute('aria-label', 'Abrir índice de contenidos (Alt+I)');
-  toggleBtn.title = 'Índice de contenidos (Alt+I)';
-  toggleBtn.innerHTML = '<span class="drawer-icon">📑</span> <span>Índice</span>';
+  toggleBtn.setAttribute('aria-label', 'Abrir ÍNDICE (Alt+I)');
+  toggleBtn.title = 'ÍNDICE (Alt+I)';
+  toggleBtn.innerHTML = '<span>ÍNDICE</span>';
   document.body.appendChild(toggleBtn);
 
   // 2. Backdrop difuminado
@@ -174,14 +174,14 @@ function initNavDrawer() {
   // 3. Contenedor Drawer
   const drawer = document.createElement('aside');
   drawer.id = 'sidebar-drawer';
-  drawer.setAttribute('aria-label', 'Navegación del taller');
+  drawer.setAttribute('aria-label', 'ÍNDICE del taller');
 
   // Cabecera
   const header = document.createElement('div');
   header.className = 'drawer-header';
   header.innerHTML = `
-    <h3 class="drawer-title"><span>📑</span> Índice del Taller</h3>
-    <button class="drawer-close" type="button" aria-label="Cerrar índice (Esc)">✕</button>
+    <h3 class="drawer-title">ÍNDICE</h3>
+    <button class="drawer-close" type="button" aria-label="Cerrar ÍNDICE (Esc)">✕</button>
   `;
   drawer.appendChild(header);
 
@@ -190,8 +190,8 @@ function initNavDrawer() {
   tools.className = 'drawer-tools';
   tools.innerHTML = `
     <div class="drawer-search-wrapper">
-      <span class="drawer-search-icon">🔍</span>
-      <input type="search" class="drawer-search" placeholder="Filtrar temas (ej. lpf, bpm, cut)..." aria-label="Filtrar índice">
+      <svg class="drawer-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="search" class="drawer-search" placeholder="Filtrar (ej. lpf, bpm, cut)..." aria-label="Filtrar índice">
     </div>
     <div class="drawer-class-pills">
       <span>Clase:</span>
