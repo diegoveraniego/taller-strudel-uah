@@ -15,9 +15,86 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 hljs.highlightAll();
-document.querySelectorAll('.src-javascript').forEach(block => { const code = block.textContent; const editor = document.createElement('strudel-repl'); const container = block.closest('.org-src-container'); editor.innerHTML = '<!--\n' + code + '\n-->'; container.parentNode.replaceChild(editor, container); });
+// ── REPLs de Strudel: carga diferida + un solo patrón sonando a la vez ──
+// Cada <strudel-repl> es un iframe con su propio AudioContext, y no hay forma
+// de mandarle "parate" a otro iframe. La solución: cuando activás uno, recargamos
+// los demás. Strudel no arranca solo sin un gesto del usuario, así que quedan
+// mudos, y el código no se pierde porque vive en el hash del iframe.
+// La carga además es diferida: si no, la página levanta decenas de contextos de
+// audio y el navegador corta los últimos (el límite son ~6).
+const holders = new Set();
+const reloading = new WeakSet();
+let activeHolder = null;
+
+function mountRepl(holder) {
+  if (holder.dataset.mounted) return;
+  holder.dataset.mounted = '1';
+  const editor = document.createElement('strudel-repl');
+  editor.innerHTML = '<!--\n' + holder.dataset.code + '\n-->';
+  holder.appendChild(editor);
+}
+
+function setActive(holder) {
+  if (activeHolder === holder) return;
+  activeHolder = holder;
+  holders.forEach(h => h.classList.toggle('is-active', h === holder));
+  holders.forEach(h => {
+    if (h === holder) return;
+    const frame = h.querySelector('iframe');
+    if (!frame) return;
+    reloading.add(h);
+    frame.src = frame.src; // reinicia el AudioContext -> queda mudo
+  });
+}
+
+window.addEventListener('message', (e) => {
+  if (e.source == null) return;
+  holders.forEach(h => {
+    if (reloading.has(h)) return;
+    const frame = h.querySelector('iframe');
+    if (frame && frame.contentWindow === e.source) setActive(h);
+  });
+});
+
+document.querySelectorAll('.src-javascript').forEach(block => {
+  const container = block.closest('.org-src-container');
+  if (!container) return;
+  const holder = document.createElement('div');
+  holder.className = 'repl-holder';
+  holder.dataset.code = block.textContent;
+  container.parentNode.replaceChild(holder, container);
+  holders.add(holder);
+});
+
+if (holders.size) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      mountRepl(e.target);
+    });
+  }, { rootMargin: '600px 0px' });
+  holders.forEach(h => io.observe(h));
+
+  const stopAll = document.createElement('button');
+  stopAll.id = 'stop-all';
+  stopAll.type = 'button';
+  stopAll.textContent = '■ Detener todos';
+  stopAll.title = 'Frena todos los patrones que estén sonando';
+  stopAll.addEventListener('click', () => {
+    activeHolder = null;
+    holders.forEach(h => {
+      h.classList.remove('is-active');
+      const frame = h.querySelector('iframe');
+      if (!frame) return;
+      reloading.add(h);
+      frame.src = frame.src;
+    });
+  });
+  document.body.appendChild(stopAll);
+}
 const title = document.querySelector('h1.title');
-if (title) title.innerHTML += ' <img src="https://strudel.cc/logo.svg" style="height: 1.2em; vertical-align: middle; float: right; filter: brightness(0) invert(1); margin-top: -0.1em;">';
+if (title) title.innerHTML += ' <img src="https://strudel.cc/logo.svg" alt="Strudel" style="height: 1.6em; vertical-align: middle; float: right; margin-top: -0.2em;">';
 const tocHeading = document.querySelector('#table-of-contents h2');
 const tocContent = document.querySelector('#text-table-of-contents');
 if (tocHeading && tocContent) {
@@ -30,6 +107,229 @@ tocContent.style.display = isHidden ? 'block' : 'none';
 tocHeading.innerHTML = tocHeading.innerHTML.replace(isHidden ? '▶' : '▼', isHidden ? '▼' : '▶');
 });
 }
+
+// ── Drawer lateral de navegación estilo Strudel ──────────────────────
+function initNavDrawer() {
+  const toc = document.querySelector('#text-table-of-contents');
+  if (!toc) return;
+
+  // 1. Botón pestaña fijo en el lateral izquierdo
+  const toggleBtn = document.createElement('button');
+  toggleBtn.id = 'drawer-toggle';
+  toggleBtn.type = 'button';
+  toggleBtn.setAttribute('aria-label', 'Abrir índice de contenidos (Alt+I)');
+  toggleBtn.title = 'Índice de contenidos (Alt+I)';
+  toggleBtn.innerHTML = '<span class="drawer-icon">📑</span> <span>Índice</span>';
+  document.body.appendChild(toggleBtn);
+
+  // 2. Backdrop difuminado
+  const backdrop = document.createElement('div');
+  backdrop.id = 'drawer-backdrop';
+  document.body.appendChild(backdrop);
+
+  // 3. Contenedor Drawer
+  const drawer = document.createElement('aside');
+  drawer.id = 'sidebar-drawer';
+  drawer.setAttribute('aria-label', 'Navegación del taller');
+
+  // Cabecera
+  const header = document.createElement('div');
+  header.className = 'drawer-header';
+  header.innerHTML = `
+    <h3 class="drawer-title"><span>📑</span> Índice del Taller</h3>
+    <button class="drawer-close" type="button" aria-label="Cerrar índice (Esc)">✕</button>
+  `;
+  drawer.appendChild(header);
+
+  // Herramientas: buscador y píldoras
+  const tools = document.createElement('div');
+  tools.className = 'drawer-tools';
+  tools.innerHTML = `
+    <div class="drawer-search-wrapper">
+      <span class="drawer-search-icon">🔍</span>
+      <input type="search" class="drawer-search" placeholder="Filtrar temas (ej. lpf, bpm, cut)..." aria-label="Filtrar índice">
+    </div>
+    <div class="drawer-class-pills">
+      <span>Clase:</span>
+    </div>
+  `;
+  drawer.appendChild(tools);
+
+  // Contenido: árbol clonado
+  const content = document.createElement('div');
+  content.className = 'drawer-content';
+  const originalUl = toc.querySelector('ul');
+  if (!originalUl) return;
+  const clonedUl = originalUl.cloneNode(true);
+
+  // Transformar los li de primer nivel (Clases)
+  const pillsContainer = tools.querySelector('.drawer-class-pills');
+  const classItems = clonedUl.querySelectorAll(':scope > li');
+  classItems.forEach(li => {
+    li.classList.add('drawer-class-item');
+    const directLink = li.querySelector(':scope > a');
+    const subUl = li.querySelector(':scope > ul');
+
+    if (directLink) {
+      // Píldora de salto directo
+      const pill = document.createElement('a');
+      pill.className = 'drawer-pill';
+      pill.href = directLink.getAttribute('href');
+      const match = directLink.textContent.match(/Clase\s+([\d.]+)/i) || directLink.textContent.match(/^(\d+)/);
+      pill.textContent = match ? match[1] : directLink.textContent.trim().slice(0, 4);
+      pill.title = directLink.textContent.trim();
+      pillsContainer.appendChild(pill);
+
+      // Cabecera colapsable para la clase
+      if (subUl) {
+        const headerWrap = document.createElement('div');
+        headerWrap.className = 'drawer-class-header';
+
+        const collapseBtn = document.createElement('button');
+        collapseBtn.type = 'button';
+        collapseBtn.className = 'drawer-collapse-btn';
+        collapseBtn.innerHTML = '▼';
+        collapseBtn.setAttribute('aria-label', 'Colapsar subsecciones');
+        collapseBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isCollapsed = li.classList.toggle('is-collapsed');
+          collapseBtn.innerHTML = isCollapsed ? '▶' : '▼';
+        });
+
+        li.insertBefore(headerWrap, directLink);
+        headerWrap.appendChild(collapseBtn);
+        headerWrap.appendChild(directLink);
+      }
+    }
+  });
+
+  content.appendChild(clonedUl);
+  drawer.appendChild(content);
+
+  // Pie
+  const footer = document.createElement('div');
+  footer.className = 'drawer-footer';
+  footer.innerHTML = `
+    <span>Atajo: Alt+I · Esc</span>
+    <a href="#" class="drawer-top-link">Inicio ↑</a>
+  `;
+  drawer.appendChild(footer);
+
+  document.body.appendChild(drawer);
+
+  // Acciones de apertura y cierre
+  function openDrawer() {
+    drawer.classList.add('is-open');
+    backdrop.classList.add('is-visible');
+    const searchInput = drawer.querySelector('.drawer-search');
+    if (searchInput) setTimeout(() => searchInput.focus(), 150);
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('is-open');
+    backdrop.classList.remove('is-visible');
+  }
+
+  toggleBtn.addEventListener('click', openDrawer);
+  backdrop.addEventListener('click', closeDrawer);
+  header.querySelector('.drawer-close').addEventListener('click', closeDrawer);
+
+  // Atajos de teclado
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+      closeDrawer();
+    } else if (e.altKey && (e.key === 'i' || e.key === 'I')) {
+      e.preventDefault();
+      drawer.classList.contains('is-open') ? closeDrawer() : openDrawer();
+    }
+  });
+
+  // Clic en enlaces de navegación
+  drawer.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const href = a.getAttribute('href');
+      if (href === '#') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (href && href.startsWith('#')) {
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+          history.pushState(null, null, href);
+        }
+      }
+      if (window.innerWidth < 1000) {
+        closeDrawer();
+      }
+    });
+  });
+
+  // Filtro / buscador instantáneo
+  const searchInput = tools.querySelector('.drawer-search');
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    const allLis = content.querySelectorAll('li');
+    if (!q) {
+      allLis.forEach(li => li.style.display = '');
+      return;
+    }
+    allLis.forEach(li => li.style.display = 'none');
+    allLis.forEach(li => {
+      const text = li.textContent.toLowerCase();
+      if (text.includes(q)) {
+        let curr = li;
+        while (curr && curr !== content) {
+          if (curr.tagName === 'LI') {
+            curr.style.display = '';
+            curr.classList.remove('is-collapsed');
+            const btn = curr.querySelector(':scope > .drawer-class-header .drawer-collapse-btn');
+            if (btn) btn.innerHTML = '▼';
+          }
+          curr = curr.parentElement;
+        }
+      }
+    });
+  });
+
+  // ScrollSpy para marcar la sección activa
+  const trackedLinks = Array.from(content.querySelectorAll('a[href^="#"]')).filter(a => a.getAttribute('href') !== '#');
+  const sections = trackedLinks
+    .map(a => {
+      try {
+        return { link: a, el: document.querySelector(a.getAttribute('href')) };
+      } catch (err) {
+        return null;
+      }
+    })
+    .filter(item => item && item.el);
+
+  if ('IntersectionObserver' in window && sections.length > 0) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          trackedLinks.forEach(link => {
+            const isMatch = link.getAttribute('href') === '#' + id;
+            link.classList.toggle('active-link', isMatch);
+            if (isMatch) {
+              const classItem = link.closest('.drawer-class-item');
+              if (classItem && classItem.classList.contains('is-collapsed')) {
+                classItem.classList.remove('is-collapsed');
+                const btn = classItem.querySelector('.drawer-collapse-btn');
+                if (btn) btn.innerHTML = '▼';
+              }
+            }
+          });
+        }
+      });
+    }, {
+      rootMargin: '-15% 0px -70% 0px'
+    });
+    sections.forEach(s => observer.observe(s.el));
+  }
+}
+initNavDrawer();
 });
 </script>
 </head>
@@ -430,7 +730,7 @@ Al hacer eso podemos elegir un sonido dentro de la librería de sonido casio, qu
 
 
 <div id="org833cb92" class="figure">
-<p><img src="images/Captura desde 2026-09-21 22-10-56.png " alt="Captura desde 2026-09-21 22-10-56.png ">
+<p><img src="images/Captura desde 2026-09-21 22-10-56.png" alt="Captura desde 2026-09-21 22-10-56.png">
 </p>
 </div>
 </div>
@@ -1179,7 +1479,7 @@ $: sound("bd*4, [~ sd:1]*2")
 <ol class="org-ol">
 <li>Sacá el <code>.gain(...)</code> del hihat. ¿Cómo suena?</li>
 <li>Volvelo a poner (Ctrl+Z)</li>
-<li>Probá con <code>"[.1 .5 1]*4"</code> o inventá tu propio patrón de volumen</li>
+<li>Prueba con <code>"[.1 .5 1]*4"</code> o inventa tu propio patrón de volumen</li>
 </ol>
 
 <div class="org-src-container">
@@ -1249,7 +1549,7 @@ $: sound("bd rim").bank("RolandTR707").delay(".5")
 </p>
 
 <p>
-Combina <code>lpf</code>, <code>gain</code>, <code>vowel</code>, <code>room</code> y <code>delay</code> en un patrón. Probá quitar y agregar cada efecto para escuchar la diferencia.
+Combina <code>lpf</code>, <code>gain</code>, <code>vowel</code>, <code>room</code> y <code>delay</code> en un patrón. Prueba quitar y agregar cada efecto para escuchar la diferencia.
 </p>
 
 <div class="org-src-container">
@@ -1452,7 +1752,7 @@ note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
 </p>
 
 <p>
-Agregale una onda a alguno de los efectos de abajo. Probá <code>sine</code>, <code>saw</code>, <code>rand</code> y <code>perlin</code>. Usá <code>.range()</code> para que el valor tenga sentido musical.
+Agrégale una onda a alguno de los efectos de abajo. Prueba <code>sine</code>, <code>saw</code>, <code>rand</code> y <code>perlin</code>. Usa <code>.range()</code> para que el valor tenga sentido musical.
 </p>
 
 <div class="org-src-container">
@@ -1655,7 +1955,7 @@ Un sample es una pieza de audio que es usada como la base de la generación de u
 </p>
 
 <p>
-Un ejemplo de una canción popular que use samples es Somebody That i Used To Know de Gotye <a href="https://youtu.be/ra7uxAbsvFY?si=6NYaf0uXjVkXjKGO">https://youtu.be/ra7uxAbsvFY?si=6NYaf0uXjVkXjKGO</a> o One More Time de Daft Punk <a href="https://www.youtube.com/watch?v=5QwOpRh-IfI">https://www.youtube.com/watch?v=5QwOpRh-IfI</a>.
+Un ejemplo de una canción popular que use samples es Somebody That i Used To Know de Gotye <a href="https://youtu.be/ra7uxAbsvFY">https://youtu.be/ra7uxAbsvFY</a> o One More Time de Daft Punk <a href="https://www.youtube.com/watch?v=5QwOpRh-IfI">https://www.youtube.com/watch?v=5QwOpRh-IfI</a>.
 </p>
 </div>
 </div>
@@ -1778,7 +2078,7 @@ Descarga la carpeta de sonidos <code>gustos_taller</code> e importala a Strudel,
 <h4 id="orgb61c2b7"><span class="section-number-4">4.7.1.</span> Desde un repositorio</h4>
 <div class="outline-text-4" id="text-4-7-1">
 <p>
-Además de poder hacerse de forma local, se puede hacer desde repositorios online. En este caso la más común es <i>Github</i> (<a href="https://github.com/">https://github.com/</a>). Es una plataforma que permite almacenar, administrar y colaborar en proyectos de programación usando un sistema de control de versiones. Es parecido a Google Docs, en el sentido de que si alguien hace un cambio en el documento, aparecera en las versiones.
+Además de poder hacerse de forma local, se puede hacer desde repositorios online. En este caso la más común es <i>Github</i> (<a href="https://github.com/">https://github.com/</a>). Es una plataforma que permite almacenar, administrar y colaborar en proyectos de programación usando un sistema de control de versiones. Es parecido a Google Docs, en el sentido de que si alguien hace un cambio en el documento, aparecerá en las versiones.
 </p>
 
 <p>
@@ -1868,7 +2168,7 @@ s("breaks165").begin("&lt;0 .25 .5 .75&gt;").slow(2)
 </p>
 
 <p>
-Usá <code>begin</code> y <code>end</code> para recortar el break de abajo. Probá distintos valores entre 0 y 1. ¿Qué ritmo nuevo podés crear?
+Usa <code>begin</code> y <code>end</code> para recortar el break de abajo. Prueba distintos valores entre 0 y 1. ¿Qué ritmo nuevo puedes crear?
 </p>
 
 <div class="org-src-container">
@@ -1900,7 +2200,7 @@ En el estilo de las drum-machines clásicas, <code>cut</code> detiene un sample 
 </p>
 
 <p>
-Probá el código con y sin <code>.cut(1)</code>. ¿Qué cambia en el sonido? Luego experimentá con el timing del <code>oh</code> y el <code>hh</code>.
+Prueba el código con y sin <code>.cut(1)</code>. ¿Qué cambia en el sonido? Luego experimentá con el timing del <code>oh</code> y el <code>hh</code>.
 </p>
 
 <div class="org-src-container">
@@ -1930,13 +2230,13 @@ Probá el código con y sin <code>.cut(1)</code>. ¿Qué cambia en el sonido? Lu
 </p>
 
 <p>
-Usá <code>speed</code> para crear una melodía con el sample de abajo. Velocidad 1 = tono original, 2 = octava arriba, 0.5 = octava abajo. Los números negativos reproducen al revés.
+Usa <code>speed</code> para crear una melodía con el sample de abajo. Velocidad 1 = tono original, 2 = octava arriba, 0.5 = octava abajo. Los números negativos reproducen al revés.
 </p>
 
 <div class="org-src-container">
 <pre class="src src-javascript"><code>samples({ rhodes: 'https://cdn.freesound.org/previews/132/132051_316502-lq.mp3' })
 $: s("rhodes*4").speed("1 1.5 2 0.75")
-  // probá otros valores, incluso negativos
+  // prueba otros valores, incluso negativos
 </code></pre>
 </div>
 
@@ -1969,13 +2269,13 @@ $: s("rhodes")
 </p>
 
 <p>
-Experimentá con <code>chop</code> en el break de abajo. Cambiá el número de cortes, agregá <code>.rev()</code>, probá <code>.loopAt()</code> con distintos valores.
+Experimentá con <code>chop</code> en el break de abajo. Cambia el número de cortes, agrega <code>.rev()</code>, prueba <code>.loopAt()</code> con distintos valores.
 </p>
 
 <div class="org-src-container">
 <pre class="src src-javascript"><code>samples('github:tidalcycles/dirt-samples')
 $: s("breaks165")
-  .chop(8)     // probá: 4, 8, 16, 32
+  .chop(8)     // prueba: 4, 8, 16, 32
   // .rev()
   // .loopAt(2)
 </code></pre>
@@ -1988,7 +2288,7 @@ $: s("breaks165")
 <h4 id="org57cf736"><span class="section-number-4">4.8.5.</span> Granular avanzado: <code>slice</code> y <code>splice</code></h4>
 <div class="outline-text-4" id="text-4-8-5">
 <p>
-<code>slice</code> divide el sample en N partes y las reproduce según una secuencia de números que vos elegís, dándote control total sobre el orden de los granos. Podés remezclar un break sin tocar nada.
+<code>slice</code> divide el sample en N partes y las reproduce según una secuencia de números que tú eliges, dándote control total sobre el orden de los granos. Puedes remezclar un break sin tocar nada.
 </p>
 
 <div class="org-src-container">
@@ -2016,7 +2316,7 @@ $: s("breaks165")
 </p>
 
 <p>
-Reordenar los trozos del break cambiando la secuencia. Los números van de 0 a N-1 (si cortás en 8, de 0 a 7). Podés usar mini-notation en la secuencia.
+Reordenar los trozos del break cambiando la secuencia. Los números van de 0 a N-1 (si cortas en 8, de 0 a 7). Puedes usar mini-notation en la secuencia.
 </p>
 
 <div class="org-src-container">
@@ -2096,6 +2396,19 @@ Tab Sampler es una extensión del navegador que te permite grabar el audio de cu
 <li>Chrome: <a href="https://chromewebstore.google.com/detail/tab-sampler/fggedmihjidjinmmkdfpmfjnehijdjgp">Tab Sampler en Chrome Web Store</a></li>
 <li>Firefox: <a href="https://addons.mozilla.org/es-ES/firefox/addon/quick-tab-sampler/">Quick Tab Sampler en Firefox Add-ons</a></li>
 </ul>
+
+<!-- Video original: ~/2026-09-28 14-21-53.mp4 (11:32), subido a YouTube.
+     ID fY225UpOr0k. Se embebe con youtube-nocookie (sin cookies de seguimiento). -->
+<div class="video-embed">
+<iframe
+  src="https://www.youtube-nocookie.com/embed/fY225UpOr0k"
+  title="Demo: importar un sample con Tab Sampler y aplicarle efectos en Strudel"
+  frameborder="0"
+  loading="lazy"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen></iframe>
+</div>
+<p class="video-caption">Demostración del proceso completo: grabar un fragmento con Tab Sampler, importarlo a Strudel y transformarlo con efectos de sampler.</p>
 </div>
 <div id="outline-container-orgda96bb4" class="outline-4">
 <h4 id="orgda96bb4"><span class="section-number-4">4.10.1.</span> ¿Cómo funciona el sampling?</h4>
@@ -2105,9 +2418,9 @@ Cuando sampleamos una canción, tenemos varias opciones:
 </p>
 
 <ol class="org-ol">
-<li><b>Sample completo</b>: grabás toda la canción o un fragmento largo, y luego usás <code>begin~/~end</code> en Strudel para moverte por él.</li>
-<li><b>Sample cortado</b>: grabás solo la parte que querés — un compás, una frase, un golpe de batería — e importás eso directamente.</li>
-<li><b>Loop rítmico (drum break)</b>: grabás exactamente N compases (ej: 2 o 4) y usás <code>loopAt(N)</code> para que Strudel lo sincronice con el tempo.</li>
+<li><b>Sample completo</b>: grabas toda la canción o un fragmento largo, y luego usas <code>begin~/~end</code> en Strudel para moverte por él.</li>
+<li><b>Sample cortado</b>: grabas solo la parte que quieres — un compás, una frase, un golpe de batería — e importás eso directamente.</li>
+<li><b>Loop rítmico (drum break)</b>: grabas exactamente N compases (ej: 2 o 4) y usas <code>loopAt(N)</code> para que Strudel lo sincronice con el tempo.</li>
 </ol>
 </div>
 </div>
@@ -2115,11 +2428,11 @@ Cuando sampleamos una canción, tenemos varias opciones:
 <h4 id="org25f7b41"><span class="section-number-4">4.10.2.</span> ¿Hay que cuantizar?</h4>
 <div class="outline-text-4" id="text-4-10-2">
 <p>
-En Strudel no hay cuantización automática como en un DAW. Pero <code>loopAt</code> y <code>fit</code> compensan: ajustan la velocidad del sample para que encaje con el ciclo. Lo importante es que si querés usar un loop rítmico:
+En Strudel no hay cuantización automática como en un DAW. Pero <code>loopAt</code> y <code>fit</code> compensan: ajustan la velocidad del sample para que encaje con el ciclo. Lo importante es que si quieres usar un loop rítmico:
 </p>
 <ul class="org-ul">
-<li>Grabá lo más exacto posible (desde el primer golpe hasta el final del último compás)</li>
-<li>Usá <code>loopAt(n)</code> donde N es el número de ciclos que querés que dure</li>
+<li>Graba lo más exacto posible (desde el primer golpe hasta el final del último compás)</li>
+<li>Usa <code>loopAt(n)</code> donde N es el número de ciclos que quieres que dure</li>
 </ul>
 
 <p>
@@ -2132,9 +2445,9 @@ Si el sample no es rítmico (voz, textura, efecto), no importa tanto la precisi�
 <div class="outline-text-4" id="text-4-10-3">
 <ol class="org-ol">
 <li>Instalá la extensión y fijala en la barra del navegador</li>
-<li>Abrí la canción que querés samplear (YouTube, SoundCloud, etc.)</li>
+<li>Abre la canción que quieres samplear (YouTube, SoundCloud, etc.)</li>
 <li>Reproducí la canción y activá la grabación cuando empiece el fragmento</li>
-<li>Detené cuando termine el fragmento que querés</li>
+<li>Detén cuando termine el fragmento que quieres</li>
 <li>Descargá el archivo (WAV o MP3)</li>
 <li>Importalo a Strudel desde el menú ≡ → Sounds → Import Sounds</li>
 <li>Usalo con <code>s("nombre_de_tu_sample")</code></li>
@@ -2142,7 +2455,7 @@ Si el sample no es rítmico (voz, textura, efecto), no importa tanto la precisi�
 
 <div class="desafio" id="org63f6fcf">
 <p>
-Grabá un sample de algo que les guste usando Tab Sampler e importalo a Strudel. Luego aplicale algún efecto de sampler (<code>chop</code>, <code>begin~/~end</code>, <code>speed</code>).
+Graba un sample de algo que les guste usando Tab Sampler e importalo a Strudel. Luego aplicale algún efecto de sampler (<code>chop</code>, <code>begin~/~end</code>, <code>speed</code>).
 </p>
 
 </div>
