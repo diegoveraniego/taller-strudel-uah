@@ -15,15 +15,28 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 hljs.highlightAll();
-// ── REPLs de Strudel: carga diferida + un solo patrón sonando a la vez ──
-// Cada <strudel-repl> es un iframe con su propio AudioContext, y no hay forma
-// de mandarle "parate" a otro iframe. La solución: cuando activás uno, recargamos
-// los demás. Strudel no arranca solo sin un gesto del usuario, así que quedan
-// mudos, y el código no se pierde porque vive en el hash del iframe.
-// La carga además es diferida: si no, la página levanta decenas de contextos de
-// audio y el navegador corta los últimos (el límite son ~6).
+// ── REPLs de Strudel: un solo patrón sonando, y pocos contexts vivos ──────
+//
+// Por qué se bugea el audio: cada <strudel-repl> es un iframe con su propio
+// AudioContext. Esta página tiene 56 bloques de código, o sea 56 contexts si
+// se montan todos. El navegador corta alrededor de 6: los últimos no arrancan
+// o quedan a otra sample rate, y el audio sale crackleando.
+//
+// Hay dos límites entonces:
+//
+// 1) VENTANA DE MONTAJE. Un REPL se monta al acercarse a la pantalla y se
+//    desmonta al alejarse (liberando el AudioContext). Así el número de
+//    contexts vivos queda acotado por lo que se ve, no por el largo de la
+//    página. El código no se pierde: Strudel nos lo manda por postMessage en
+//    cada evaluación y lo guardamos para el remontaje.
+//
+// 2) UNO SOLO SONANDO. No existe API para mandarle "parate" a otro iframe,
+//    pero Strudel no arranca sin un gesto del usuario: recargar el iframe lo
+//    deja mudo. Al evaluar uno, recargamos los demás montados.
+const REPL_MARGIN = '800px 0px'; // montar antes de que entre en pantalla
+const REPL_MAX_MOUNTED = 6; // tope duro, por si el margen no alcanza
 const holders = new Set();
-const reloading = new WeakSet();
+const reloading = new WeakSet(); // ignora los postMessage de recarga
 let activeHolder = null;
 
 function mountRepl(holder) {
@@ -34,26 +47,48 @@ function mountRepl(holder) {
   holder.appendChild(editor);
 }
 
+function unmountRepl(holder) {
+  if (!holder.dataset.mounted || holder === activeHolder) return;
+  holder.dataset.mounted = '';
+  holder.textContent = ''; // suelta el iframe y su AudioContext
+}
+
+function silence(holder) {
+  const frame = holder.querySelector('iframe');
+  if (!frame) return;
+  reloading.add(holder);
+  // hay que limpiar la marca: si no, el REPL queda excluido para siempre
+  // de volver a activarse (que era un bug de la primera versión).
+  frame.addEventListener('load', () => reloading.delete(holder), { once: true });
+  setTimeout(() => reloading.delete(holder), 8000); // red de seguridad
+  frame.src = frame.src; // reinicia el AudioContext -> queda mudo
+}
+
+function holderOf(source) {
+  for (const h of holders) {
+    const frame = h.querySelector('iframe');
+    if (frame && frame.contentWindow === source) return h;
+  }
+  return null;
+}
+
 function setActive(holder) {
   if (activeHolder === holder) return;
   activeHolder = holder;
   holders.forEach(h => h.classList.toggle('is-active', h === holder));
   holders.forEach(h => {
-    if (h === holder) return;
-    const frame = h.querySelector('iframe');
-    if (!frame) return;
-    reloading.add(h);
-    frame.src = frame.src; // reinicia el AudioContext -> queda mudo
+    if (h !== holder) silence(h);
   });
 }
 
+// Cada evaluación manda el código: lo guardamos para poder desmontar y
+// remontar el REPL sin perder lo que el alumno escribió.
 window.addEventListener('message', (e) => {
-  if (e.source == null) return;
-  holders.forEach(h => {
-    if (reloading.has(h)) return;
-    const frame = h.querySelector('iframe');
-    if (frame && frame.contentWindow === e.source) setActive(h);
-  });
+  if (e.source == null || typeof e.data !== 'string') return;
+  const holder = holderOf(e.source);
+  if (!holder || reloading.has(holder)) return;
+  if (e.data.trim()) holder.dataset.code = e.data;
+  setActive(holder);
 });
 
 document.querySelectorAll('.src-javascript').forEach(block => {
@@ -69,12 +104,23 @@ document.querySelectorAll('.src-javascript').forEach(block => {
 if (holders.size) {
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      io.unobserve(e.target);
-      mountRepl(e.target);
+      if (e.isIntersecting) mountRepl(e.target);
+      else unmountRepl(e.target); // al salir de la ventana, suelta el context
     });
-  }, { rootMargin: '600px 0px' });
+  }, { rootMargin: REPL_MARGIN });
   holders.forEach(h => io.observe(h));
+
+  // Tope duro: si la ventana deja pasar más de los previstos, se desmontan
+  // los más lejanos al elemento que está sonando.
+  const trim = () => {
+    const live = [...holders].filter(h => h.dataset.mounted && h !== activeHolder);
+    if (live.length <= REPL_MAX_MOUNTED) return;
+    live
+      .sort((a, b) => b.getBoundingClientRect().top - a.getBoundingClientRect().top)
+      .slice(REPL_MAX_MOUNTED)
+      .forEach(unmountRepl);
+  };
+  window.addEventListener('scroll', trim, { passive: true });
 
   const stopAll = document.createElement('button');
   stopAll.id = 'stop-all';
@@ -85,10 +131,7 @@ if (holders.size) {
     activeHolder = null;
     holders.forEach(h => {
       h.classList.remove('is-active');
-      const frame = h.querySelector('iframe');
-      if (!frame) return;
-      reloading.add(h);
-      frame.src = frame.src;
+      silence(h);
     });
   });
   document.body.appendChild(stopAll);
