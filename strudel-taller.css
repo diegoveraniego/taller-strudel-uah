@@ -730,26 +730,27 @@ p img, h1 img, h2 img {
 /* ── Navegación entre clases (Footer) ────────────────────────────── */
 .class-nav-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 1.5rem;
   margin-top: 4rem;
   padding-top: 2rem;
-  border-top: 1px solid var(--border);
+  border-top: 2px solid var(--border);
 }
 .nav-btn {
   display: flex;
   flex-direction: column;
   padding: 1rem 1.5rem;
-  border-radius: 8px;
-  background: var(--bg-2);
-  border: 1px solid var(--border);
+  background: var(--bg);
+  border: 2px solid var(--border);
   text-decoration: none;
   color: var(--text);
-  transition: transform .2s, border-color .2s;
+  transition: background .1s, border-color .1s;
   min-width: 150px;
+  text-align: center;
 }
 .nav-btn:hover {
-  border-color: var(--accent);
-  transform: translateY(-2px);
+  background: var(--bg-2);
+  border-color: var(--text);
 }
 .nav-btn .nav-label {
   font-size: .8rem;
@@ -759,11 +760,7 @@ p img, h1 img, h2 img {
   margin-bottom: .25rem;
 }
 .nav-btn .nav-title {
-  font-weight: 700;
+  font-weight: 600;
   font-size: 1.1rem;
-  color: var(--accent);
-}
-.nav-btn.next {
-  text-align: right;
-  margin-left: auto;
+  color: var(--text);
 }
