@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>꩜ Clase 2: Live Coding, Notas y Acordes — Taller de Strudel</title>
+<meta name="author" content="Diego Aliaga"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>꩜</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="strudel-taller.css">
+<style>
+#clase-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg-2); border-bottom: 1px solid var(--border);
+  padding: .5rem 2rem; display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;
+}
+#clase-nav a {
+  color: var(--text-muted); text-decoration: none; font-size: .9rem;
+  font-weight: 500; padding: .25rem .5rem; border-radius: 4px;
+  transition: color .15s, background .15s;
+}
+#clase-nav a:hover { color: var(--text); background: var(--border); }
+#clase-nav a.nav-active { color: var(--accent); font-weight: 700; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://unpkg.com/@strudel/embed@latest"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+hljs.highlightAll();
+const REPL_MARGIN = '800px 0px';
+const REPL_MAX_MOUNTED = 6;
+const holders = new Set();
+const reloading = new WeakSet();
+let activeHolder = null;
+
+function mountRepl(holder) {
+  if (holder.dataset.mounted) return;
+  holder.dataset.mounted = '1';
+  const editor = document.createElement('strudel-repl');
+  editor.innerHTML = '<!--\n' + holder.dataset.code + '\n-->';
+  holder.appendChild(editor);
+}
+function unmountRepl(holder) {
+  if (!holder.dataset.mounted || holder === activeHolder) return;
+  holder.dataset.mounted = '';
+  holder.textContent = '';
+}
+function silence(holder) {
+  const frame = holder.querySelector('iframe');
+  if (!frame) return;
+  reloading.add(holder);
+  frame.addEventListener('load', () => reloading.delete(holder), { once: true });
+  setTimeout(() => reloading.delete(holder), 8000);
+  frame.src = frame.src;
+}
+function holderOf(source) {
+  for (const h of holders) {
+    const frame = h.querySelector('iframe');
+    if (frame && frame.contentWindow === source) return h;
+  }
+  return null;
+}
+function setActive(holder) {
+  if (activeHolder === holder) return;
+  activeHolder = holder;
+  holders.forEach(h => h.classList.toggle('is-active', h === holder));
+  holders.forEach(h => { if (h !== holder) silence(h); });
+}
+window.addEventListener('message', (e) => {
+  if (e.source == null || typeof e.data !== 'string') return;
+  const holder = holderOf(e.source);
+  if (!holder || reloading.has(holder)) return;
+  if (e.data.trim()) holder.dataset.code = e.data;
+  setActive(holder);
+});
+document.querySelectorAll('.src-javascript').forEach(block => {
+  const container = block.closest('.org-src-container');
+  if (!container) return;
+  const holder = document.createElement('div');
+  holder.className = 'repl-holder';
+  holder.dataset.code = block.textContent;
+  container.parentNode.replaceChild(holder, container);
+  holders.add(holder);
+});
+if (holders.size) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) mountRepl(e.target);
+      else unmountRepl(e.target);
+    });
+  }, { rootMargin: REPL_MARGIN });
+  holders.forEach(h => io.observe(h));
+  const trim = () => {
+    const live = [...holders].filter(h => h.dataset.mounted && h !== activeHolder);
+    if (live.length <= REPL_MAX_MOUNTED) return;
+    live.sort((a,b) => b.getBoundingClientRect().top - a.getBoundingClientRect().top)
+        .slice(REPL_MAX_MOUNTED).forEach(unmountRepl);
+  };
+  window.addEventListener('scroll', trim, { passive: true });
+}
+});
+</script>
+</head>
+<body>
+<nav id="clase-nav">
+  <a href="index.html">꩜ Inicio</a>
+  <a href="clase-1.html">Clase 1</a>
+  <a href="clase-2.html" class="nav-active">Clase 2</a>
+  <a href="clase-2-5.html">Clase 2.5</a>
+  <a href="clase-3.html">Clase 3</a>
+<a href="#" id="search-trigger" style="margin-left: auto; text-decoration: none;" title="Buscar en el taller"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a></nav>
+<div id="content">
+<h1 class="title">Clase 2: Live Coding, Sintaxis, Notas y Acordes</h1>
+
+<!-- ══ 2.1 REPASO ══════════════════════════════════════════════════════ -->
+<div class="outline-2">
+<h2>Repaso Clase 1</h2>
+<div class="outline-text-2">
+<ul>
+  <li>Composición algorítmica</li>
+  <li>Cómo hacer patrones rítmicos</li>
+  <li>Documentación</li>
+  <li>Mini-notation</li>
+  <li>Ciclos por segundo</li>
+  <li>Stacking de varios sonidos (<code>$:</code>)</li>
+  <li>Atajos útiles</li>
+</ul>
+</div>
+</div>
+
+<!-- ══ 2.2 LA ESCENA DEL LIVE CODING ══════════════════════════════════ -->
+<div class="outline-2">
+<h2>La escena del live coding</h2>
+<div class="outline-text-2">
+<p>Traducido como <em>programación en vivo</em>. Puede ser tanto de música como de visuales. Se utiliza a menudo en las <strong>algoraves</strong>.</p>
+</div>
+</div>
+
+<!-- ══ 2.3 ALGORAVES ═══════════════════════════════════════════════════ -->
+<div class="outline-2">
+<h2>Algoraves</h2>
+<div class="outline-text-2">
+<p><em>Algoritmo</em> + <em>raves</em>. Evento en que gente baila con música generada a partir de algoritmos, generalmente hechos con live coding. Puede tener diversos estilos.</p>
+<ul>
+  <li><a href="https://www.youtube.com/watch?v=C5GDqFl1jW0" target="_blank">Algorave en vivo — 1</a></li>
+  <li><a href="https://www.youtube.com/watch?v=93qcs8zHoXo" target="_blank">Algorave en vivo — 2</a></li>
+  <li><a href="https://www.youtube.com/watch?v=XYe8AKYPUYc" target="_blank">Algorave en vivo — 3</a></li>
+  <li><a href="https://www.youtube.com/watch?v=7qfCeIgtllY" target="_blank">Algorave en vivo — 4</a></li>
+</ul>
+</div>
+</div>
+
+<!-- ══ 2.4 VAMOS A STRUDEL ════════════════════════════════════════════ -->
+<div class="outline-2">
+<h2>Vamos a Strudel</h2>
+<div class="outline-text-2">
+<p>Para esta sección, puede ser útil revisar el <a href="https://strudel.cc/workshop/recap/" target="_blank">repaso en la documentación</a>.</p>
+
+<!-- Sonidos y bank -->
+<div class="outline-3">
+<h3>Sonidos y bancos</h3>
+<div class="org-src-container">
+<pre class="src src-javascript"><code>$: sound("casio")           // selecciona sonido o sample por nombre
+_$: sound("casio:2")        // selecciona número de sonido/sample
+_$: sound("bd hh sd oh")
+_$: sound("bd hh sd oh").bank("RolandTR909")  // banco de baterías
+_$: sound("bd:6 bd:6 [~ bd:6] [bd:6 bd:6]")  // sub-secuencia
+_$: sound("hh hh hh [hh [hh hh hh]]")        // sub-sub-secuencia</code></pre>
+</div>
+</div>
+
+<!-- Mini-notation -->
+<div class="outline-3">
+<h3>Mini-notation</h3>
+<div class="outline-text-3">
+<table>
+  <thead><tr><th>Símbolo</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>[ ]</code></td><td>Subdividir la secuencia</td></tr>
+    <tr><td><code>-</code> o <code>~</code></td><td>Silencio</td></tr>
+    <tr><td><code>*</code></td><td>Multiplicar (más rápido)</td></tr>
+    <tr><td><code>/</code></td><td>Dividir (más lento)</td></tr>
+    <tr><td><code>@</code></td><td>Alargar duración</td></tr>
+    <tr><td><code>!</code></td><td>Replicar</td></tr>
+    <tr><td><code>&lt; &gt;</code></td><td>Un elemento por ciclo</td></tr>
+    <tr><td><code>,</code></td><td>Sonar al mismo tiempo</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="org-src-container">
+<pre class="src src-javascript"><code>_$: sound("hh hh hh [hh [hh*3]]")
+_$: sound("bd*4")
+_$: sound("bd*4, [~ <sd cp>]*2, [~ hh]*4")
+  .bank("RolandTR909")</code></pre>
+</div>
+</div>
+
+<!-- Notas -->
+<div class="outline-3">
+<h3>Notas</h3>
+<div class="org-src-container">
+<pre class="src src-javascript"><code>_$: note("c e g b")              // notación americana
+_$: note("0 2 4 6").scale("c:major") // grados de la escala
+_$: note("c3 e3 g3 b3")         // especificando octava
+_$: note("c3 e#3 g#3 b3")       // sostenidos y bemoles
+_$: note("48 52 55 59")          // notas del piano como números
+_$: note("48.5 52.3 55.1 59.9") // microtonalidad</code></pre>
+</div>
+</div>
+
+<!-- Notas + mini-notation -->
+<div class="outline-3">
+<h3>Notas y mini-notation</h3>
+<div class="org-src-container">
+<pre class="src src-javascript"><code>_$: note("c e g b/2")         // ralentizar con /
+_$: note("[c e g b]/2")       // ralentizar el arpegio a la mitad
+_$: note("c e <d g> b")       // <> alterna un elemento por ciclo
+_$: note("<c e g b>")         // una nota por ciclo
+_$: note("c e@2 g")           // @ alarga duración
+_$: note("c e!2 g")           // ! replica la nota
+_$: note("c e g b*2")         // * multiplica velocidad
+_$: note("c e@2 [[g b] <d f*2>]") // mezclamos conceptos</code></pre>
+</div>
+</div>
+
+<!-- Acordes -->
+<div class="outline-3">
+<h3>Acordes</h3>
+<div class="org-src-container">
+<pre class="src src-javascript"><code>_$: note("c, e, g, b")           // , para sonar varios al mismo tiempo
+_$: note("<[c, e, g, b] [g, b, d, f]>") // un acorde por ciclo
+_$: note("c e, g b")             // dos por ciclo al mismo tiempo
+_$: chord("<C G Am F>").voicing().room(.5)</code></pre>
+</div>
+</div>
+
+<!-- Efectos -->
+<div class="outline-3">
+<h3>Efectos</h3>
+<div class="outline-text-3">
+<p>Para usar efectos, se ponen luego del bloque con <code>.función()</code>.</p>
+<table>
+  <thead><tr><th>Función</th><th>Qué hace</th></tr></thead>
+  <tbody>
+    <tr><td><code>lpf()</code></td><td>Low pass filter (oscurece)</td></tr>
+    <tr><td><code>hpf()</code></td><td>High pass filter (adelgaza)</td></tr>
+    <tr><td><code>vowel()</code></td><td>Filtro formante de vocal</td></tr>
+    <tr><td><code>gain()</code></td><td>Volumen / dinámica</td></tr>
+    <tr><td><code>delay()</code></td><td>Eco</td></tr>
+    <tr><td><code>room()</code></td><td>Reverberación</td></tr>
+    <tr><td><code>pan()</code></td><td>Paneo estéreo</td></tr>
+    <tr><td><code>speed()</code></td><td>Velocidad / tono del sample</td></tr>
+    <tr><td><code>fast()</code> / <code>slow()</code></td><td>Tempo del patrón</td></tr>
+    <tr><td><code>hush()</code></td><td>Silencia el patrón</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="org-src-container">
+<pre class="src src-javascript"><code>_$: note("c e g b d").room(2)
+_$: note("c e g b d").room(".2 1 3 5") // parámetros que cambian por ciclo
+_$: note("c e g b d").delay(.5)
+_$: sound("bd*4").room(.2).delay(sine)
+_$: sound("bd*4").room(.2).lpf(sine.range(100, 2000))</code></pre>
+</div>
+</div>
+
+<!-- Desafío -->
+<div class="desafio">
+<p><strong>꩜ Desafío: Creación final</strong></p>
+<p>Hacé una creación que tenga batería, melodía, bajo y acordes donde se apliquen efectos y mini-notation.</p>
+<ol>
+  <li>Seteá los ciclos por minuto con <code>setcpm()</code></li>
+  <li>Usá <code>$:</code> para cada capa de sonido</li>
+  <li>Aplicá al menos dos efectos distintos</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-javascript"><code>setcpm(120/4)
+
+// --- BATERÍA ---
+$: sound("bd*4, [~ sd]*2, hh*8").bank("RolandTR909")
+
+// --- MELODÍA ---
+$: note("<c e g b>").sound("piano")
+
+// --- BAJO ---
+$: note("c2*4").sound("sawtooth").lpf(800)
+
+// --- ACORDES ---
+$: chord("<C G Am F>").voicing().room(.4).gain(.6)</code></pre>
+</div>
+</div>
+
+</div><!-- outline-text-2 -->
+</div><!-- outline-2 -->
+
+<!-- ══ 2.5 REPASO ══════════════════════════════════════════════════════ -->
+<div class="outline-2">
+<h2>Repaso — Clase 2</h2>
+<div class="outline-text-2">
+<table>
+  <thead><tr><th>Función</th><th>¿Qué hace?</th><th>Ejemplo</th></tr></thead>
+  <tbody>
+    <tr><td><code>note()</code></td><td>Nota en letras o números</td><td><code>note("c e g b")</code></td></tr>
+    <tr><td><code>scale()</code></td><td>Interpreta n() como grado de escala</td><td><code>n("0 2 4").scale("c:major")</code></td></tr>
+    <tr><td><code>chord()</code></td><td>Acorde por nombre</td><td><code>chord("&lt;C G Am F&gt;")</code></td></tr>
+    <tr><td><code>&lt;&gt;</code></td><td>Un elemento por ciclo</td><td><code>note("&lt;c e g&gt;")</code></td></tr>
+    <tr><td><code>@</code></td><td>Alargar duración</td><td><code>note("c e@2 g")</code></td></tr>
+    <tr><td><code>!</code></td><td>Replicar</td><td><code>note("c!2 e g")</code></td></tr>
+    <tr><td><code>,</code></td><td>Sonar al mismo tiempo</td><td><code>note("c,e,g")</code></td></tr>
+    <tr><td><code>room()</code></td><td>Reverberación</td><td><code>note("c").room(0.5)</code></td></tr>
+    <tr><td><code>delay()</code></td><td>Eco / delay</td><td><code>s("bd").delay(0.5)</code></td></tr>
+    <tr><td><code>lpf()</code></td><td>Filtro paso bajo</td><td><code>s("sawtooth").lpf(800)</code></td></tr>
+    <tr><td><code>hpf()</code></td><td>Filtro paso alto</td><td><code>s("sawtooth").hpf(200)</code></td></tr>
+    <tr><td><code>pan()</code></td><td>Paneo estéreo</td><td><code>s("bd").pan(0.8)</code></td></tr>
+    <tr><td><code>gain()</code></td><td>Volumen</td><td><code>s("hh").gain(0.5)</code></td></tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<!-- ══ 2.6 RETROALIMENTACIÓN ══════════════════════════════════════════ -->
+<div class="outline-2">
+<h2>Retroalimentación</h2>
+<div class="outline-text-2">
+<ul>
+  <li>¿Qué fue lo que más les costó?</li>
+  <li>¿Qué otras cosas les gustaría aprender a hacer en Strudel?</li>
+</ul>
+</div>
+</div>
+
+<!-- ══ 2.7 RECOMENDACIONES ════════════════════════════════════════════ -->
+<div class="outline-2">
+<h2>Recomendaciones</h2>
+<div class="outline-text-2">
+<ul>
+  <li>Si quedan interesados por más, pueden revisar en YouTube los canales de Switch Angel, DJ_Dave, Groovin in G y matt mull.</li>
+  <li>Revisar esta <a href="https://www.youtube.com/playlist?list=PLEW6tgjJl5yY" target="_blank">playlist de ejemplos y tutoriales</a> con live coding, eventos en vivo y más.</li>
+</ul>
+</div>
+</div>
+
+</div><!-- #content -->
+
+<div class="class-nav-footer">
+  <a href="clase-1.html" class="nav-btn prev">
+    <span class="nav-label">Anterior</span>
+    <span class="nav-title">Clase 1</span>
+  </a>
+  <a href="clase-2-5.html" class="nav-btn next">
+    <span class="nav-label">Siguiente</span>
+    <span class="nav-title">Clase 2.5</span>
+  </a>
+</div>
+<a id="back-to-top" href="#" title="Volver al inicio" aria-label="Volver al inicio">↑</a>
+<script>
+(function(){
+  var b=document.getElementById('back-to-top');
+  window.addEventListener('scroll',function(){b.classList.toggle('visible',scrollY>400);});
+  b.addEventListener('click',function(e){e.preventDefault();scrollTo({top:0,behavior:'smooth'});});
+})();
+</script>
+<script src="lightbox.js"></script>
+<script src="search.js"></script>
+</body>
+</html>

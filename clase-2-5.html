@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>꩜ Clase 2.5: Efectos de Audio y Modulación — Taller de Strudel</title>
+<meta name="author" content="Diego Aliaga"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>꩜</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="strudel-taller.css">
+<style>
+#clase-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  padding: .5rem 2rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+#clase-nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: .9rem;
+  font-weight: 500;
+  padding: .25rem .5rem;
+  border-radius: 4px;
+  transition: color .15s, background .15s;
+}
+#clase-nav a:hover { color: var(--text); background: var(--border); }
+#clase-nav a.nav-active { color: var(--accent); font-weight: 700; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://unpkg.com/@strudel/embed@latest"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+hljs.highlightAll();
+// ── REPLs de Strudel: un solo patrón sonando, y pocos contexts vivos ──────
+//
+// Por qué se bugea el audio: cada <strudel-repl> es un iframe con su propio
+// AudioContext. Esta página tiene 56 bloques de código, o sea 56 contexts si
+// se montan todos. El navegador corta alrededor de 6: los últimos no arrancan
+// o quedan a otra sample rate, y el audio sale crackleando.
+//
+// Hay dos límites entonces:
+//
+// 1) VENTANA DE MONTAJE. Un REPL se monta al acercarse a la pantalla y se
+//    desmonta al alejarse (liberando el AudioContext). Así el número de
+//    contexts vivos queda acotado por lo que se ve, no por el largo de la
+//    página. El código no se pierde: Strudel nos lo manda por postMessage en
+//    cada evaluación y lo guardamos para el remontaje.
+//
+// 2) UNO SOLO SONANDO. No existe API para mandarle "parate" a otro iframe,
+//    pero Strudel no arranca sin un gesto del usuario: recargar el iframe lo
+//    deja mudo. Al evaluar uno, recargamos los demás montados.
+const REPL_MARGIN = '800px 0px'; // montar antes de que entre en pantalla
+const REPL_MAX_MOUNTED = 6; // tope duro, por si el margen no alcanza
+const holders = new Set();
+const reloading = new WeakSet(); // ignora los postMessage de recarga
+let activeHolder = null;
+
+function mountRepl(holder) {
+  if (holder.dataset.mounted) return;
+  holder.dataset.mounted = '1';
+  const editor = document.createElement('strudel-repl');
+  editor.innerHTML = '<!--\n' + holder.dataset.code + '\n-->';
+  holder.appendChild(editor);
+}
+
+function unmountRepl(holder) {
+  if (!holder.dataset.mounted || holder === activeHolder) return;
+  holder.dataset.mounted = '';
+  holder.textContent = ''; // suelta el iframe y su AudioContext
+}
+
+function silence(holder) {
+  const frame = holder.querySelector('iframe');
+  if (!frame) return;
+  reloading.add(holder);
+  // hay que limpiar la marca: si no, el REPL queda excluido para siempre
+  // de volver a activarse (que era un bug de la primera versión).
+  frame.addEventListener('load', () => reloading.delete(holder), { once: true });
+  setTimeout(() => reloading.delete(holder), 8000); // red de seguridad
+  frame.src = frame.src; // reinicia el AudioContext -> queda mudo
+}
+
+function holderOf(source) {
+  for (const h of holders) {
+    const frame = h.querySelector('iframe');
+    if (frame && frame.contentWindow === source) return h;
+  }
+  return null;
+}
+
+function setActive(holder) {
+  if (activeHolder === holder) return;
+  activeHolder = holder;
+  holders.forEach(h => h.classList.toggle('is-active', h === holder));
+  holders.forEach(h => {
+    if (h !== holder) silence(h);
+  });
+}
+
+// Cada evaluación manda el código: lo guardamos para poder desmontar y
+// remontar el REPL sin perder lo que el alumno escribió.
+window.addEventListener('message', (e) => {
+  if (e.source == null || typeof e.data !== 'string') return;
+  const holder = holderOf(e.source);
+  if (!holder || reloading.has(holder)) return;
+  if (e.data.trim()) holder.dataset.code = e.data;
+  setActive(holder);
+});
+
+document.querySelectorAll('.src-javascript').forEach(block => {
+  const container = block.closest('.org-src-container');
+  if (!container) return;
+  const holder = document.createElement('div');
+  holder.className = 'repl-holder';
+  holder.dataset.code = block.textContent;
+  container.parentNode.replaceChild(holder, container);
+  holders.add(holder);
+});
+
+if (holders.size) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) mountRepl(e.target);
+      else unmountRepl(e.target); // al salir de la ventana, suelta el context
+    });
+  }, { rootMargin: REPL_MARGIN });
+  holders.forEach(h => io.observe(h));
+
+  // Tope duro: si la ventana deja pasar más de los previstos, se desmontan
+  // los más lejanos al elemento que está sonando.
+  const trim = () => {
+    const live = [...holders].filter(h => h.dataset.mounted && h !== activeHolder);
+    if (live.length <= REPL_MAX_MOUNTED) return;
+    live
+      .sort((a, b) => b.getBoundingClientRect().top - a.getBoundingClientRect().top)
+      .slice(REPL_MAX_MOUNTED)
+      .forEach(unmountRepl);
+  };
+  window.addEventListener('scroll', trim, { passive: true });
+}
+const title = document.querySelector('h1.title');
+if (title) title.innerHTML += ' <img src="images/spiral.svg" alt="Strudel" style="height: 1.5em; vertical-align: middle; float: right; margin-top: -0.15em;">';
+const tocHeading = document.querySelector('#table-of-contents h2');
+const tocContent = document.querySelector('#text-table-of-contents');
+if (tocHeading && tocContent) {
+tocHeading.style.cursor = 'pointer';
+tocHeading.innerHTML = '▶ ' + tocHeading.innerHTML;
+tocContent.style.display = 'none';
+tocHeading.addEventListener('click', () => {
+const isHidden = tocContent.style.display === 'none';
+tocContent.style.display = isHidden ? 'block' : 'none';
+tocHeading.innerHTML = tocHeading.innerHTML.replace(isHidden ? '▶' : '▼', isHidden ? '▼' : '▶');
+});
+}
+
+// ── Drawer lateral de navegación estilo Strudel ──────────────────────
+function initNavDrawer() {
+  const toc = document.querySelector('#text-table-of-contents');
+  if (!toc) return;
+
+  // 1. Botón pestaña fijo en el lateral izquierdo con icono estilo GNOME
+  const toggleBtn = document.createElement('button');
+  toggleBtn.id = 'drawer-toggle';
+  toggleBtn.type = 'button';
+  toggleBtn.setAttribute('aria-label', 'Abrir índice (Alt+I)');
+  toggleBtn.title = 'Índice (Alt+I)';
+  toggleBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" role="img" aria-hidden="true"><path d="m 6 13 v -10 h -3 c -0.550781 0 -1 0.449219 -1 1 v 8 c 0 0.550781 0.449219 1 1 1 z m 0 0" fill-opacity="0.35"/><path d="m 3 1 c -1.644531 0 -3 1.355469 -3 3 v 8 c 0 1.644531 1.355469 3 3 3 h 10 c 1.644531 0 3 -1.355469 3 -3 v -8 c 0 -1.644531 -1.355469 -3 -3 -3 z m 0 2 h 3 v 10 h -3 c -0.570312 0 -1 -0.429688 -1 -1 v -8 c 0 -0.570312 0.429688 -1 1 -1 z m 4 0 h 6 c 0.570312 0 1 0.429688 1 1 v 8 c 0 0.570312 -0.429688 1 -1 1 h -6 z m 0 0"/></svg>';
+  document.body.appendChild(toggleBtn);
+
+  // 2. Backdrop difuminado
+  const backdrop = document.createElement('div');
+  backdrop.id = 'drawer-backdrop';
+  document.body.appendChild(backdrop);
+
+  // 3. Contenedor Drawer
+  const drawer = document.createElement('aside');
+  drawer.id = 'sidebar-drawer';
+  drawer.setAttribute('aria-label', 'ÍNDICE del taller');
+
+  // Cabecera
+  const header = document.createElement('div');
+  header.className = 'drawer-header';
+  header.innerHTML = `
+    <h3 class="drawer-title">ÍNDICE</h3>
+    <button class="drawer-close" type="button" aria-label="Cerrar ÍNDICE (Esc)">✕</button>
+  `;
+  drawer.appendChild(header);
+
+  // Herramientas: buscador y píldoras
+  const tools = document.createElement('div');
+  tools.className = 'drawer-tools';
+  tools.innerHTML = `
+    <div class="drawer-search-wrapper">
+      <svg class="drawer-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="search" class="drawer-search" placeholder="Filtrar (ej. lpf, bpm, cut)..." aria-label="Filtrar índice">
+    </div>
+    <div class="drawer-class-pills">
+      <span>Clase:</span>
+    </div>
+  `;
+  drawer.appendChild(tools);
+
+  // Contenido: árbol clonado
+  const content = document.createElement('div');
+  content.className = 'drawer-content';
+  const originalUl = toc.querySelector('ul');
+  if (!originalUl) return;
+  const clonedUl = originalUl.cloneNode(true);
+
+  // Transformar los li de primer nivel (Clases)
+  const pillsContainer = tools.querySelector('.drawer-class-pills');
+  const classItems = clonedUl.querySelectorAll(':scope > li');
+  classItems.forEach(li => {
+    li.classList.add('drawer-class-item');
+    const directLink = li.querySelector(':scope > a');
+    const subUl = li.querySelector(':scope > ul');
+
+    if (directLink) {
+      // Píldora de salto directo
+      const pill = document.createElement('a');
+      pill.className = 'drawer-pill';
+      pill.href = directLink.getAttribute('href');
+      const match = directLink.textContent.match(/Clase\s+([\d.]+)/i) || directLink.textContent.match(/^(\d+)/);
+      pill.textContent = match ? match[1] : directLink.textContent.trim().slice(0, 4);
+      pill.title = directLink.textContent.trim();
+      pillsContainer.appendChild(pill);
+
+      // Cabecera colapsable para la clase
+      if (subUl) {
+        const headerWrap = document.createElement('div');
+        headerWrap.className = 'drawer-class-header';
+
+        const collapseBtn = document.createElement('button');
+        collapseBtn.type = 'button';
+        collapseBtn.className = 'drawer-collapse-btn';
+        collapseBtn.innerHTML = '▼';
+        collapseBtn.setAttribute('aria-label', 'Colapsar subsecciones');
+        collapseBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isCollapsed = li.classList.toggle('is-collapsed');
+          collapseBtn.innerHTML = isCollapsed ? '▶' : '▼';
+        });
+
+        li.insertBefore(headerWrap, directLink);
+        headerWrap.appendChild(collapseBtn);
+        headerWrap.appendChild(directLink);
+      }
+    }
+  });
+
+  content.appendChild(clonedUl);
+  drawer.appendChild(content);
+
+  // Pie
+  const footer = document.createElement('div');
+  footer.className = 'drawer-footer';
+  footer.innerHTML = `
+    <span>Atajo: Alt+I · Esc</span>
+    <a href="#" class="drawer-top-link">Inicio ↑</a>
+  `;
+  drawer.appendChild(footer);
+
+  document.body.appendChild(drawer);
+
+  // Acciones de apertura y cierre
+  function openDrawer() {
+    drawer.classList.add('is-open');
+    backdrop.classList.add('is-visible');
+    const searchInput = drawer.querySelector('.drawer-search');
+    if (searchInput) setTimeout(() => searchInput.focus(), 150);
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('is-open');
+    backdrop.classList.remove('is-visible');
+  }
+
+  toggleBtn.addEventListener('click', openDrawer);
+  backdrop.addEventListener('click', closeDrawer);
+  header.querySelector('.drawer-close').addEventListener('click', closeDrawer);
+
+  // Atajos de teclado
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+      closeDrawer();
+    } else if (e.altKey && (e.key === 'i' || e.key === 'I')) {
+      e.preventDefault();
+      drawer.classList.contains('is-open') ? closeDrawer() : openDrawer();
+    }
+  });
+
+  // Clic en enlaces de navegación
+  drawer.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const href = a.getAttribute('href');
+      if (href === '#') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (href && href.startsWith('#')) {
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+          history.pushState(null, null, href);
+        }
+      }
+      if (window.innerWidth < 1000) {
+        closeDrawer();
+      }
+    });
+  });
+
+  // Filtro / buscador instantáneo
+  const searchInput = tools.querySelector('.drawer-search');
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    const allLis = content.querySelectorAll('li');
+    if (!q) {
+      allLis.forEach(li => li.style.display = '');
+      return;
+    }
+    allLis.forEach(li => li.style.display = 'none');
+    allLis.forEach(li => {
+      const text = li.textContent.toLowerCase();
+      if (text.includes(q)) {
+        let curr = li;
+        while (curr && curr !== content) {
+          if (curr.tagName === 'LI') {
+            curr.style.display = '';
+            curr.classList.remove('is-collapsed');
+            const btn = curr.querySelector(':scope > .drawer-class-header .drawer-collapse-btn');
+            if (btn) btn.innerHTML = '▼';
+          }
+          curr = curr.parentElement;
+        }
+      }
+    });
+  });
+
+  // ScrollSpy para marcar la sección activa
+  const trackedLinks = Array.from(content.querySelectorAll('a[href^="#"]')).filter(a => a.getAttribute('href') !== '#');
+  const sections = trackedLinks
+    .map(a => {
+      try {
+        return { link: a, el: document.querySelector(a.getAttribute('href')) };
+      } catch (err) {
+        return null;
+      }
+    })
+    .filter(item => item && item.el);
+
+  if ('IntersectionObserver' in window && sections.length > 0) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          trackedLinks.forEach(link => {
+            const isMatch = link.getAttribute('href') === '#' + id;
+            link.classList.toggle('active-link', isMatch);
+            if (isMatch) {
+              const classItem = link.closest('.drawer-class-item');
+              if (classItem && classItem.classList.contains('is-collapsed')) {
+                classItem.classList.remove('is-collapsed');
+                const btn = classItem.querySelector('.drawer-collapse-btn');
+                if (btn) btn.innerHTML = '▼';
+              }
+            }
+          });
+        }
+      });
+    }, {
+      rootMargin: '-15% 0px -70% 0px'
+    });
+    sections.forEach(s => observer.observe(s.el));
+  }
+}
+initNavDrawer();
+});
+</script>
+</head>
+<body>
+<nav id="clase-nav"><a href="index.html">꩜ Inicio</a><a href="clase-1.html">Clase 1</a><a href="clase-2.html">Clase 2</a><a href="clase-2-5.html"  class="nav-active">Clase 2.5</a><a href="clase-3.html">Clase 3</a><a href="#" id="search-trigger" style="margin-left: auto; text-decoration: none;" title="Buscar en el taller"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a></nav>
+<div id="content">
+<h1 class="title">Clase 2.5: Efectos de Audio y Modulación</h1>
+<div id="outline-container-org3c61b3b" class="outline-2">
+<h2 id="org3c61b3b">Clase 2.5: Efectos de audio y modulación</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org4151efe" class="outline-3">
+<h3 id="org4151efe">Calentamiento: Análisis de código (10 min)</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+<b>¿Qué creen que hace este código? Léanlo línea por línea antes de ejecutarlo.</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>setcpm(120/4)
+
+$: s("hh*8").gain("[.25 1]*4")
+$: s("bd*4, [~ sd:1]*2")
+$: note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
+  .sound("sawtooth").lpf("200 1000 200 1000")
+$: note("&lt;[c3,g3,e4] [bb2,f3,d4] [a2,f3,c4] [bb2,g3,eb4]&gt;")
+  .sound("sawtooth").vowel("&lt;a e i o&gt;")
+</code></pre>
+</div>
+
+<p>
+Preguntas:
+</p>
+<ol class="org-ol">
+<li>¿Por qué el <code>gain</code> tiene <code>[.25 1]*4</code>? ¿Qué efecto rítmico crea?</li>
+<li>¿Qué hace <code>lpf("200 1000 200 1000")</code> distinto a <code>lpf(800)</code>?</li>
+<li>¿Qué son las vocales en <code>vowel</code>? ¿Conocen ese efecto en música electrónica?</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org55cec21" class="outline-3">
+<h3 id="org55cec21">Filtros</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Los filtros permiten recortar frecuencias del sonido, como si abriéramos o cerráramos una ventana al ruido. Son herramientas fundamentales en la música electrónica.
+</p>
+</div>
+<div id="outline-container-orge85284d" class="outline-4">
+<h4 id="orge85284d">Filtro paso bajo: <code>lpf</code></h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+<code>lpf</code> = <i>low pass filter</i>. Deja pasar las frecuencias bajas y corta las altas. Cuanto más bajo el valor, más muffleado (apagado) suena. Pensalo como estar afuera del boliche con la puerta cerrada 🚪.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
+  .sound("sawtooth").lpf(800)
+</code></pre>
+</div>
+
+<div class="desafio" id="orgbee2ed6">
+<p>
+<b>Desafío A: Abrir la puerta</b>
+</p>
+
+<p>
+Cambia el valor de <code>lpf</code>:
+</p>
+<ul class="org-ul">
+<li>A 200: ¿cómo suena?</li>
+<li>A 5000: ¿cómo suena?</li>
+<li>En patrón: <code>"200 1000 200 1000"</code></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
+  .sound("sawtooth").lpf(800)
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+<div id="outline-container-org36cefbd" class="outline-4">
+<h4 id="org36cefbd">Filtro paso alto: <code>hpf</code></h4>
+<div class="outline-text-4" id="text-3-2-2">
+<p>
+<code>hpf</code> = <i>high pass filter</i>. Lo opuesto: deja pasar las frecuencias altas y corta las bajas. Útil para crear efectos de radio o teléfono, o para que un instrumento no pise el rango del bajo.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>$: note("c e g b").sound("sawtooth")
+  .hpf("&lt;200 1000 3000&gt;") // escuchá cómo se va vaciando el sonido
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org47b72ff" class="outline-3">
+<h3 id="org47b72ff">Timbre y dinámica</h3>
+<div class="outline-text-3" id="text-3-3">
+</div>
+<div id="outline-container-org3450700" class="outline-4">
+<h4 id="org3450700">Filtro formante: <code>vowel</code></h4>
+<div class="outline-text-4" id="text-3-3-1">
+<p>
+<code>vowel</code> aplica un filtro formante que hace que el sonido imite la resonancia de las vocales. Muy usado en música electrónica y house.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>note("&lt;[c3,g3,e4] [bb2,f3,d4] [a2,f3,c4] [bb2,g3,eb4]&gt;")
+  .sound("sawtooth").vowel("&lt;a e i o&gt;")
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgfa3e67c" class="outline-4">
+<h4 id="orgfa3e67c">Volumen: <code>gain</code></h4>
+<div class="outline-text-4" id="text-3-3-2">
+<p>
+<code>gain</code> controla el volumen. En música, la dinámica (los cambios de volumen) es fundamental para crear interés rítmico.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>$: sound("hh*16").gain("[.25 1]*4")
+$: sound("bd*4, [~ sd:1]*2")
+</code></pre>
+</div>
+
+<div class="desafio" id="org4b5597d">
+<p>
+<b>Desafío B: Dinámica</b>
+</p>
+
+<ol class="org-ol">
+<li>Sacá el <code>.gain(...)</code> del hihat. ¿Cómo suena?</li>
+<li>Volvelo a poner (Ctrl+Z)</li>
+<li>Probá con <code>"[.1 .5 1]*4"</code> o inventá tu propio patrón de volumen</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>$: sound("hh*16").gain("[.25 1]*4")
+$: sound("bd*4, [~ sd:1]*2")
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orge890393" class="outline-3">
+<h3 id="orge890393">Efectos espaciales</h3>
+<div class="outline-text-3" id="text-3-4">
+</div>
+<div id="outline-container-orgf67a49c" class="outline-4">
+<h4 id="orgf67a49c">Reverberación: <code>room</code></h4>
+<div class="outline-text-4" id="text-3-4-1">
+<p>
+<code>room</code> simula el espacio acústico donde suena el instrumento. Valores altos = sala grande (catedral). Valores bajos = sala pequeña o sin reverb.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>n("&lt;4 [3@3 4] [&lt;2 0&gt; ~@16] ~&gt;")
+  .scale("D4:minor").sound("gm_accordion:2")
+  .room(2)
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org68f0c00" class="outline-4">
+<h4 id="org68f0c00">Eco: <code>delay</code></h4>
+<div class="outline-text-4" id="text-3-4-2">
+<p>
+<code>delay</code> agrega ecos del sonido. El primer número es la cantidad de delay (0 a 1). Se puede especificar más:
+</p>
+<ul class="org-ul">
+<li><code>.delay(".8:.125")</code> → el segundo número es el tiempo entre ecos</li>
+<li><code>.delay(".8:.06:.8")</code> → el tercero es cuánto se desvanece cada eco</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>$: note("[~ [&lt;[d3,a3,f4]!2 [d3,bb3,g4]!2&gt; ~]]*2")
+  .sound("gm_electric_guitar_muted").delay(.5)
+$: sound("bd rim").bank("RolandTR707").delay(".5")
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org211eb01" class="outline-4">
+<h4 id="org211eb01">Paneo: <code>pan</code></h4>
+<div class="outline-text-4" id="text-3-4-3">
+<p>
+<code>pan</code> controla la posición en el campo estéreo. 0 = completamente izquierda, 1 = completamente derecha, 0.5 = centro.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound("numbers:1 numbers:2 numbers:3 numbers:4")
+  .pan("0 0.3 .6 1")
+</code></pre>
+</div>
+
+<div class="desafio" id="org1d62375">
+<p>
+<b>Desafío C: Pequeña canción con efectos</b>
+</p>
+
+<p>
+Combina <code>lpf</code>, <code>gain</code>, <code>vowel</code>, <code>room</code> y <code>delay</code> en un patrón. Prueba quitar y agregar cada efecto para escuchar la diferencia.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>setcpm(120/4)
+
+$: sound("hh*8").gain("[.25 1]*4")
+$: sound("bd*4,[~ sd:1]*2")
+$: note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
+  .sound("sawtooth")
+  // .lpf(?)
+  // .vowel(?)
+$: note("&lt;[c3,g3,e4] [bb2,f3,d4] [a2,f3,c4] [bb2,g3,eb4]&gt;")
+  .sound("sawtooth")
+  // .room(?)
+  // .delay(?)
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org32f9206" class="outline-3">
+<h3 id="org32f9206">Envolvente: ADSR</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+La envolvente controla cómo evoluciona el volumen de una nota en el tiempo. ADSR = Attack / Decay / Sustain / Release.
+</p>
+
+<dl class="org-dl">
+<dt><b>Attack</b></dt><dd>cuánto tarda en llegar al volumen máximo</dd>
+<dt><b>Decay</b></dt><dd>cuánto tarda en bajar al nivel de sustain</dd>
+<dt><b>Sustain</b></dt><dd>nivel de volumen mientras se mantiene la nota</dd>
+<dt><b>Release</b></dt><dd>cuánto tarda en silenciarse cuando termina la nota</dd>
+</dl>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>note("c3 bb2 f3 eb3")
+  .sound("sawtooth").lpf(600)
+  .attack(.1)
+  .decay(.1)
+  .sustain(.25)
+  .release(.2)
+</code></pre>
+</div>
+
+<div class="desafio" id="orgab5a684">
+<p>
+<b>Desafío D: Explorar ADSR</b>
+</p>
+
+<p>
+Modificá los valores uno por uno y escuchá el resultado:
+</p>
+<ul class="org-ul">
+<li><code>attack</code>: prueba <code>.5</code> vs <code>0</code></li>
+<li><code>decay</code>: prueba <code>.5</code> vs <code>0</code></li>
+<li><code>sustain</code>: prueba <code>1</code> vs <code>.25</code> vs <code>0</code></li>
+<li><code>release</code>: prueba <code>0</code> vs <code>.5</code> vs <code>1</code></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>note("c3 bb2 f3 eb3")
+  .sound("sawtooth").lpf(600)
+  .attack(.1)
+  .decay(.1)
+  .sustain(.25)
+  .release(.2)
+</code></pre>
+</div>
+
+<p>
+Notación abreviada: <code>.adsr("attack:decay:sustain:release")</code>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>note("c3 bb2 f3 eb3")
+  .sound("sawtooth").lpf(600)
+  .adsr(".1:.1:.5:.2")
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+<div id="outline-container-org283ba5e" class="outline-3">
+<h3 id="org283ba5e">Tempo del patrón: <code>fast</code> y <code>slow</code></h3>
+<div class="outline-text-3" id="text-3-6">
+<p>
+<code>fast</code> y <code>slow</code> cambian la velocidad de un patrón. Son equivalentes a <code>*</code> y <code>/</code> en mini-notation, pero aplicados a todo el patrón.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound("bd*4, ~ rim ~ cp").slow(2)   // el doble de lento
+</code></pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// También acepta patrones:
+sound("[bd*4,~ rim ~ cp]*&lt;1 [2 4]&gt;")
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org0d09096" class="outline-3">
+<h3 id="org0d09096">Modulación con ondas (Signals)</h3>
+<div class="outline-text-3" id="text-3-7">
+<p>
+En lugar de poner un valor fijo, podemos usar una <i>onda</i> como valor. Esto hace que el parámetro cambie continuamente en el tiempo, de forma automática.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound("hh*16").gain(sine)   // el volumen sube y baja como una ola
+</code></pre>
+</div>
+
+<p>
+Las ondas disponibles son:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Onda</th>
+<th scope="col" class="org-left">Forma</th>
+<th scope="col" class="org-left">Sonido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>sine</code></td>
+<td class="org-left">Senoidal suave</td>
+<td class="org-left">Cambio gradual y cíclico</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>saw</code></td>
+<td class="org-left">Diente de sierra</td>
+<td class="org-left">Sube gradual, baja abrupto</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>square</code></td>
+<td class="org-left">Cuadrada</td>
+<td class="org-left">Alterna entre dos valores</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>tri</code></td>
+<td class="org-left">Triangular</td>
+<td class="org-left">Sube y baja linealmente</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>rand</code></td>
+<td class="org-left">Aleatoria</td>
+<td class="org-left">Valores al azar cada ciclo</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>perlin</code></td>
+<td class="org-left">Aleatoria suave</td>
+<td class="org-left">Valores aleatorios pero continuos</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="outline-container-org07cc85a" class="outline-4">
+<h4 id="org07cc85a">Rango: <code>range</code></h4>
+<div class="outline-text-4" id="text-3-7-1">
+<p>
+Por defecto las ondas oscilan entre 0 y 1. Con <code>range</code> podemos cambiar eso:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>sound("hh*16").lpf(saw.range(500, 2000))
+</code></pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Con slow para que el ciclo dure más:
+note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
+  .sound("sawtooth")
+  .lpf(sine.range(100, 2000).slow(4))
+</code></pre>
+</div>
+
+<div class="desafio" id="org648aaa5">
+<p>
+<b>Desafío E: Automatizar con ondas</b>
+</p>
+
+<p>
+Agrégale una onda a alguno de los efectos de abajo. Prueba <code>sine</code>, <code>saw</code>, <code>rand</code> y <code>perlin</code>. Usa <code>.range()</code> para que el valor tenga sentido musical.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>setcpm(120/4)
+
+$: sound("hh*8").gain(sine)        // ← onda en gain
+$: note("c e g b").sound("sawtooth")
+  .lpf(sine.range(200, 3000))      // ← onda en lpf
+  .room(0.3)
+</code></pre>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org25be177" class="outline-3">
+<h3 id="org25be177">Repaso — Clase 2.5</h3>
+<div class="outline-text-3" id="text-3-8">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Función</th>
+<th scope="col" class="org-left">¿Qué hace?</th>
+<th scope="col" class="org-left">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>lpf()</code></td>
+<td class="org-left">Filtro paso bajo (oscurece)</td>
+<td class="org-left"><code>.lpf(800)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>hpf()</code></td>
+<td class="org-left">Filtro paso alto (adelgaza)</td>
+<td class="org-left"><code>.hpf(500)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>vowel()</code></td>
+<td class="org-left">Filtro formante de vocal</td>
+<td class="org-left"><code>.vowel("&lt;a e i o&gt;")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>gain()</code></td>
+<td class="org-left">Volumen / dinámica</td>
+<td class="org-left"><code>.gain("[.25 1]*4")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>room()</code></td>
+<td class="org-left">Reverberación</td>
+<td class="org-left"><code>.room(2)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>delay()</code></td>
+<td class="org-left">Eco</td>
+<td class="org-left"><code>.delay(".5:.125")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>pan()</code></td>
+<td class="org-left">Paneo estéreo</td>
+<td class="org-left"><code>.pan("0 1")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>attack()</code></td>
+<td class="org-left">Tiempo de ataque (ADSR)</td>
+<td class="org-left"><code>.attack(.1)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>decay()</code></td>
+<td class="org-left">Decaimiento (ADSR)</td>
+<td class="org-left"><code>.decay(.1)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>sustain()</code></td>
+<td class="org-left">Sostenido (ADSR)</td>
+<td class="org-left"><code>.sustain(.5)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>release()</code></td>
+<td class="org-left">Liberación (ADSR)</td>
+<td class="org-left"><code>.release(.2)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>adsr()</code></td>
+<td class="org-left">ADSR abreviado</td>
+<td class="org-left"><code>.adsr(".1:.1:.5:.2")</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>fast()</code></td>
+<td class="org-left">Acelerar patrón</td>
+<td class="org-left"><code>.fast(2)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>slow()</code></td>
+<td class="org-left">Ralentizar patrón</td>
+<td class="org-left"><code>.slow(2)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>sine</code> / <code>saw</code> / <code>rand</code></td>
+<td class="org-left">Modulación con onda</td>
+<td class="org-left"><code>.gain(sine)</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.range(a,b)</code></td>
+<td class="org-left">Rango de una onda</td>
+<td class="org-left"><code>sine.range(200,2000)</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-orge80d6e1" class="outline-3">
+<h3 id="orge80d6e1">Retroalimentación</h3>
+<div class="outline-text-3" id="text-3-9">
+<ul class="org-ul">
+<li>¿Qué efecto les resultó más interesante?</li>
+<li>¿Cómo podrían usar <code>gain</code> con ondas para hacer algo musical?</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="class-nav-footer">
+  <a href="clase-2.html" class="nav-btn prev">
+    <span class="nav-label">Anterior</span>
+    <span class="nav-title">Clase 2</span>
+  </a>
+  <a href="clase-3.html" class="nav-btn next">
+    <span class="nav-label">Siguiente</span>
+    <span class="nav-title">Clase 3</span>
+  </a>
+</div>
+<a id="back-to-top" href="#" title="Volver al inicio" aria-label="Volver al inicio">↑</a>
+<script>
+(function(){
+  var b=document.getElementById('back-to-top');
+  window.addEventListener('scroll',function(){b.classList.toggle('visible',scrollY>400);});
+  b.addEventListener('click',function(e){e.preventDefault();scrollTo({top:0,behavior:'smooth'});});
+})();
+</script>
+<script src="lightbox.js"></script>
+<script src="search.js"></script>
+</body>
+</html>
