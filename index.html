@@ -826,7 +826,7 @@ Cambia el banco del cuadro anterior por otro de los que está en <code>drum-mach
 
 <div class="desafio" id="org4d1393a">
 <p>
-<b>Desafío 1: Crea tu propio patrón</b>
+<b>Desafío 1: Creá tu propio patrón</b>
 </p>
 
 <p>
@@ -1508,7 +1508,7 @@ $: sound("bd*4, [~ sd:1]*2")
 <ol class="org-ol">
 <li>Sacá el <code>.gain(...)</code> del hihat. ¿Cómo suena?</li>
 <li>Volvelo a poner (Ctrl+Z)</li>
-<li>Prueba con <code>"[.1 .5 1]*4"</code> o inventa tu propio patrón de volumen</li>
+<li>Probá con <code>"[.1 .5 1]*4"</code> o inventá tu propio patrón de volumen</li>
 </ol>
 
 <div class="org-src-container">
@@ -2317,7 +2317,7 @@ $: s("breaks165")
 <h4 id="org57cf736"><span class="section-number-4">4.8.5.</span> Granular avanzado: <code>slice</code> y <code>splice</code></h4>
 <div class="outline-text-4" id="text-4-8-5">
 <p>
-<code>slice</code> divide el sample en N partes y las reproduce según una secuencia de números que tú eliges, dándote control total sobre el orden de los granos. Puedes remezclar un break sin tocar nada.
+<code>slice</code> divide el sample en N partes y las reproduce según una secuencia de números que vos elegís, dándote control total sobre el orden de los granos. Podés remezclar un break sin tocar nada.
 </p>
 
 <div class="org-src-container">
@@ -2444,9 +2444,9 @@ Cuando sampleamos una canción, tenemos varias opciones:
 </p>
 
 <ol class="org-ol">
-<li><b>Sample completo</b>: grabas toda la canción o un fragmento largo, y luego usas <code>begin~/~end</code> en Strudel para moverte por él.</li>
-<li><b>Sample cortado</b>: grabas solo la parte que quieres — un compás, una frase, un golpe de batería — e importás eso directamente.</li>
-<li><b>Loop rítmico (drum break)</b>: grabas exactamente N compases (ej: 2 o 4) y usas <code>loopAt(N)</code> para que Strudel lo sincronice con el tempo.</li>
+<li><b>Sample completo</b>: grabás toda la canción o un fragmento largo, y luego usás <code>begin</code>/<code>end</code> en Strudel para moverte por él.</li>
+<li><b>Sample cortado</b>: grabás solo la parte que querés — un compás, una frase, un golpe de batería — e importás eso directamente.</li>
+<li><b>Loop rítmico (drum break)</b>: grabás exactamente N compases (ej: 2 o 4) y usás <code>loopAt(N)</code> para que Strudel lo sincronice con el tempo.</li>
 </ol>
 </div>
 </div>
@@ -2454,11 +2454,11 @@ Cuando sampleamos una canción, tenemos varias opciones:
 <h4 id="org25f7b41"><span class="section-number-4">4.10.2.</span> ¿Hay que cuantizar?</h4>
 <div class="outline-text-4" id="text-4-10-2">
 <p>
-En Strudel no hay cuantización automática como en un DAW. Pero <code>loopAt</code> y <code>fit</code> compensan: ajustan la velocidad del sample para que encaje con el ciclo. Lo importante es que si quieres usar un loop rítmico:
+En Strudel no hay cuantización automática como en un DAW. Pero <code>loopAt</code> y <code>fit</code> compensan: ajustan la velocidad del sample para que encaje con el ciclo. Lo importante es que si querés usar un loop rítmico:
 </p>
 <ul class="org-ul">
-<li>Graba lo más exacto posible (desde el primer golpe hasta el final del último compás)</li>
-<li>Usa <code>loopAt(n)</code> donde N es el número de ciclos que quieres que dure</li>
+<li>Grabá lo más exacto posible (desde el primer golpe hasta el final del último compás)</li>
+<li>Usá <code>loopAt(n)</code> donde N es el número de ciclos que querés que dure</li>
 </ul>
 
 <p>
@@ -2471,17 +2471,25 @@ Si el sample no es rítmico (voz, textura, efecto), no importa tanto la precisi�
 <div class="outline-text-4" id="text-4-10-3">
 <ol class="org-ol">
 <li>Instalá la extensión y fijala en la barra del navegador</li>
-<li>Abre la canción que quieres samplear (YouTube, SoundCloud, etc.)</li>
+<li>Abrí la canción que querés samplear (YouTube, SoundCloud, etc.)</li>
 <li>Reproducí la canción y activá la grabación cuando empiece el fragmento</li>
-<li>Detén cuando termine el fragmento que quieres</li>
+<li>Detené cuando termine el fragmento que querés</li>
 <li>Descargá el archivo (WAV o MP3)</li>
 <li>Importalo a Strudel desde el menú ≡ → Sounds → Import Sounds</li>
 <li>Usalo con <code>s("nombre_de_tu_sample")</code></li>
 </ol>
 
+<figure style="margin: 1.5rem 0;">
+  <video controls style="width:100%; max-width:720px; border-radius:8px; box-shadow:0 2px 12px rgba(0,0,0,0.3);">
+    <source src="images/tab-sampler-demo.mp4" type="video/mp4">
+    Tu navegador no soporta video HTML5.
+  </video>
+  <figcaption style="font-size:.85em; color:var(--text-muted); margin-top:.4rem;">Demo: cómo samplear con Tab Sampler e importar a Strudel.</figcaption>
+</figure>
+
 <div class="desafio" id="org63f6fcf">
 <p>
-Graba un sample de algo que les guste usando Tab Sampler e importalo a Strudel. Luego aplicale algún efecto de sampler (<code>chop</code>, <code>begin~/~end</code>, <code>speed</code>).
+Grabá un sample de algo que les guste usando Tab Sampler e importalo a Strudel. Luego aplicale algún efecto de sampler (<code>chop</code>, <code>begin</code>/<code>end</code>, <code>speed</code>).
 </p>
 
 </div>
