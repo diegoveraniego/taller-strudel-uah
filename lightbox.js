@@ -10,8 +10,10 @@ document.addEventListener('DOMContentLoaded', function () {
   // Aplicar a todas las imágenes del contenido
   function initImages() {
     document.querySelectorAll('#content img').forEach(function(img) {
-      // Saltar imágenes inline dentro de párrafos o encabezados
-      if (img.closest('p, h1, h2, h3, nav')) return;
+      // Saltar imágenes de la navegación o encabezados
+      if (img.closest('h1, h2, h3, nav')) return;
+      // Saltar iconos decorativos por ruta
+      if (img.src.includes('spiral') || img.src.includes('logo') || img.src.includes('algorave')) return;
       // Evitar doble binding
       if (img.dataset.lightbox) return;
       img.dataset.lightbox = '1';

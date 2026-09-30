@@ -213,11 +213,11 @@ p img, h1 img, h2 img {
 }
 
 /* ── Lightbox ─────────────────────────────────────────────────────── */
-#content img:not(p img):not(h1 img):not(h2 img) {
+#content img:not(h1 img):not(h2 img) {
   cursor: zoom-in;
   transition: opacity .15s;
 }
-#content img:not(p img):not(h1 img):not(h2 img):hover {
+#content img:not(h1 img):not(h2 img):hover {
   opacity: .88;
 }
 
