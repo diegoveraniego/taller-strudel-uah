@@ -390,11 +390,11 @@ initNavDrawer();
 <nav id="clase-nav"><a href="index.html">꩜ Inicio</a><a href="clase-1.html">Clase 1</a><a href="clase-2.html">Clase 2</a><a href="clase-3.html" class="nav-active">Clase 3</a><a href="clase-4.html">Clase 4</a><a href="clase-5.html">Clase 5</a><a href="clase-6.html">Clase 6</a><a href="clase-7.html">Clase 7</a><a href="#" id="search-trigger" style="margin-left: auto; text-decoration: none;" title="Buscar en el taller"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a></nav>
 <div id="content">
 <h1 class="title">Clase 3: Efectos de audio y modulación</h1>
-<div id="outline-container-org3ace7ce" class="outline-2">
+<div id="outline-container-org5552a75" class="outline-2">
 <h2>Clase 3: Efectos de audio y modulación</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org2fa7275" class="outline-3">
+<div id="outline-container-org14918cd" class="outline-3">
 <h3>Calentamiento: Análisis de código (10 min)</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
@@ -423,15 +423,15 @@ Preguntas:
 </ol>
 </div>
 </div>
-<div id="outline-container-org38256a4" class="outline-3">
+<div id="outline-container-org7735e00" class="outline-3">
 <h3>Filtros</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 Los filtros permiten recortar frecuencias del sonido, como si abriéramos o cerráramos una ventana al ruido. Son herramientas fundamentales en la música electrónica.
 </p>
 </div>
-<div id="outline-container-orgfdad359" class="outline-4">
-<h4 id="orgfdad359"><span class="section-number-4">3.2.1.</span> Filtro paso bajo: <code>lpf</code></h4>
+<div id="outline-container-orgc312285" class="outline-4">
+<h4 id="orgc312285"><span class="section-number-4">3.2.1.</span> Filtro paso bajo: <code>lpf</code></h4>
 <div class="outline-text-4" id="text-3-2-1">
 <p>
 <code>lpf</code> = <i>low pass filter</i>. Deja pasar las frecuencias bajas y corta las altas. Cuanto más bajo el valor, más muffleado (apagado) suena. Pensalo como estar afuera del boliche con la puerta cerrada 🚪.
@@ -443,7 +443,7 @@ Los filtros permiten recortar frecuencias del sonido, como si abriéramos o cerr
 </code></pre>
 </div>
 
-<div class="desafio" id="org1b1a496">
+<div class="desafio" id="org6220e7a">
 <p>
 <b>Desafío A: Abrir la puerta</b>
 </p>
@@ -466,8 +466,8 @@ Cambia el valor de <code>lpf</code>:
 </div>
 </div>
 </div>
-<div id="outline-container-org3520917" class="outline-4">
-<h4 id="org3520917"><span class="section-number-4">3.2.2.</span> Filtro paso alto: <code>hpf</code></h4>
+<div id="outline-container-org8a72da8" class="outline-4">
+<h4 id="org8a72da8"><span class="section-number-4">3.2.2.</span> Filtro paso alto: <code>hpf</code></h4>
 <div class="outline-text-4" id="text-3-2-2">
 <p>
 <code>hpf</code> = <i>high pass filter</i>. Lo opuesto: deja pasar las frecuencias altas y corta las bajas. Útil para crear efectos de radio o teléfono, o para que un instrumento no pise el rango del bajo.
@@ -481,12 +481,12 @@ Cambia el valor de <code>lpf</code>:
 </div>
 </div>
 </div>
-<div id="outline-container-orged43405" class="outline-3">
+<div id="outline-container-orgdbfd67f" class="outline-3">
 <h3>Timbre y dinámica</h3>
 <div class="outline-text-3" id="text-3-3">
 </div>
-<div id="outline-container-org35fc311" class="outline-4">
-<h4 id="org35fc311"><span class="section-number-4">3.3.1.</span> Filtro formante: <code>vowel</code></h4>
+<div id="outline-container-org8ff7a18" class="outline-4">
+<h4 id="org8ff7a18"><span class="section-number-4">3.3.1.</span> Filtro formante: <code>vowel</code></h4>
 <div class="outline-text-4" id="text-3-3-1">
 <p>
 <code>vowel</code> aplica un filtro formante que hace que el sonido imite la resonancia de las vocales. Muy usado en música electrónica y house.
@@ -499,8 +499,8 @@ Cambia el valor de <code>lpf</code>:
 </div>
 </div>
 </div>
-<div id="outline-container-orgf70d3fd" class="outline-4">
-<h4 id="orgf70d3fd"><span class="section-number-4">3.3.2.</span> Volumen: <code>gain</code></h4>
+<div id="outline-container-org7ba9367" class="outline-4">
+<h4 id="org7ba9367"><span class="section-number-4">3.3.2.</span> Volumen: <code>gain</code></h4>
 <div class="outline-text-4" id="text-3-3-2">
 <p>
 <code>gain</code> controla el volumen. En música, la dinámica (los cambios de volumen) es fundamental para crear interés rítmico.
@@ -512,7 +512,7 @@ $: sound("bd*4, [~ sd:1]*2")
 </code></pre>
 </div>
 
-<div class="desafio" id="org9a2c086">
+<div class="desafio" id="org88e46b4">
 <p>
 <b>Desafío B: Dinámica</b>
 </p>
@@ -533,12 +533,12 @@ $: sound("bd*4, [~ sd:1]*2")
 </div>
 </div>
 </div>
-<div id="outline-container-orgaa1b5f3" class="outline-3">
+<div id="outline-container-org8546a4d" class="outline-3">
 <h3>Efectos espaciales</h3>
 <div class="outline-text-3" id="text-3-4">
 </div>
-<div id="outline-container-orgc1a73ca" class="outline-4">
-<h4 id="orgc1a73ca"><span class="section-number-4">3.4.1.</span> Reverberación: <code>room</code></h4>
+<div id="outline-container-org159230d" class="outline-4">
+<h4 id="org159230d"><span class="section-number-4">3.4.1.</span> Reverberación: <code>room</code></h4>
 <div class="outline-text-4" id="text-3-4-1">
 <p>
 <code>room</code> simula el espacio acústico donde suena el instrumento. Valores altos = sala grande (catedral). Valores bajos = sala pequeña o sin reverb.
@@ -552,8 +552,8 @@ $: sound("bd*4, [~ sd:1]*2")
 </div>
 </div>
 </div>
-<div id="outline-container-orgcefa27f" class="outline-4">
-<h4 id="orgcefa27f"><span class="section-number-4">3.4.2.</span> Eco: <code>delay</code></h4>
+<div id="outline-container-org05fa228" class="outline-4">
+<h4 id="org05fa228"><span class="section-number-4">3.4.2.</span> Eco: <code>delay</code></h4>
 <div class="outline-text-4" id="text-3-4-2">
 <p>
 <code>delay</code> agrega ecos del sonido. El primer número es la cantidad de delay (0 a 1). Se puede especificar más:
@@ -571,8 +571,8 @@ $: sound("bd rim").bank("RolandTR707").delay(".5")
 </div>
 </div>
 </div>
-<div id="outline-container-org63ba8d1" class="outline-4">
-<h4 id="org63ba8d1"><span class="section-number-4">3.4.3.</span> Paneo: <code>pan</code></h4>
+<div id="outline-container-orgb65e6b0" class="outline-4">
+<h4 id="orgb65e6b0"><span class="section-number-4">3.4.3.</span> Paneo: <code>pan</code></h4>
 <div class="outline-text-4" id="text-3-4-3">
 <p>
 <code>pan</code> controla la posición en el campo estéreo. 0 = completamente izquierda, 1 = completamente derecha, 0.5 = centro.
@@ -584,7 +584,7 @@ $: sound("bd rim").bank("RolandTR707").delay(".5")
 </code></pre>
 </div>
 
-<div class="desafio" id="org62d7852">
+<div class="desafio" id="org3c70f9d">
 <p>
 <b>Desafío C: Pequeña canción con efectos</b>
 </p>
@@ -613,7 +613,7 @@ $: note("&lt;[c3,g3,e4] [bb2,f3,d4] [a2,f3,c4] [bb2,g3,eb4]&gt;")
 </div>
 </div>
 </div>
-<div id="outline-container-orge11196b" class="outline-3">
+<div id="outline-container-org8677bb9" class="outline-3">
 <h3>Envolvente: ADSR</h3>
 <div class="outline-text-3" id="text-3-5">
 <p>
@@ -637,7 +637,7 @@ La envolvente controla cómo evoluciona el volumen de una nota en el tiempo. ADS
 </code></pre>
 </div>
 
-<div class="desafio" id="org50132e0">
+<div class="desafio" id="orga6ee64d">
 <p>
 <b>Desafío D: Explorar ADSR</b>
 </p>
@@ -676,7 +676,7 @@ Notación abreviada: <code>.adsr("attack:decay:sustain:release")</code>
 </div>
 </div>
 </div>
-<div id="outline-container-org86cd7a7" class="outline-3">
+<div id="outline-container-orga2e8f18" class="outline-3">
 <h3>Tempo del patrón: <code>fast</code> y <code>slow</code></h3>
 <div class="outline-text-3" id="text-3-6">
 <p>
@@ -695,7 +695,7 @@ sound("[bd*4,~ rim ~ cp]*&lt;1 [2 4]&gt;")
 </div>
 </div>
 </div>
-<div id="outline-container-org59a0c18" class="outline-3">
+<div id="outline-container-orgd3478e4" class="outline-3">
 <h3>Modulación con ondas (Signals)</h3>
 <div class="outline-text-3" id="text-3-7">
 <p>
@@ -767,8 +767,8 @@ Las ondas disponibles son:
 </tbody>
 </table>
 </div>
-<div id="outline-container-org06829e5" class="outline-4">
-<h4 id="org06829e5"><span class="section-number-4">3.7.1.</span> Rango: <code>range</code></h4>
+<div id="outline-container-org4eeaf96" class="outline-4">
+<h4 id="org4eeaf96"><span class="section-number-4">3.7.1.</span> Rango: <code>range</code></h4>
 <div class="outline-text-4" id="text-3-7-1">
 <p>
 Por defecto las ondas oscilan entre 0 y 1. Con <code>range</code> podemos cambiar eso:
@@ -787,7 +787,7 @@ note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
 </code></pre>
 </div>
 
-<div class="desafio" id="orgcef83be">
+<div class="desafio" id="org2c8f834">
 <p>
 <b>Desafío E: Automatizar con ondas</b>
 </p>
@@ -810,7 +810,7 @@ $: note("c e g b").sound("sawtooth")
 </div>
 </div>
 </div>
-<div id="outline-container-org00b7bed" class="outline-3">
+<div id="outline-container-org49ca329" class="outline-3">
 <h3>Repaso — Clase 2.5</h3>
 <div class="outline-text-3" id="text-3-8">
 <table>
@@ -930,7 +930,7 @@ $: note("c e g b").sound("sawtooth")
 </table>
 </div>
 </div>
-<div id="outline-container-org449e34e" class="outline-3">
+<div id="outline-container-orga4be588" class="outline-3">
 <h3>Retroalimentación</h3>
 <div class="outline-text-3" id="text-3-9">
 <ul class="org-ul">
