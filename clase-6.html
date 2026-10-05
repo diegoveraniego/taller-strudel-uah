@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>꩜ Clase 2.5: Efectos de Audio y Modulación — Taller de Strudel</title>
+<title>꩜ Clase 6 — Taller de Strudel</title>
 <meta name="author" content="Diego Aliaga"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>꩜</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -387,568 +387,231 @@ initNavDrawer();
 </script>
 </head>
 <body>
-<nav id="clase-nav"><a href="index.html">꩜ Inicio</a><a href="clase-1.html">Clase 1</a><a href="clase-2.html">Clase 2</a><a href="clase-2-5.html"  class="nav-active">Clase 2.5</a><a href="clase-3.html">Clase 3</a><a href="#" id="search-trigger" style="margin-left: auto; text-decoration: none;" title="Buscar en el taller"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a></nav>
+<nav id="clase-nav"><a href="index.html">꩜ Inicio</a><a href="clase-1.html">Clase 1</a><a href="clase-2.html">Clase 2</a><a href="clase-3.html">Clase 3</a><a href="clase-4.html">Clase 4</a><a href="clase-5.html">Clase 5</a><a href="clase-6.html" class="nav-active">Clase 6</a><a href="clase-7.html">Clase 7</a><a href="#" id="search-trigger" style="margin-left: auto; text-decoration: none;" title="Buscar en el taller"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a></nav>
 <div id="content">
-<h1 class="title">Clase 2.5: Efectos de Audio y Modulación</h1>
-<div id="outline-container-org3c61b3b" class="outline-2">
-<h2 id="org3c61b3b">Clase 2.5: Efectos de audio y modulación</h2>
-<div class="outline-text-2" id="text-3">
-</div>
-<div id="outline-container-org4151efe" class="outline-3">
-<h3 id="org4151efe">Calentamiento: Análisis de código (10 min)</h3>
-<div class="outline-text-3" id="text-3-1">
+<h1 class="title">Clase 6: Recursos de diseño sonoro (Ear Candy)</h1>
+<div id="outline-container-org4d81216" class="outline-2">
+<h2>Clase 6: Recursos de diseño sonoro (Ear Candy)</h2>
+<div class="outline-text-2" id="text-6">
 <p>
-<b>¿Qué creen que hace este código? Léanlo línea por línea antes de ejecutarlo.</b>
+Lo que sigue son recetas de diseño sonoro y técnicas avanzadas para referencia. Ideal para aplicar directamente en tus producciones.
+</p>
+</div>
+<div id="outline-container-org254df9d" class="outline-4">
+<h4 id="org254df9d"><span class="section-number-4">6.0.1.</span> Acid Bass (estilo TB-303)</h4>
+<div class="outline-text-4" id="text-6-0-1">
+<p>
+El sonido clásico del acid house. La base es una sierra con un filtro muy resonante que sube y baja rápido. En Strudel usamos <code>sine.range()</code> para mover el filtro de forma periódica. Aquí lo exageramos con <code>.distort()</code>:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code>setcpm(120/4)
-
-$: s("hh*8").gain("[.25 1]*4")
-$: s("bd*4, [~ sd:1]*2")
-$: note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
-  .sound("sawtooth").lpf("200 1000 200 1000")
-$: note("&lt;[c3,g3,e4] [bb2,f3,d4] [a2,f3,c4] [bb2,g3,eb4]&gt;")
-  .sound("sawtooth").vowel("&lt;a e i o&gt;")
-</code></pre>
-</div>
-
-<p>
-Preguntas:
-</p>
-<ol class="org-ol">
-<li>¿Por qué el <code>gain</code> tiene <code>[.25 1]*4</code>? ¿Qué efecto rítmico crea?</li>
-<li>¿Qué hace <code>lpf("200 1000 200 1000")</code> distinto a <code>lpf(800)</code>?</li>
-<li>¿Qué son las vocales en <code>vowel</code>? ¿Conocen ese efecto en música electrónica?</li>
-</ol>
-</div>
-</div>
-<div id="outline-container-org55cec21" class="outline-3">
-<h3 id="org55cec21">Filtros</h3>
-<div class="outline-text-3" id="text-3-2">
-<p>
-Los filtros permiten recortar frecuencias del sonido, como si abriéramos o cerráramos una ventana al ruido. Son herramientas fundamentales en la música electrónica.
-</p>
-</div>
-<div id="outline-container-orge85284d" class="outline-4">
-<h4 id="orge85284d">Filtro paso bajo: <code>lpf</code></h4>
-<div class="outline-text-4" id="text-3-2-1">
-<p>
-<code>lpf</code> = <i>low pass filter</i>. Deja pasar las frecuencias bajas y corta las altas. Cuanto más bajo el valor, más muffleado (apagado) suena. Pensalo como estar afuera del boliche con la puerta cerrada 🚪.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-javascript"><code>note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
-  .sound("sawtooth").lpf(800)
-</code></pre>
-</div>
-
-<div class="desafio" id="orgbee2ed6">
-<p>
-<b>Desafío A: Abrir la puerta</b>
-</p>
-
-<p>
-Cambia el valor de <code>lpf</code>:
-</p>
-<ul class="org-ul">
-<li>A 200: ¿cómo suena?</li>
-<li>A 5000: ¿cómo suena?</li>
-<li>En patrón: <code>"200 1000 200 1000"</code></li>
-</ul>
-
-<div class="org-src-container">
-<pre class="src src-javascript"><code>note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
-  .sound("sawtooth").lpf(800)
-</code></pre>
-</div>
-
-</div>
-</div>
-</div>
-<div id="outline-container-org36cefbd" class="outline-4">
-<h4 id="org36cefbd">Filtro paso alto: <code>hpf</code></h4>
-<div class="outline-text-4" id="text-3-2-2">
-<p>
-<code>hpf</code> = <i>high pass filter</i>. Lo opuesto: deja pasar las frecuencias altas y corta las bajas. Útil para crear efectos de radio o teléfono, o para que un instrumento no pise el rango del bajo.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-javascript"><code>$: note("c e g b").sound("sawtooth")
-  .hpf("&lt;200 1000 3000&gt;") // escuchá cómo se va vaciando el sonido
+<pre class="src src-javascript"><code>note("[c2 c2 eb2 bb1]*2").s("sawtooth")
+  .lpf(sine.range(100, 4000).fast(2))
+  .lpq(30)
+  .distort(0.8)
+  .adsr("0:0.05:0.3:0.05")
 </code></pre>
 </div>
 </div>
 </div>
-</div>
-<div id="outline-container-org47b72ff" class="outline-3">
-<h3 id="org47b72ff">Timbre y dinámica</h3>
-<div class="outline-text-3" id="text-3-3">
-</div>
-<div id="outline-container-org3450700" class="outline-4">
-<h4 id="org3450700">Filtro formante: <code>vowel</code></h4>
-<div class="outline-text-4" id="text-3-3-1">
+<div id="outline-container-orgffafdf1" class="outline-4">
+<h4 id="orgffafdf1"><span class="section-number-4">6.0.2.</span> Reese Bass</h4>
+<div class="outline-text-4" id="text-6-0-2">
 <p>
-<code>vowel</code> aplica un filtro formante que hace que el sonido imite la resonancia de las vocales. Muy usado en música electrónica y house.
+Dos osciladores de sierra casi en la misma frecuencia, con una diferencia de unos 15 cents. Esa pequeña diferencia genera batimentos (interferencia entre las dos ondas) que dan el movimiento interno característico del jungle y el drum and bass:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code>note("&lt;[c3,g3,e4] [bb2,f3,d4] [a2,f3,c4] [bb2,g3,eb4]&gt;")
-  .sound("sawtooth").vowel("&lt;a e i o&gt;")
+<pre class="src src-javascript"><code>stack(
+  note("c2*4").s("sawtooth"),
+  note("c2*4").s("sawtooth").detune(25)
+).gain(0.6).lpf(1200).lpq(6).distort(0.4)
 </code></pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgfa3e67c" class="outline-4">
-<h4 id="orgfa3e67c">Volumen: <code>gain</code></h4>
-<div class="outline-text-4" id="text-3-3-2">
+<div id="outline-container-orgcc36525" class="outline-4">
+<h4 id="orgcc36525"><span class="section-number-4">6.0.3.</span> Wobble Bass</h4>
+<div class="outline-text-4" id="text-6-0-3">
 <p>
-<code>gain</code> controla el volumen. En música, la dinámica (los cambios de volumen) es fundamental para crear interés rítmico.
+El filtro se mueve lento con un LFO y ese movimiento define el ritmo. Dubstep clásico, exagerado con más resonancia:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code>$: sound("hh*16").gain("[.25 1]*4")
-$: sound("bd*4, [~ sd:1]*2")
-</code></pre>
-</div>
-
-<div class="desafio" id="org4b5597d">
-<p>
-<b>Desafío B: Dinámica</b>
-</p>
-
-<ol class="org-ol">
-<li>Sacá el <code>.gain(...)</code> del hihat. ¿Cómo suena?</li>
-<li>Volvelo a poner (Ctrl+Z)</li>
-<li>Probá con <code>"[.1 .5 1]*4"</code> o inventá tu propio patrón de volumen</li>
-</ol>
-
-<div class="org-src-container">
-<pre class="src src-javascript"><code>$: sound("hh*16").gain("[.25 1]*4")
-$: sound("bd*4, [~ sd:1]*2")
-</code></pre>
-</div>
-
-</div>
-</div>
-</div>
-</div>
-<div id="outline-container-orge890393" class="outline-3">
-<h3 id="orge890393">Efectos espaciales</h3>
-<div class="outline-text-3" id="text-3-4">
-</div>
-<div id="outline-container-orgf67a49c" class="outline-4">
-<h4 id="orgf67a49c">Reverberación: <code>room</code></h4>
-<div class="outline-text-4" id="text-3-4-1">
-<p>
-<code>room</code> simula el espacio acústico donde suena el instrumento. Valores altos = sala grande (catedral). Valores bajos = sala pequeña o sin reverb.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-javascript"><code>n("&lt;4 [3@3 4] [&lt;2 0&gt; ~@16] ~&gt;")
-  .scale("D4:minor").sound("gm_accordion:2")
-  .room(2)
+<pre class="src src-javascript"><code>note("c2*4").s("sawtooth")
+  .lpf(sine.range(100, 3000).slow(1))
+  .lpq(15)
+  .distort(0.5)
+  .adsr("0:0.05:0.9:0.05")
 </code></pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org68f0c00" class="outline-4">
-<h4 id="org68f0c00">Eco: <code>delay</code></h4>
-<div class="outline-text-4" id="text-3-4-2">
+<div id="outline-container-org121baf7" class="outline-4">
+<h4 id="org121baf7"><span class="section-number-4">6.0.4.</span> Chord Stab</h4>
+<div class="outline-text-4" id="text-6-0-4">
 <p>
-<code>delay</code> agrega ecos del sonido. El primer número es la cantidad de delay (0 a 1). Se puede especificar más:
+Un acorde con decay muy corto. Lo que le da carácter es la resonancia del filtro y que muere rápido:
 </p>
-<ul class="org-ul">
-<li><code>.delay(".8:.125")</code> → el segundo número es el tiempo entre ecos</li>
-<li><code>.delay(".8:.06:.8")</code> → el tercero es cuánto se desvanece cada eco</li>
-</ul>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code>$: note("[~ [&lt;[d3,a3,f4]!2 [d3,bb3,g4]!2&gt; ~]]*2")
-  .sound("gm_electric_guitar_muted").delay(.5)
-$: sound("bd rim").bank("RolandTR707").delay(".5")
+<pre class="src src-javascript"><code>note("[c3,e3,g3,bb3]*2").s("sawtooth")
+  .lpf(1500).lpq(12)
+  .adsr("0:0.03:0:0.05")
+  .room(0.5)
 </code></pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org211eb01" class="outline-4">
-<h4 id="org211eb01">Paneo: <code>pan</code></h4>
-<div class="outline-text-4" id="text-3-4-3">
+<div id="outline-container-orgaf84609" class="outline-4">
+<h4 id="orgaf84609"><span class="section-number-4">6.0.5.</span> Supersaw</h4>
+<div class="outline-text-4" id="text-6-0-5">
 <p>
-<code>pan</code> controla la posición en el campo estéreo. 0 = completamente izquierda, 1 = completamente derecha, 0.5 = centro.
+Varias sierras apiladas, cada una ligeramente desafinada respecto a la anterior. El resultado es ese sonido ancho y denso del trance y el electro. Le agregamos delay para que suene gigante:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code>sound("numbers:1 numbers:2 numbers:3 numbers:4")
-  .pan("0 0.3 .6 1")
-</code></pre>
-</div>
-
-<div class="desafio" id="org1d62375">
-<p>
-<b>Desafío C: Pequeña canción con efectos</b>
-</p>
-
-<p>
-Combina <code>lpf</code>, <code>gain</code>, <code>vowel</code>, <code>room</code> y <code>delay</code> en un patrón. Prueba quitar y agregar cada efecto para escuchar la diferencia.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-javascript"><code>setcpm(120/4)
-
-$: sound("hh*8").gain("[.25 1]*4")
-$: sound("bd*4,[~ sd:1]*2")
-$: note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
-  .sound("sawtooth")
-  // .lpf(?)
-  // .vowel(?)
-$: note("&lt;[c3,g3,e4] [bb2,f3,d4] [a2,f3,c4] [bb2,g3,eb4]&gt;")
-  .sound("sawtooth")
-  // .room(?)
-  // .delay(?)
-</code></pre>
-</div>
-
-</div>
-</div>
-</div>
-</div>
-<div id="outline-container-org32f9206" class="outline-3">
-<h3 id="org32f9206">Envolvente: ADSR</h3>
-<div class="outline-text-3" id="text-3-5">
-<p>
-La envolvente controla cómo evoluciona el volumen de una nota en el tiempo. ADSR = Attack / Decay / Sustain / Release.
-</p>
-
-<dl class="org-dl">
-<dt><b>Attack</b></dt><dd>cuánto tarda en llegar al volumen máximo</dd>
-<dt><b>Decay</b></dt><dd>cuánto tarda en bajar al nivel de sustain</dd>
-<dt><b>Sustain</b></dt><dd>nivel de volumen mientras se mantiene la nota</dd>
-<dt><b>Release</b></dt><dd>cuánto tarda en silenciarse cuando termina la nota</dd>
-</dl>
-
-<div class="org-src-container">
-<pre class="src src-javascript"><code>note("c3 bb2 f3 eb3")
-  .sound("sawtooth").lpf(600)
-  .attack(.1)
-  .decay(.1)
-  .sustain(.25)
-  .release(.2)
-</code></pre>
-</div>
-
-<div class="desafio" id="orgab5a684">
-<p>
-<b>Desafío D: Explorar ADSR</b>
-</p>
-
-<p>
-Modificá los valores uno por uno y escuchá el resultado:
-</p>
-<ul class="org-ul">
-<li><code>attack</code>: prueba <code>.5</code> vs <code>0</code></li>
-<li><code>decay</code>: prueba <code>.5</code> vs <code>0</code></li>
-<li><code>sustain</code>: prueba <code>1</code> vs <code>.25</code> vs <code>0</code></li>
-<li><code>release</code>: prueba <code>0</code> vs <code>.5</code> vs <code>1</code></li>
-</ul>
-
-<div class="org-src-container">
-<pre class="src src-javascript"><code>note("c3 bb2 f3 eb3")
-  .sound("sawtooth").lpf(600)
-  .attack(.1)
-  .decay(.1)
-  .sustain(.25)
-  .release(.2)
-</code></pre>
-</div>
-
-<p>
-Notación abreviada: <code>.adsr("attack:decay:sustain:release")</code>
-</p>
-
-<div class="org-src-container">
-<pre class="src src-javascript"><code>note("c3 bb2 f3 eb3")
-  .sound("sawtooth").lpf(600)
-  .adsr(".1:.1:.5:.2")
-</code></pre>
-</div>
-
-</div>
-</div>
-</div>
-<div id="outline-container-org283ba5e" class="outline-3">
-<h3 id="org283ba5e">Tempo del patrón: <code>fast</code> y <code>slow</code></h3>
-<div class="outline-text-3" id="text-3-6">
-<p>
-<code>fast</code> y <code>slow</code> cambian la velocidad de un patrón. Son equivalentes a <code>*</code> y <code>/</code> en mini-notation, pero aplicados a todo el patrón.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-javascript"><code>sound("bd*4, ~ rim ~ cp").slow(2)   // el doble de lento
-</code></pre>
-</div>
-
-<div class="org-src-container">
-<pre class="src src-javascript"><code>// También acepta patrones:
-sound("[bd*4,~ rim ~ cp]*&lt;1 [2 4]&gt;")
+<pre class="src src-javascript"><code>stack(
+  note("c3").s("sawtooth"),
+  note("c3").s("sawtooth").detune(12),
+  note("c3").s("sawtooth").detune(-12),
+  note("c3").s("sawtooth").detune(24),
+  note("c3").s("sawtooth").detune(-24)
+).gain(0.15).lpf(4000).delay(0.4).delaytime(0.25)
 </code></pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org0d09096" class="outline-3">
-<h3 id="org0d09096">Modulación con ondas (Signals)</h3>
-<div class="outline-text-3" id="text-3-7">
+<div id="outline-container-org63c5ba7" class="outline-4">
+<h4 id="org63c5ba7"><span class="section-number-4">6.0.6.</span> Kick sintético</h4>
+<div class="outline-text-4" id="text-6-0-6">
 <p>
-En lugar de poner un valor fijo, podemos usar una <i>onda</i> como valor. Esto hace que el parámetro cambie continuamente en el tiempo, de forma automática.
+Un seno grave con decay rápido. El pitch no cae en este ejemplo (para hacerlo más realista habría que modularlo con una envolvente de pitch, que requiere más código):
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code>sound("hh*16").gain(sine)   // el volumen sube y baja como una ola
+<pre class="src src-javascript"><code>note("c2*4").s("sine")
+  .adsr("0:0.35:0:0")
+  .shape(0.3)
 </code></pre>
 </div>
-
-<p>
-Las ondas disponibles son:
-</p>
-
-<table>
-
-
-<colgroup>
-<col  class="org-left">
-
-<col  class="org-left">
-
-<col  class="org-left">
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Onda</th>
-<th scope="col" class="org-left">Forma</th>
-<th scope="col" class="org-left">Sonido</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left"><code>sine</code></td>
-<td class="org-left">Senoidal suave</td>
-<td class="org-left">Cambio gradual y cíclico</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>saw</code></td>
-<td class="org-left">Diente de sierra</td>
-<td class="org-left">Sube gradual, baja abrupto</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>square</code></td>
-<td class="org-left">Cuadrada</td>
-<td class="org-left">Alterna entre dos valores</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>tri</code></td>
-<td class="org-left">Triangular</td>
-<td class="org-left">Sube y baja linealmente</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>rand</code></td>
-<td class="org-left">Aleatoria</td>
-<td class="org-left">Valores al azar cada ciclo</td>
-</tr>
-
-<tr>
-<td class="org-left"><code>perlin</code></td>
-<td class="org-left">Aleatoria suave</td>
-<td class="org-left">Valores aleatorios pero continuos</td>
-</tr>
-</tbody>
-</table>
 </div>
-<div id="outline-container-org07cc85a" class="outline-4">
-<h4 id="org07cc85a">Rango: <code>range</code></h4>
-<div class="outline-text-4" id="text-3-7-1">
+</div>
+<div id="outline-container-orgf39125a" class="outline-4">
+<h4 id="orgf39125a"><span class="section-number-4">6.0.7.</span> Percusión con ruido (snare / hi-hat)</h4>
+<div class="outline-text-4" id="text-6-0-7">
 <p>
-Por defecto las ondas oscilan entre 0 y 1. Con <code>range</code> podemos cambiar eso:
+El snare es ruido blanco con un filtro que deja pasar la parte media-alta, y un decay corto. El hi-hat es lo mismo pero más agudo y más breve:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code>sound("hh*16").lpf(saw.range(500, 2000))
+<pre class="src src-javascript"><code>// Snare
+s("white*4").lpf(5000).adsr("0:0.12:0:0.03")
 </code></pre>
 </div>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code>// Con slow para que el ciclo dure más:
-note("&lt;[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4&gt;")
-  .sound("sawtooth")
-  .lpf(sine.range(100, 2000).slow(4))
+<pre class="src src-javascript"><code>// Hi-hat
+s("white*8").hpf(8000).adsr("0:0.03:0:0.01")
 </code></pre>
 </div>
-
-<div class="desafio" id="org648aaa5">
+</div>
+</div>
+<div id="outline-container-orgd159dd2" class="outline-4">
+<h4 id="orgd159dd2"><span class="section-number-4">6.0.8.</span> Lo-fi / Bitcrush</h4>
+<div class="outline-text-4" id="text-6-0-8">
 <p>
-<b>Desafío E: Automatizar con ondas</b>
-</p>
-
-<p>
-Agrégale una onda a alguno de los efectos de abajo. Prueba <code>sine</code>, <code>saw</code>, <code>rand</code> y <code>perlin</code>. Usa <code>.range()</code> para que el valor tenga sentido musical.
+<code>.crush()</code> reduce la resolución de bits de la señal. Con valores bajos (entre 1 y 8) se consigue ese sonido degradado de consola o de cinta vieja. Boards of Canada lo usa mucho para darle esa textura de recuerdo borroso a sus pads:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-javascript"><code>setcpm(120/4)
+<pre class="src src-javascript"><code>note("[c3 eb3 g3]*2").s("sawtooth")
+  .crush(4)
+  .lpf(2000)
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orga68822c" class="outline-4">
+<h4 id="orga68822c"><span class="section-number-4">6.0.9.</span> Growl estilo Skrillex</h4>
+<div class="outline-text-4" id="text-6-0-9">
+<p>
+La diferencia con el growl básico está en <code>.vowel()</code>. Esta función aplica un filtro de formantes que imita la cavidad bucal al pronunciar vocales. Al pasarle un patrón de vocales, el filtro cambia de forma continua, y eso es lo que genera el movimiento de "voz que habla" del bass music más agresivo:
+</p>
 
-$: sound("hh*8").gain(sine)        // ← onda en gain
-$: note("c e g b").sound("sawtooth")
-  .lpf(sine.range(200, 3000))      // ← onda en lpf
-  .room(0.3)
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// FM alta + filtro de vocales modulado y distorsión
+note("[c1 ~ c1 ~]*2")
+  .s("sawtooth")
+  .fm(12)
+  .fmh(0.5)
+  .vowel("&lt;a e i o&gt;")
+  .lpf(sine.range(150, 3000).slow(0.5))
+  .lpq(18)
+  .shape(0.7)
+  .adsr("0:0.02:0.9:0.05")
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org193256e" class="outline-4">
+<h4 id="org193256e"><span class="section-number-4">6.0.10.</span> Risers y Downlifters (Transiciones)</h4>
+<div class="outline-text-4" id="text-6-0-10">
+<p>
+Estos elementos crean tensión (risers) o liberan energía (downlifters) entre secciones. En lugar de solo subir el volumen, prueba estas técnicas poco convencionales:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// 1. Pitch Riser: Automatizar la velocidad de un sintetizador
+// El pitch sube lentamente a lo largo de 4 ciclos creando mucha tensión
+note("c4").s("sawtooth")
+  .speed(sine.range(0.5, 4).slow(4))
+  .lpf(sine.range(500, 5000).slow(4))
+  .gain(sine.slow(4))
 </code></pre>
 </div>
 
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// 2. Granular Noise Sweep (White Noise)
+// Un filtro pasa-banda muy estrecho barre las frecuencias del ruido
+s("white")
+  .bpf(sine.range(200, 10000).slow(4))
+  .bpq(15) // Resonancia alta para enfatizar la banda
+  .gain(sine.slow(4))
+</code></pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// 3. Reversed Crash (Downlifter / Riser)
+// Tomar un platillo largo, tocarlo al revés y saturarlo
+s("crash").rev().slow(4).distort(0.5).gain(1.2)
+</code></pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Stutter: repetición rápida de un fragmento (efecto glitch)
+note("c3*16").s("sawtooth").adsr("0:0.03:0:0").gain(0.6)
+</code></pre>
 </div>
 </div>
 </div>
-</div>
-<div id="outline-container-org25be177" class="outline-3">
-<h3 id="org25be177">Repaso — Clase 2.5</h3>
-<div class="outline-text-3" id="text-3-8">
-<table>
-
-
-<colgroup>
-<col  class="org-left">
-
-<col  class="org-left">
-
-<col  class="org-left">
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Función</th>
-<th scope="col" class="org-left">¿Qué hace?</th>
-<th scope="col" class="org-left">Ejemplo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left"><code>lpf()</code></td>
-<td class="org-left">Filtro paso bajo (oscurece)</td>
-<td class="org-left"><code>.lpf(800)</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>hpf()</code></td>
-<td class="org-left">Filtro paso alto (adelgaza)</td>
-<td class="org-left"><code>.hpf(500)</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>vowel()</code></td>
-<td class="org-left">Filtro formante de vocal</td>
-<td class="org-left"><code>.vowel("&lt;a e i o&gt;")</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>gain()</code></td>
-<td class="org-left">Volumen / dinámica</td>
-<td class="org-left"><code>.gain("[.25 1]*4")</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>room()</code></td>
-<td class="org-left">Reverberación</td>
-<td class="org-left"><code>.room(2)</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>delay()</code></td>
-<td class="org-left">Eco</td>
-<td class="org-left"><code>.delay(".5:.125")</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>pan()</code></td>
-<td class="org-left">Paneo estéreo</td>
-<td class="org-left"><code>.pan("0 1")</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>attack()</code></td>
-<td class="org-left">Tiempo de ataque (ADSR)</td>
-<td class="org-left"><code>.attack(.1)</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>decay()</code></td>
-<td class="org-left">Decaimiento (ADSR)</td>
-<td class="org-left"><code>.decay(.1)</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>sustain()</code></td>
-<td class="org-left">Sostenido (ADSR)</td>
-<td class="org-left"><code>.sustain(.5)</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>release()</code></td>
-<td class="org-left">Liberación (ADSR)</td>
-<td class="org-left"><code>.release(.2)</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>adsr()</code></td>
-<td class="org-left">ADSR abreviado</td>
-<td class="org-left"><code>.adsr(".1:.1:.5:.2")</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>fast()</code></td>
-<td class="org-left">Acelerar patrón</td>
-<td class="org-left"><code>.fast(2)</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>slow()</code></td>
-<td class="org-left">Ralentizar patrón</td>
-<td class="org-left"><code>.slow(2)</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>sine</code> / <code>saw</code> / <code>rand</code></td>
-<td class="org-left">Modulación con onda</td>
-<td class="org-left"><code>.gain(sine)</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>.range(a,b)</code></td>
-<td class="org-left">Rango de una onda</td>
-<td class="org-left"><code>sine.range(200,2000)</code></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div id="outline-container-orge80d6e1" class="outline-3">
-<h3 id="orge80d6e1">Retroalimentación</h3>
-<div class="outline-text-3" id="text-3-9">
-<ul class="org-ul">
-<li>¿Qué efecto les resultó más interesante?</li>
-<li>¿Cómo podrían usar <code>gain</code> con ondas para hacer algo musical?</li>
-</ul>
-</div>
+<div id="outline-container-org65e4e7c" class="outline-3">
+<h3>Taller de modulación avanzada (LFO)</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+[Pendiente de escribir - Próxima sesión]
+</p>
 </div>
 </div>
 </div>
 <div class="class-nav-footer">
-  <a href="clase-2.html" class="nav-btn prev">
+  <a href="clase-5.html" class="nav-btn prev">
     <span class="nav-label">Anterior</span>
-    <span class="nav-title">Clase 2</span>
+    <span class="nav-title">Clase 5</span>
   </a>
-  <a href="clase-3.html" class="nav-btn next">
+  <a href="clase-7.html" class="nav-btn next">
     <span class="nav-label">Siguiente</span>
-    <span class="nav-title">Clase 3</span>
+    <span class="nav-title">Clase 7</span>
   </a>
 </div>
 <a id="back-to-top" href="#" title="Volver al inicio" aria-label="Volver al inicio">↑</a>

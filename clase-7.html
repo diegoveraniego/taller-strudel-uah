@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>꩜ Clase 2 — Taller de Strudel</title>
+<title>꩜ Clase 7 — Taller de Strudel</title>
 <meta name="author" content="Diego Aliaga"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>꩜</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -387,222 +387,21 @@ initNavDrawer();
 </script>
 </head>
 <body>
-<nav id="clase-nav"><a href="index.html">꩜ Inicio</a><a href="clase-1.html">Clase 1</a><a href="clase-2.html" class="nav-active">Clase 2</a><a href="clase-3.html">Clase 3</a><a href="clase-4.html">Clase 4</a><a href="clase-5.html">Clase 5</a><a href="clase-6.html">Clase 6</a><a href="clase-7.html">Clase 7</a><a href="#" id="search-trigger" style="margin-left: auto; text-decoration: none;" title="Buscar en el taller"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a></nav>
+<nav id="clase-nav"><a href="index.html">꩜ Inicio</a><a href="clase-1.html">Clase 1</a><a href="clase-2.html">Clase 2</a><a href="clase-3.html">Clase 3</a><a href="clase-4.html">Clase 4</a><a href="clase-5.html">Clase 5</a><a href="clase-6.html">Clase 6</a><a href="clase-7.html" class="nav-active">Clase 7</a><a href="#" id="search-trigger" style="margin-left: auto; text-decoration: none;" title="Buscar en el taller"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a></nav>
 <div id="content">
-<h1 class="title">Clase 2: Live Coding, Sintaxis, notas, acordes y efectos</h1>
-<div id="outline-container-org51f2669" class="outline-2">
-<h2>Clase 2: Live Coding, Sintaxis, notas, acordes y efectos</h2>
-<div class="outline-text-2" id="text-2">
-</div>
-<div id="outline-container-orgb212e69" class="outline-3">
-<h3>Repaso</h3>
-<div class="outline-text-3" id="text-2-1">
-<ul class="org-ul">
-<li>Composición algorítmica</li>
-<li>Cómo hacer patrones rítmicos</li>
-<li>Documentación</li>
-<li>Mini-notation</li>
-<li>Ciclos por segundo</li>
-<li>Stacking de varios sonidos ($:)</li>
-<li>Atajos útiles</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-org5155be3" class="outline-3">
-<h3>La escena del live coding</h3>
-<div class="outline-text-3" id="text-2-2">
-
-<div id="org2fb38fc" class="figure">
-<p><img src="images/Captura desde 2026-09-21 10-20-15.png" alt="Captura desde 2026-09-21 10-20-15.png">
-</p>
-</div>
-
-<ul class="org-ul">
-<li>Traducido como programación en vivo</li>
-<li>Puede ser tanto de música como de visuales</li>
-<li>Se utiliza a menudo en las <b>algoraves</b></li>
-</ul>
-</div>
-</div>
-<div id="outline-container-org47e1f60" class="outline-3">
-<h3>Algoraves</h3>
-<div class="outline-text-3" id="text-2-3">
-
-<div id="orge8c6d29" class="figure">
-<p><img src="images/Algorave_Club_Fierce_2014_1.png" alt="Algorave_Club_Fierce_2014_1.png">
-</p>
-</div>
-
-<ul class="org-ul">
-<li>Algoritmo y raves</li>
-<li id="Música rave">total o predominantemente caracterizado por la emisión de una sucesión de golpes repetitivos.</li>
-<li>Evento en que gente baila con música generada a partir de algoritmos, generalmente hechos con <i>live coding</i>.</li>
-<li>Puede tener diversos estilos</li>
-</ul>
-
-<p>
-Algunos ejemplos de video:
-</p>
-<ul class="org-ul">
-<li><a href="https://www.youtube.com/watch?v=C5GDqFl1jW0">Algorave en vivo — 1</a></li>
-<li><a href="https://www.youtube.com/watch?v=93qcs8zHoXo">Algorave en vivo — 2</a></li>
-<li><a href="https://www.youtube.com/watch?v=XYe8AKYPUYc">Algorave en vivo — 3</a></li>
-<li><a href="https://www.youtube.com/watch?v=7qfCeIgtllY">Algorave en vivo — 4</a></li>
-</ul>
-
-<div id="org92637fb" class="figure">
-<p><img src="images/Algorave_logo.png" alt="Algorave_logo.png">
-</p>
-</div>
-</div>
-</div>
-<div id="outline-container-org1ec55f6" class="outline-3">
-<h3>Vamos a Strudel</h3>
-<div class="outline-text-3" id="text-2-4">
-<p>
-Para esta sección, puede ser útil revisar el <a href="https://strudel.cc/workshop/recap/">repaso en la documentación</a>.
-</p>
-
-<p>
-Vamos a <a href="https://strudel.cc/#Ly8gUHJlYmFrZSBzY3JpcHQKLy8KLy8gVGhpcyBpcyBjb2RlIHRoYXQgaXMgbG9hZGVkIGJlZm9yZSB5b3VyIHBhdHRlcm4gaXMgcnVuLgovLyBZb3UgY2FuIHVzZSBpdCB0byBkZWZpbmUgY3VzdG9tIGZ1bmN0aW9ucyB0byB1c2UgaW4gYW55IHBhdHRlcm4uCi8vIAovLyBUaGlzIGlzIGFuIGluaXRpYWwgZXhhbXBsZSBzY3JpcHQuIFlvdSBjYW4gZWRpdCBpdCB0byBhZGQgCi8vIHlvdXIgb3duIGZ1bnRpb25zLgovLwovLyBUbyB1c2UgYSBzY3JpcHQgc2hhcmVkIGJ5IHNvbWUgb3RoZXIgdXNlciB5b3UgY2FuIHVzZQovLyB0aGUgaW1wb3J0LWJ1dHRvbiBvciBwYXN0ZSB0aGUgc2NyaXB0IGluIHRoaXMgZWRpdG9yLgoKY29uc3QgcmF0Y2hldCA9IHJlZ2lzdGVyKCdyYXRjaGV0JywgKHBhdCkgPT4gcGF0LnNvbWV0aW1lcyhwbHkoMikpKQoKLy8gU0VTScOTTiAyCnNldGNwbSgxMjAvNCkKCi8vIEFUQUpPUyDDmlRJTEVTCgovKiAKQ3RybCArIEVudGVyIC0%2BIFVwZGF0ZSwgYWN0dWFsaXphciByZXByb2R1Y2Npw7NuCkN0cmwgKyAvIC0%2BIENvbWVudGFyIGzDrW5lYSAKKi8KCi8vIENPTlNFSk9TCgovKgotIFJldmlzYXIgZG9jdW1lbnRhY2nDs24gZW4gYmFycmEgZGVyZWNoYSAtPiBsZWFybgotIF8kOiBwZXJtaXRlIHNpbGVuY2lhciBlbCBzb25pZG8gZGUgZWwgYmxvcXVlIGRlIGPDs2RpZ28sIGNvbW8gYWx0ZXJuYXRpdmEgYSBjb21lbnRhciBsYSBsw61uZWEKLSAkOiBwZXJtaXRlIHJlcHJvZHVjaXIgc29uaWRvcyBlbiBwYXJhbGVsbwoqLwoKLy8gUFJJTUVST1MgU09OSURPUwoKJDogc291bmQoImNhc2lvIikgLy8gc2VsZWNjaW9uYSBzb25pZG8gbyBzYW1wbGUgcG9yIG5vbWJyZQouX3BpYW5vcm9sbCgpCl8kOiBzb3VuZCgiY2FzaW86MiIpIC8vIHNlbGVjY2lvbmEgbsO6bWVybyBkZSBzb25pZG8vc2FtcGxlCl8kOiBzb3VuZCgiYmQgaGggc2Qgb2giKQpfJDogc291bmQoImJkIGhoIHNkIG9oIikuYmFuaygiVFI5MDkiKSAvLyBzZWxlY2Npw7NuIGRlIGJhbmNvIGRlIHNvbmlkbyBkZSBiYXRlcsOtYXMgCl8kOiBzb3VuZCgiYmQ6NiBiZDo2IFt%2BIGJkOjZdIFtiZDo2IGJkOjZdIikgLy8gU3ViLXNlY3VlbmNpYQpfJDogc291bmQoImhoIGhoIGhoIFtoaCBbaGggaGggaGhdXSIpIC8vIFN1Yi1zdWItc2VjdWVuY2lhCgovLyBNSU5JLU5PVEFUSU9OCgovKgogWyBdIHBhcmEgc3ViZGl2aWRpciBsYSBzZWN1ZW5jaWEgCiAtIG8gfiBwYXJhIGhhY2VyIHVuIHNpbGVuY2lvCiAqIG11bHRpcGxpY2FyCiAvIHJlbGVudGl6YXIgbyBkaXZpZGlyCiBAIGFsYXJnYXIKICEgcmVwbGljYXIKKi8KIAoKXyQ6IHNvdW5kKCJoaCBoaCBoaCBbaGggW2hoKjNdXSIpIApfJDogc291bmQoImJkKjQiKQoKLy8gTk9UQVMKCl8kOiBub3RlKCJjIGUgZyBiIikgLy8gbm90YWNpw7NuIGFtZXJpY2FuYQpfJDogbm90ZSgiMCAyIDQgNiIpLnNjYWxlKCJjOm1ham9yIikgLy8gZ3JhZG9zIGRlIGxhIGVzY2FsYQpfJDogbm90ZSgiYzMgZTMgZzMgYjMiKSAvLyBub3RhY2nDs24gYW1lcmljYW5hIGVzcGVjaWZpY2FuZG8gb2N0YXZhcwpfJDogbm90ZSgiYzMgZSMzIGcjMyBiMyIpIC8vIHVzbyBkZSBzb3N0ZW5pZG9zIG8gYmVtb2xlcwpfJDogbm90ZSgiNDggNTIgNTUgNTkiKSAvLyBub3RhcyBkZWwgcGlhbm8gY29tbyBuw7ptZXJvcwpfJDogbm90ZSgiNDguNSA1Mi4zIDU1LjEgNTkuOSIpIC8vIG1pY3JvdG9uYWxpZGFkCgovLyBOT1RBUyBZIE1JTkktTk9UQVRJT04KCl8kOiBub3RlKCJjIGUgZyBiLzIiKSAvLyBSZWxlbnRpemFyIGNvbiAvCl8kOiBub3RlKCJbYyBlIGcgYl0vMiIpIC8vIFJlbGVudGl6YXIgZWwgYXJwZWdpbyBhIGxhIG1pdGFkCgpfJDogbm90ZSgiYyBlIDxkIGc%2BIGIiKSAvLyBhbHRlcm5hciAgbG8gcXVlIGVzdMOpIGRlbnRybyBkZSA8ID4gZHVyYSB1biBjaWNsbwpfJDogbm90ZSgiPGMgZSBnIGI%2BIikgLy8gdW5hIG5vdGEgcG9yIGNpY2xvCgpfJDogbm90ZSgiYyBlQDIgZyIpIC8vICBAIGFsYXJnYSBkdXJhY2nDs24gZGUgbGEgbm90YSwgZW4gZXN0ZSBjYXNvIGRvcyB0aWVtcG9zCl8kOiBub3RlKCJjIGUhMiBnIikgLy8gcmVwbGljYSBsYSBub3RhIEUgITIgZG9zIHZlY2VzCgpfJDogbm90ZSgiYyBlIGcgYioyIikgLy8gbXVsdGlwbGljYW1vcyBsYSB2ZWxvY2lkYWQsIHkgaGFjZW1vcyBxdWUgc2VhIGRvcyB2ZWNlcyBtw6FzIHLDoXBpZG8gCl8kOiBub3RlKCJbYyBlIGcgYl0qMiIpCgpfJDogbm90ZSgiYyBlQDIgW1tnIGJdIDxkIGYqMj5dIikgLy8gbWV6Y2xhbW9zIGNvbmNlcHRvcwoKCgpfJDogc291bmQoImJkKjQsIFt%2BIDxzZCBjcD5dKjIsIFt%2BIGhoXSo0IikgLy8gTWluaS1ub3RhdGlvbiBlbiBiYXRlcsOtYQouYmFuaygiUm9sYW5kVFI5MDkiKQovLyBBQ09SREVTCgpfJDogbm90ZSgiYywgZSwgZywgYiIpIC8vIExhICgsKSBkZW50cm8gZGUgbGEgc2VjdWVuY2lhIHBlcm1pdGUgcXVlIHN1ZW5lbiB2YXJpb3Mgc29uaWRvcyBhbCBtaXNtbyB0aWVtcG8KXyQ6IG5vdGUoIjxbYywgZSwgZywgYl0gW2csIGIsIGQsIGZdPiIpIC8vIDwgPiBVbiBlbGVtZW50byBwb3IgY2ljbG8KXyQ6IG5vdGUoImMgZSwgZyBiIikgLy8gQWx0ZXJuYW4gZG9zIHBvciBjaWNsbyBhbCBtaXNtbyB0aWVtcG8KXyQ6IGNob3JkKCI8QyBHPiIpLnZvaWNpbmcoKS5yb29tKC41KSAKCgovLyBFRkVDVE9TCgovKgoKbHBmKCkgLT4gbG93IHBhc3MgZmlsdGVyCmhwZigpIC0%2BIGhpZ2ggcGFzcyBmaWx0ZXIKdm93ZWwoKSAtPiBmaWx0cm8gZm9ybWFudGUgcGFyYSBoYWNlciBsYXMgY29zYXMgc29uYXIgY29tbyB2b2NhbGVzCmdhaW4oKSAtPiBnYW5hbmNpYQpkZWxheSgpIC0%2BIHN1IG5vbWJyZSBsbyBkaWNlCmh1c2goKSAtPiBzaWxlbmNpYSBwYXRyw7NuCnBhbigpIC0%2BIHBhbmVvIApzcGVlZCgpIC0%2BIGNhbWJpYSB2ZWxvY2lkYWQgZGVsIHNhbXBsZSwgc2lydmUgcGFyYSBjYW1iaWFyIHRvbm8gCmZhc3QoKSB5IHNsb3coKSAtPiBjYW1iaWFyIHRlbXBvIGRlbCBwYXRyw7NuCgpQYXJhIHVzYXIgZWZlY3Rvcywgc2UgZGViZW4gcG9uZXIgbHVlZ28gZGVsIGJsb3F1ZSBxdWUgcXVlcmVtb3MgYXBsaWNhcmxvIC0%2BIC5mdW5jacOzbgpQb3IgZWplbXBsbywgcGFyYSBwb25lciByZXZlcmIgc2UgcHVlZGUgdXRpbGl6YXIgbGEgZnVuY2nDs24gcm9vbSgpLiBVbiBlamVtcGxvOgoqLwoKXyQ6IG5vdGUoImMgZSBnIGIgZCIpLnJvb20oIjIiKQpfJDogbm90ZSgiYyBlIGcgYiBkIikucm9vbSgiLjIgMSAzIDUiKSAvLyBjb21vIHRvZG8gZW4gc3RydWRlbCwgc2UgcHVlZGVuIGlyIGNhbWJpYW5kbyBwYXLDoW1ldHJvcyBwb3IgY2ljbG8KCl8kOiBub3RlKCJjIGUgZyBiIGQiKS5kZWxheSgiMiIpCl8kOiBzb3VuZCgiYmQgYmQgYmQgYmQiKS5yb29tKC4yKS5kZWxheShzaW5lKQoKLyogClNlIHB1ZWRlIGNhbWJpYXIgbG9zIHZhbG9yZXMgZGUgbG9zIGVmZWN0b3MgY29uIHNlw7FhbGVzLCBjb21vIHNpbmUsIHNhdywgc3F1YXJlLCB0cmksIHJhbmQsIHBlcmxpbiAKKi8KXyQ6IHNvdW5kKCJiZCBiZCBiZCBiZCIpLnJvb20oLjIpLmxwZihzaW5lLnJhbmdlKDEwMCwyMDAwKSkKCgovLyBUT0RPIEhhY2VyIHVuYSBjcmVhY2nDs24gcXVlIHRlbmdhIHVuYSBiYXNlIGRlIGJhdGVyw61hLCBtZWxvZMOtYSwgYmFqbyB5IGFjb3JkZXMgZG9uZGUgc2UgYXBsaXF1ZW4gZWZlY3RvcyB5IG1pbmktbm90YXRpb24uCi8vIDEpIFNldGVhciBsb3MgY2ljbG9zIHBvciBtaW51dG8gKGNwbSkKLy8gMikgTWFuZGFybGU%3D">(Código para sesión 2)</a> para ver el patrón preparado para la sesión 2.
-</p>
-
-
-<div id="org464462c" class="figure">
-<p><img src="images/434-4346115_sticker-censurerisibank-mr-robot-hack-elliot-png-hoodie.jpg" alt="434-4346115_sticker-censurerisibank-mr-robot-hack-elliot-png-hoodie.jpg">
-</p>
-</div>
-</div>
-</div>
-<div id="outline-container-org70bcbb2" class="outline-3">
-<h3>Repaso — Clase 2</h3>
-<div class="outline-text-3" id="text-2-5">
-<table>
-
-
-<colgroup>
-<col  class="org-left">
-
-<col  class="org-left">
-
-<col  class="org-left">
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Función</th>
-<th scope="col" class="org-left">¿Qué hace?</th>
-<th scope="col" class="org-left">Ejemplo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left"><code>note()</code></td>
-<td class="org-left">Nota en letras o números</td>
-<td class="org-left"><code>note("c e g b")</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>scale()</code></td>
-<td class="org-left">Interpreta n() como grado de escala</td>
-<td class="org-left"><code>n("0 2 4").scale("c:major")</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>chord()</code></td>
-<td class="org-left">Acorde por nombre</td>
-<td class="org-left"><code>chord("&lt;C G Am F&gt;")</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>&lt;&gt;</code></td>
-<td class="org-left">Un elemento por ciclo</td>
-<td class="org-left"><code>note("&lt;c e g&gt;")</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>@</code></td>
-<td class="org-left">Alargar duración</td>
-<td class="org-left"><code>note("c e@2 g")</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>!</code></td>
-<td class="org-left">Replicar</td>
-<td class="org-left"><code>note("c!2 e g")</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>,</code></td>
-<td class="org-left">Sonar al mismo tiempo</td>
-<td class="org-left"><code>note("c,e,g")</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>room()</code></td>
-<td class="org-left">Reverberación</td>
-<td class="org-left"><code>note("c").room(0.5)</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>delay()</code></td>
-<td class="org-left">Eco / delay</td>
-<td class="org-left"><code>s("bd").delay(0.5)</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>lpf()</code></td>
-<td class="org-left">Filtro paso bajo</td>
-<td class="org-left"><code>s("sawtooth").lpf(800)</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>hpf()</code></td>
-<td class="org-left">Filtro paso alto</td>
-<td class="org-left"><code>s("sawtooth").hpf(200)</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>pan()</code></td>
-<td class="org-left">Paneo estéreo</td>
-<td class="org-left"><code>s("bd").pan(0.8)</code></td>
-</tr>
-
-<tr>
-<td class="org-left"><code>gain()</code></td>
-<td class="org-left">Volumen</td>
-<td class="org-left"><code>s("hh").gain(0.5)</code></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div id="outline-container-orgba8cee0" class="outline-3">
-<h3>Retroalimentación</h3>
-<div class="outline-text-3" id="text-2-6">
-<ul class="org-ul">
-<li>¿Que fue lo que más les costó?</li>
-<li>¿Qué otras cosas les gustaría aprender a hacer en strudel?</li>
-</ul>
-</div>
-</div>
-<div id="outline-container-orgc99a41f" class="outline-3">
-<h3>Recomendaciones</h3>
-<div class="outline-text-3" id="text-2-7">
-<ul class="org-ul">
-<li>Si quedan interesados por más, pueden revisar en YouTube los canales de Switch Angel, DJ<sub>Dave</sub>, Groovin in G y matt mull.</li>
-<li>Revisar esta <a href="https://www.youtube.com/playlist?list=PLEW6tgjJl5yY">playlist de ejemplos y tutoriales</a> con live coding, eventos en vivo y más.</li>
-</ul>
-</div>
+<h1 class="title">Clase 7: Pattern Functions o funciones de patrones</h1>
+<div id="outline-container-org63b90c6" class="outline-2">
+<h2>Clase 7: Pattern Functions o funciones de patrones</h2>
 </div>
 </div>
 <div class="class-nav-footer">
-  <a href="clase-1.html" class="nav-btn prev">
+  <a href="clase-6.html" class="nav-btn prev">
     <span class="nav-label">Anterior</span>
-    <span class="nav-title">Clase 1</span>
+    <span class="nav-title">Clase 6</span>
   </a>
-  <a href="clase-3.html" class="nav-btn next">
-    <span class="nav-label">Siguiente</span>
-    <span class="nav-title">Clase 3</span>
+  <a href="#" class="nav-btn next" style="opacity:0.5; pointer-events:none; border-style:dashed;">
+    <span class="nav-label">Próximamente</span>
+    <span class="nav-title">Clase {class_num+1}</span>
   </a>
 </div>
 <a id="back-to-top" href="#" title="Volver al inicio" aria-label="Volver al inicio">↑</a>

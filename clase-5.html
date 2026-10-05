@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>꩜ Clase 5 — Taller de Strudel</title>
+<meta name="author" content="Diego Aliaga"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>꩜</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="strudel-taller.css">
+<style>
+#clase-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  padding: .5rem 2rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+#clase-nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: .9rem;
+  font-weight: 500;
+  padding: .25rem .5rem;
+  border-radius: 4px;
+  transition: color .15s, background .15s;
+}
+#clase-nav a:hover { color: var(--text); background: var(--border); }
+#clase-nav a.nav-active { color: var(--accent); font-weight: 700; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://unpkg.com/@strudel/embed@latest"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+hljs.highlightAll();
+// ── REPLs de Strudel: un solo patrón sonando, y pocos contexts vivos ──────
+//
+// Por qué se bugea el audio: cada <strudel-repl> es un iframe con su propio
+// AudioContext. Esta página tiene 56 bloques de código, o sea 56 contexts si
+// se montan todos. El navegador corta alrededor de 6: los últimos no arrancan
+// o quedan a otra sample rate, y el audio sale crackleando.
+//
+// Hay dos límites entonces:
+//
+// 1) VENTANA DE MONTAJE. Un REPL se monta al acercarse a la pantalla y se
+//    desmonta al alejarse (liberando el AudioContext). Así el número de
+//    contexts vivos queda acotado por lo que se ve, no por el largo de la
+//    página. El código no se pierde: Strudel nos lo manda por postMessage en
+//    cada evaluación y lo guardamos para el remontaje.
+//
+// 2) UNO SOLO SONANDO. No existe API para mandarle "parate" a otro iframe,
+//    pero Strudel no arranca sin un gesto del usuario: recargar el iframe lo
+//    deja mudo. Al evaluar uno, recargamos los demás montados.
+const REPL_MARGIN = '800px 0px'; // montar antes de que entre en pantalla
+const REPL_MAX_MOUNTED = 6; // tope duro, por si el margen no alcanza
+const holders = new Set();
+const reloading = new WeakSet(); // ignora los postMessage de recarga
+let activeHolder = null;
+
+function mountRepl(holder) {
+  if (holder.dataset.mounted) return;
+  holder.dataset.mounted = '1';
+  const editor = document.createElement('strudel-repl');
+  editor.innerHTML = '<!--\n' + holder.dataset.code + '\n-->';
+  holder.appendChild(editor);
+}
+
+function unmountRepl(holder) {
+  if (!holder.dataset.mounted || holder === activeHolder) return;
+  holder.dataset.mounted = '';
+  holder.textContent = ''; // suelta el iframe y su AudioContext
+}
+
+function silence(holder) {
+  const frame = holder.querySelector('iframe');
+  if (!frame) return;
+  reloading.add(holder);
+  // hay que limpiar la marca: si no, el REPL queda excluido para siempre
+  // de volver a activarse (que era un bug de la primera versión).
+  frame.addEventListener('load', () => reloading.delete(holder), { once: true });
+  setTimeout(() => reloading.delete(holder), 8000); // red de seguridad
+  frame.src = frame.src; // reinicia el AudioContext -> queda mudo
+}
+
+function holderOf(source) {
+  for (const h of holders) {
+    const frame = h.querySelector('iframe');
+    if (frame && frame.contentWindow === source) return h;
+  }
+  return null;
+}
+
+function setActive(holder) {
+  if (activeHolder === holder) return;
+  activeHolder = holder;
+  holders.forEach(h => h.classList.toggle('is-active', h === holder));
+  holders.forEach(h => {
+    if (h !== holder) silence(h);
+  });
+}
+
+// Cada evaluación manda el código: lo guardamos para poder desmontar y
+// remontar el REPL sin perder lo que el alumno escribió.
+window.addEventListener('message', (e) => {
+  if (e.source == null || typeof e.data !== 'string') return;
+  const holder = holderOf(e.source);
+  if (!holder || reloading.has(holder)) return;
+  if (e.data.trim()) holder.dataset.code = e.data;
+  setActive(holder);
+});
+
+document.querySelectorAll('.src-javascript').forEach(block => {
+  const container = block.closest('.org-src-container');
+  if (!container) return;
+  const holder = document.createElement('div');
+  holder.className = 'repl-holder';
+  holder.dataset.code = block.textContent;
+  container.parentNode.replaceChild(holder, container);
+  holders.add(holder);
+});
+
+if (holders.size) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) mountRepl(e.target);
+      else unmountRepl(e.target); // al salir de la ventana, suelta el context
+    });
+  }, { rootMargin: REPL_MARGIN });
+  holders.forEach(h => io.observe(h));
+
+  // Tope duro: si la ventana deja pasar más de los previstos, se desmontan
+  // los más lejanos al elemento que está sonando.
+  const trim = () => {
+    const live = [...holders].filter(h => h.dataset.mounted && h !== activeHolder);
+    if (live.length <= REPL_MAX_MOUNTED) return;
+    live
+      .sort((a, b) => b.getBoundingClientRect().top - a.getBoundingClientRect().top)
+      .slice(REPL_MAX_MOUNTED)
+      .forEach(unmountRepl);
+  };
+  window.addEventListener('scroll', trim, { passive: true });
+}
+const title = document.querySelector('h1.title');
+if (title) title.innerHTML += ' <img src="images/spiral.svg" alt="Strudel" style="height: 1.5em; vertical-align: middle; float: right; margin-top: -0.15em;">';
+const tocHeading = document.querySelector('#table-of-contents h2');
+const tocContent = document.querySelector('#text-table-of-contents');
+if (tocHeading && tocContent) {
+tocHeading.style.cursor = 'pointer';
+tocHeading.innerHTML = '▶ ' + tocHeading.innerHTML;
+tocContent.style.display = 'none';
+tocHeading.addEventListener('click', () => {
+const isHidden = tocContent.style.display === 'none';
+tocContent.style.display = isHidden ? 'block' : 'none';
+tocHeading.innerHTML = tocHeading.innerHTML.replace(isHidden ? '▶' : '▼', isHidden ? '▼' : '▶');
+});
+}
+
+// ── Drawer lateral de navegación estilo Strudel ──────────────────────
+function initNavDrawer() {
+  const toc = document.querySelector('#text-table-of-contents');
+  if (!toc) return;
+
+  // 1. Botón pestaña fijo en el lateral izquierdo con icono estilo GNOME
+  const toggleBtn = document.createElement('button');
+  toggleBtn.id = 'drawer-toggle';
+  toggleBtn.type = 'button';
+  toggleBtn.setAttribute('aria-label', 'Abrir índice (Alt+I)');
+  toggleBtn.title = 'Índice (Alt+I)';
+  toggleBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" role="img" aria-hidden="true"><path d="m 6 13 v -10 h -3 c -0.550781 0 -1 0.449219 -1 1 v 8 c 0 0.550781 0.449219 1 1 1 z m 0 0" fill-opacity="0.35"/><path d="m 3 1 c -1.644531 0 -3 1.355469 -3 3 v 8 c 0 1.644531 1.355469 3 3 3 h 10 c 1.644531 0 3 -1.355469 3 -3 v -8 c 0 -1.644531 -1.355469 -3 -3 -3 z m 0 2 h 3 v 10 h -3 c -0.570312 0 -1 -0.429688 -1 -1 v -8 c 0 -0.570312 0.429688 -1 1 -1 z m 4 0 h 6 c 0.570312 0 1 0.429688 1 1 v 8 c 0 0.570312 -0.429688 1 -1 1 h -6 z m 0 0"/></svg>';
+  document.body.appendChild(toggleBtn);
+
+  // 2. Backdrop difuminado
+  const backdrop = document.createElement('div');
+  backdrop.id = 'drawer-backdrop';
+  document.body.appendChild(backdrop);
+
+  // 3. Contenedor Drawer
+  const drawer = document.createElement('aside');
+  drawer.id = 'sidebar-drawer';
+  drawer.setAttribute('aria-label', 'ÍNDICE del taller');
+
+  // Cabecera
+  const header = document.createElement('div');
+  header.className = 'drawer-header';
+  header.innerHTML = `
+    <h3 class="drawer-title">ÍNDICE</h3>
+    <button class="drawer-close" type="button" aria-label="Cerrar ÍNDICE (Esc)">✕</button>
+  `;
+  drawer.appendChild(header);
+
+  // Herramientas: buscador y píldoras
+  const tools = document.createElement('div');
+  tools.className = 'drawer-tools';
+  tools.innerHTML = `
+    <div class="drawer-search-wrapper">
+      <svg class="drawer-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="search" class="drawer-search" placeholder="Filtrar (ej. lpf, bpm, cut)..." aria-label="Filtrar índice">
+    </div>
+    <div class="drawer-class-pills">
+      <span>Clase:</span>
+    </div>
+  `;
+  drawer.appendChild(tools);
+
+  // Contenido: árbol clonado
+  const content = document.createElement('div');
+  content.className = 'drawer-content';
+  const originalUl = toc.querySelector('ul');
+  if (!originalUl) return;
+  const clonedUl = originalUl.cloneNode(true);
+
+  // Transformar los li de primer nivel (Clases)
+  const pillsContainer = tools.querySelector('.drawer-class-pills');
+  const classItems = clonedUl.querySelectorAll(':scope > li');
+  classItems.forEach(li => {
+    li.classList.add('drawer-class-item');
+    const directLink = li.querySelector(':scope > a');
+    const subUl = li.querySelector(':scope > ul');
+
+    if (directLink) {
+      // Píldora de salto directo
+      const pill = document.createElement('a');
+      pill.className = 'drawer-pill';
+      pill.href = directLink.getAttribute('href');
+      const match = directLink.textContent.match(/Clase\s+([\d.]+)/i) || directLink.textContent.match(/^(\d+)/);
+      pill.textContent = match ? match[1] : directLink.textContent.trim().slice(0, 4);
+      pill.title = directLink.textContent.trim();
+      pillsContainer.appendChild(pill);
+
+      // Cabecera colapsable para la clase
+      if (subUl) {
+        const headerWrap = document.createElement('div');
+        headerWrap.className = 'drawer-class-header';
+
+        const collapseBtn = document.createElement('button');
+        collapseBtn.type = 'button';
+        collapseBtn.className = 'drawer-collapse-btn';
+        collapseBtn.innerHTML = '▼';
+        collapseBtn.setAttribute('aria-label', 'Colapsar subsecciones');
+        collapseBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isCollapsed = li.classList.toggle('is-collapsed');
+          collapseBtn.innerHTML = isCollapsed ? '▶' : '▼';
+        });
+
+        li.insertBefore(headerWrap, directLink);
+        headerWrap.appendChild(collapseBtn);
+        headerWrap.appendChild(directLink);
+      }
+    }
+  });
+
+  content.appendChild(clonedUl);
+  drawer.appendChild(content);
+
+  // Pie
+  const footer = document.createElement('div');
+  footer.className = 'drawer-footer';
+  footer.innerHTML = `
+    <span>Atajo: Alt+I · Esc</span>
+    <a href="#" class="drawer-top-link">Inicio ↑</a>
+  `;
+  drawer.appendChild(footer);
+
+  document.body.appendChild(drawer);
+
+  // Acciones de apertura y cierre
+  function openDrawer() {
+    drawer.classList.add('is-open');
+    backdrop.classList.add('is-visible');
+    const searchInput = drawer.querySelector('.drawer-search');
+    if (searchInput) setTimeout(() => searchInput.focus(), 150);
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('is-open');
+    backdrop.classList.remove('is-visible');
+  }
+
+  toggleBtn.addEventListener('click', openDrawer);
+  backdrop.addEventListener('click', closeDrawer);
+  header.querySelector('.drawer-close').addEventListener('click', closeDrawer);
+
+  // Atajos de teclado
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+      closeDrawer();
+    } else if (e.altKey && (e.key === 'i' || e.key === 'I')) {
+      e.preventDefault();
+      drawer.classList.contains('is-open') ? closeDrawer() : openDrawer();
+    }
+  });
+
+  // Clic en enlaces de navegación
+  drawer.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const href = a.getAttribute('href');
+      if (href === '#') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (href && href.startsWith('#')) {
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+          history.pushState(null, null, href);
+        }
+      }
+      if (window.innerWidth < 1000) {
+        closeDrawer();
+      }
+    });
+  });
+
+  // Filtro / buscador instantáneo
+  const searchInput = tools.querySelector('.drawer-search');
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    const allLis = content.querySelectorAll('li');
+    if (!q) {
+      allLis.forEach(li => li.style.display = '');
+      return;
+    }
+    allLis.forEach(li => li.style.display = 'none');
+    allLis.forEach(li => {
+      const text = li.textContent.toLowerCase();
+      if (text.includes(q)) {
+        let curr = li;
+        while (curr && curr !== content) {
+          if (curr.tagName === 'LI') {
+            curr.style.display = '';
+            curr.classList.remove('is-collapsed');
+            const btn = curr.querySelector(':scope > .drawer-class-header .drawer-collapse-btn');
+            if (btn) btn.innerHTML = '▼';
+          }
+          curr = curr.parentElement;
+        }
+      }
+    });
+  });
+
+  // ScrollSpy para marcar la sección activa
+  const trackedLinks = Array.from(content.querySelectorAll('a[href^="#"]')).filter(a => a.getAttribute('href') !== '#');
+  const sections = trackedLinks
+    .map(a => {
+      try {
+        return { link: a, el: document.querySelector(a.getAttribute('href')) };
+      } catch (err) {
+        return null;
+      }
+    })
+    .filter(item => item && item.el);
+
+  if ('IntersectionObserver' in window && sections.length > 0) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          trackedLinks.forEach(link => {
+            const isMatch = link.getAttribute('href') === '#' + id;
+            link.classList.toggle('active-link', isMatch);
+            if (isMatch) {
+              const classItem = link.closest('.drawer-class-item');
+              if (classItem && classItem.classList.contains('is-collapsed')) {
+                classItem.classList.remove('is-collapsed');
+                const btn = classItem.querySelector('.drawer-collapse-btn');
+                if (btn) btn.innerHTML = '▼';
+              }
+            }
+          });
+        }
+      });
+    }, {
+      rootMargin: '-15% 0px -70% 0px'
+    });
+    sections.forEach(s => observer.observe(s.el));
+  }
+}
+initNavDrawer();
+});
+</script>
+</head>
+<body>
+<nav id="clase-nav"><a href="index.html">꩜ Inicio</a><a href="clase-1.html">Clase 1</a><a href="clase-2.html">Clase 2</a><a href="clase-3.html">Clase 3</a><a href="clase-4.html">Clase 4</a><a href="clase-5.html" class="nav-active">Clase 5</a><a href="clase-6.html">Clase 6</a><a href="clase-7.html">Clase 7</a><a href="#" id="search-trigger" style="margin-left: auto; text-decoration: none;" title="Buscar en el taller"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a></nav>
+<div id="content">
+<h1 class="title">Clase 5: Síntesis</h1>
+<div id="outline-container-orgcb4c835" class="outline-2">
+<h2>Clase 5: Síntesis</h2>
+<div class="outline-text-2" id="text-5">
+<blockquote>
+<p>
+<b>Nota sobre el entorno:</b> Para esta clase vamos a seguir usando <a href="https://strudel.cc">strudel.cc</a>, pero existe una versión en desarrollo en <a href="https://warm.strudel.cc">warm.strudel.cc</a> que tiene funciones experimentales que todavía no llegaron a la versión estable. Entre ellas está <code>fm8</code>, un oscilador basado en FM de 8 operadores (similar al Yamaha DX7 real) que permite hacer FM mucho más compleja. Si quieren explorar eso después de la clase, es el lugar para hacerlo.
+</p>
+</blockquote>
+</div>
+<div id="outline-container-orga712919" class="outline-3">
+<h3>¿Qué es el sonido?</h3>
+<div class="outline-text-3" id="text-5-1">
+
+<div id="orgce4922e" class="figure">
+<p><img src="images/Capture.png" alt="Capture.png">
+</p>
+</div>
+
+<p>
+El sonido es una energía, una onda mecánica moviéndose en un medio y una sensación perceptiva, cómo nuestros cerebros y oídos interpretan esa onda. En el mundo real es un empuje de aire. En la guitarra, la señal que produce el empuja la cuerda, en la voz, las cuerdas vocales y todo esto es percibido por nuestros oídos.
+</p>
+
+
+<div id="orgf08b5f9" class="figure">
+<p><img src="images/ELEMENTOS-DE-LAS-ONDAS-MECANICAS.jpg" alt="ELEMENTOS-DE-LAS-ONDAS-MECANICAS.jpg">
+</p>
+</div>
+
+<p>
+Para quienes como yo, no recuerdan sus clases de física en el colegio. La onda mecánica es una perturbación física a través de un medio material (sólido, líquido o gaseoso) que transporta energía y cantidad de movimiento, sin transferir materia.
+</p>
+
+<blockquote>
+<p>
+(a) Oscilación de presión, tensión, desplazamiento de partículas, velocidad de partículas, etc., propagada en un medio con fuerzas internas, o la superposición de dicha oscilación propagada. (b) Sensación auditiva evocada por la oscilación descrita en (a)" (ANSI/ASA S1.1-2013) Traducido
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-orgcf1daa9" class="outline-3">
+<h3>La síntesis</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+A diferencia de un instrumento acústico donde la perturbación del aire proviene de un objeto físico vibrando, en la síntesis utilizamos electricidad o código para generar y manipular señales que luego se traducirán en sonido. Nos permite diseñar instrumentos y timbres desde cero.
+</p>
+
+
+<div id="org5c5a6c6" class="figure">
+<p><img src="images/PastImperfect_01-sBFk0b2X1mCfGUyZJ80X7Ik3ysmjZF7M.jpg" alt="PastImperfect_01-sBFk0b2X1mCfGUyZJ80X7Ik3ysmjZF7M.jpg">
+</p>
+</div>
+
+<p>
+En síntesis digital, es el proceso de generar una señal de audio eléctrica mediante algoritmos o circuitos.
+</p>
+</div>
+</div>
+<div id="outline-container-org1ceb339" class="outline-3">
+<h3>Tipos de Síntesis</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+Existen diversas familias de síntesis. En esta sesión abordaremos las cuatro principales que podemos aplicar en Strudel:
+</p>
+
+<ol class="org-ol">
+<li><b>Síntesis Aditiva:</b> Consiste en construir un sonido sumando ondas simples (frecuencias fundamentales y armónicos).</li>
+<li><b>Síntesis Sustractiva:</b> El proceso inverso; comienza con una onda rica en armónicos y recorta frecuencias específicas utilizando filtros.</li>
+<li><b>Síntesis de Tablas de Ondas (Wavetable):</b> Utiliza muestras de audio muy cortas que se reproducen en bucle para generar sonido.</li>
+<li><b>Síntesis FM (Modulación de Frecuencia):</b> Consiste en modular la frecuencia de un oscilador principal mediante otro oscilador, generando timbres complejos.</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org12030c1" class="outline-3">
+<h3>La serie armónica y los parciales</h3>
+<div class="outline-text-3" id="text-5-4">
+<p>
+Para entender la estructura de las formas de onda, es necesario repasar el concepto de Serie Armónica.
+</p>
+
+<p>
+Al tocar una nota (por ejemplo, Do2) en un piano, la cuerda vibra en su totalidad (frecuencia fundamental), pero también vibra simultáneamente en fracciones (mitades, tercios, cuartos). Estas vibraciones secundarias y de mayor frecuencia se conocen como parciales o armónicos.
+</p>
+
+<blockquote>
+
+<div id="org4cb8c26" class="figure">
+<p><img src="images/Partials_2.jpg" alt="Partials_2.jpg">
+</p>
+</div>
+</blockquote>
+
+<p>
+Estos parciales siguen una relación matemática, dividiéndose en dos grupos principales que influyen directamente en la percepción del timbre:
+</p>
+
+<ul class="org-ul">
+<li><b>Los Armónicos PARES (2, 4, 8, 16&hellip;):</b> Generan intervalos de octava. Al ser perfectamente consonantes, aportan calidez, redondez y estabilidad al sonido.</li>
+<li><b>Los Armónicos IMPARES (3, 5, 7, 9&hellip;):</b> Generan intervalos diferentes (quintas, terceras, séptimas). Aportan mayor complejidad, fricción armónica y carácter.</li>
+</ul>
+
+<p>
+El conjunto de todos estos armónicos sonando simultáneamente, y sus diferentes amplitudes relativas, es lo que nuestro oído percibe como un timbre único. Es lo que nos permite distinguir entre un piano y una trompeta tocando la misma nota fundamental.
+</p>
+
+<p>
+Como veremos a continuación, algunas formas de onda omiten parciales específicos (por ejemplo, los pares), lo que altera radicalmente el timbre resultante.
+</p>
+</div>
+</div>
+<div id="outline-container-org8c00ac3" class="outline-3">
+<h3>En Strudel</h3>
+<div class="outline-text-3" id="text-5-5">
+<p>
+Con la síntesis aditiva podemos utilizar código para controlar cada parcial independientemente y ajustar su amplitud, construyendo la forma de la onda final.
+</p>
+</div>
+</div>
+<div id="outline-container-orgdef5110" class="outline-3">
+<h3>Oscilador vs. Osciloscopio</h3>
+<div class="outline-text-3" id="text-5-6">
+<p>
+Para visualizar y escuchar el comportamiento de las ondas:
+</p>
+<ul class="org-ul">
+<li><b>Oscilador</b>: Es el generador de la señal de audio (ej: <code>s("sine")</code>).</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("sine") // El oscilador base en strudel se llama superdough
+</code></pre>
+</div>
+
+<ul class="org-ul">
+<li><b>Osciloscopio</b>: Es una herramienta de visualización que muestra la forma de onda de la señal a lo largo del tiempo (ej: <code>._scope()</code>). No genera sonido por sí mismo.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("sine")._scope()
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org63ce2aa" class="outline-3">
+<h3>Las 4 Ondas Clásicas</h3>
+<div class="outline-text-3" id="text-5-7">
+<p>
+La forma geométrica de estas ondas determina su contenido armónico y, en consecuencia, su timbre.
+</p>
+</div>
+<div id="outline-container-orgfdbc5b3" class="outline-4">
+<h4 id="orgfdbc5b3"><span class="section-number-4">5.7.1.</span> Onda senoidal (Sine)</h4>
+<div class="outline-text-4" id="text-5-7-1">
+
+<div id="org6f23d87" class="figure">
+<p><img src="images/Sine_Wave_(PSF).png" alt="Sine_Wave_(PSF).png">
+</p>
+</div>
+
+<p>
+Representa un movimiento armónico simple. No posee armónicos adicionales; toda su energía se concentra en la frecuencia fundamental. 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("sine")._scope()._spectrum()
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org9eec5e3" class="outline-4">
+<h4 id="org9eec5e3"><span class="section-number-4">5.7.2.</span> Onda diente de sierra (Sawtooth)</h4>
+<div class="outline-text-4" id="text-5-7-2">
+<img src="images/sawtooth.png" style="max-width:100%; height:auto;">
+
+<p>
+Sube de forma lineal y cae abruptamente. Contiene <b>todos los armónicos</b> (pares e impares) en amplitudes decrecientes. Es un sonido muy rico en frecuencias, utilizado comúnmente en la síntesis sustractiva como base.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("sawtooth")._scope()._spectrum()
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org5c19521" class="outline-4">
+<h4 id="org5c19521"><span class="section-number-4">5.7.3.</span> Onda cuadrada (Square)</h4>
+<div class="outline-text-4" id="text-5-7-3">
+<img src="images/square.png" style="max-width:100%; height:auto;">
+
+<p>
+Alterna instantáneamente entre valores máximos positivos y negativos. Debido a su simetría, <b>solo contiene armónicos impares</b>. Su falta de armónicos pares le otorga un timbre más hueco.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("square")._scope()._spectrum()
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org9c11779" class="outline-4">
+<h4 id="org9c11779"><span class="section-number-4">5.7.4.</span> Onda triangular (Triangle)</h4>
+<div class="outline-text-4" id="text-5-7-4">
+<img src="images/triangle.png" style="max-width:100%; height:auto;">
+
+<p>
+Sube y baja a una velocidad constante formando un triángulo. Al igual que la cuadrada, <b>solo contiene armónicos impares</b>, pero la amplitud de estos armónicos decae de manera mucho más abrupta, sonando más pura.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Activa uno a la vez (los dos juntos no funcionan correctamente):
+s("triangle")._scope()
+// s("triangle")._spectrum() // &lt;- descomenta esta y comenta la anterior para ver el espectro
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orge81f74d" class="outline-4">
+<h4 id="orge81f74d"><span class="section-number-4">5.7.5.</span> Ruido (White / Pink noise)</h4>
+<div class="outline-text-4" id="text-5-7-5">
+<p>
+El ruido no tiene una frecuencia fundamental definida. Contiene todas las frecuencias al mismo tiempo, distribuidas de distinta manera según el tipo:
+</p>
+
+<ul class="org-ul">
+<li><b>White noise:</b> Todas las frecuencias con la misma amplitud. Suena muy brillante, como estática de radio o una cascada.</li>
+<li><b>Pink noise:</b> Las frecuencias graves tienen más energía que las agudas (la energía cae 3 dB por octava). Suena más cálido. Es el ruido que más se parece a sonidos naturales.</li>
+</ul>
+
+<p>
+El ruido es fundamental para construir percusión sintética: un snare, un hi-hat y una caja de ritmos entera se pueden construir filtrando y envolveando ruido.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Ruido blanco con envolvente — base de un snare
+s("white").adsr("0:0.15:0:0.05")
+</code></pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Ruido rosado (pink) con filtro — más cálido
+s("pink").lpf(800).adsr("0:0.3:0:0.1")
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org4cc5a06" class="outline-3">
+<h3>Síntesis Aditiva con <code>partials()</code></h3>
+<div class="outline-text-3" id="text-5-8">
+<p>
+Hasta ahora hemos usado ondas predefinidas. Con la función <code>partials()</code> podemos construir un timbre desde cero, especificando cuánta energía tiene cada armónico de forma manual.
+</p>
+
+<p>
+El primer valor es el fundamental, el segundo es el segundo armónico, el tercero el tercero, y así sucesivamente. Un valor <code>0</code> significa que ese armónico no suena.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Filtramos una onda sierra para dejar solo el fundamental (suena como una senoidal pura)
+note("c3").s("sawtooth").partials([1])
+</code></pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Agregando armónicos uno por uno — escucha cómo cambia el timbre
+note("c3").s("sawtooth").partials([1, 0.5, 0.25, 0.1])
+</code></pre>
+</div>
+
+<p>
+<b>Actividad: Construye tu propia onda</b>
+</p>
+
+<p>
+Modifica los valores del arreglo para intentar imitar el comportamiento de las ondas que ya conoces:
+</p>
+<ul class="org-ul">
+<li>La onda cuadrada tiene solo armónicos impares (posiciones 1, 3, 5&hellip;). Pon en 0 los pares.</li>
+<li>La onda de sierra tiene todos los armónicos con amplitud decreciente.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Tu onda personalizada — modifica los valores para esculpir los armónicos:
+note("c3").s("sawtooth").partials([1, 0, 0.33, 0, 0.2, 0, 0.14])
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org06f9632" class="outline-3">
+<h3>Envolventes de Amplitud (ADSR)</h3>
+<div class="outline-text-3" id="text-5-9">
+<p>
+Los osciladores básicos producen una señal estática e infinita. En la realidad, el sonido de los instrumentos varía en el tiempo. Una cuerda percutida tiene un inicio abrupto y decaimiento rápido, mientras que un instrumento de arco puede tener un inicio gradual.
+</p>
+
+<p>
+Para moldear el volumen de las señales a lo largo del tiempo, utilizamos las envolventes. El modelo estándar es el <b>ADSR</b>.
+</p>
+
+
+<div id="org527fc20" class="figure">
+<p><img src="images/ADSR_parameter.svg" alt="ADSR_parameter.svg" class="org-svg">
+</p>
+</div>
+
+<ul class="org-ul">
+<li><b>A (Attack / Ataque):</b> El tiempo que tarda el sonido en alcanzar su amplitud máxima después de ser activado.</li>
+<li><b>D (Decay / Decaimiento):</b> El tiempo que tarda el sonido en pasar de la amplitud máxima al nivel de sostenido.</li>
+<li><b>S (Sustain / Sostenido):</b> El nivel de amplitud que se mantiene constante mientras la nota siga activada. Es el único parámetro que representa un nivel y no un tiempo.</li>
+<li><b>R (Release / Liberación):</b> El tiempo que tarda el sonido en desvanecerse hasta el silencio una vez que la nota deja de estar activada.</li>
+</ul>
+</div>
+<div id="outline-container-orgfcdb3f1" class="outline-4">
+<h4 id="orgfcdb3f1"><span class="section-number-4">5.9.1.</span> Controlando el ADSR en Strudel</h4>
+<div class="outline-text-4" id="text-5-9-1">
+<p>
+En Strudel podemos usar los parámetros individuales <code>.attack()</code>, <code>.decay()</code>, <code>.sustain()</code> y <code>.release()</code>, o emplear la función agrupada <code>.adsr("attack:decay:sustain:release")</code>. 
+</p>
+
+<p>
+<b>Ejercicio práctico</b>
+Aplicando una envolvente podemos convertir una onda diente de sierra sostenida en un sonido de tipo "pluck" (punteo corto). 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// 1. Escucha la onda original (descomentando la línea con //)
+// 2. Escucha el efecto de la envolvente con .adsr()
+
+note("[c3 bb2 f3 eb3]*2")
+  .sound("sawtooth")
+  .lpf(600) 
+  .adsr("0:0.1:0:0.2") // Attack 0, Decay 0.1s, Sustain 0, Release 0.2s
+</code></pre>
+</div>
+
+<p>
+<b>Actividad: Diseña una textura diferente</b>
+</p>
+
+<p>
+Usando el mismo patrón de notas, modifica los valores del ADSR para conseguir dos sonidos distintos:
+</p>
+
+<ol class="org-ol">
+<li>Un <b>pad</b> (textura de cuerdas o sintetizador sostenido): ataque lento, sustain alto, release largo.</li>
+<li>Un <b>stab</b> (acorde corto y percusivo): ataque casi cero, decay corto, sustain cero.</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Punto de partida — modifica attack, decay, sustain y release:
+note("[c3 bb2 f3 eb3]*2")
+  .sound("sawtooth")
+  .adsr("0:0.5:0.8:1") // &lt;- intenta transformar esto en un pad
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgccc9c44" class="outline-3">
+<h3>Síntesis Sustractiva: Filtros</h3>
+<div class="outline-text-3" id="text-5-10">
+<p>
+Si la síntesis aditiva es construir un sonido sumando parciales, la síntesis sustractiva consiste en tomar un sonido rico en armónicos (como una onda de sierra o cuadrada) y atenuar frecuencias específicas utilizando un filtro.
+</p>
+
+<p>
+En Strudel, los filtros más comunes son:
+</p>
+<ul class="org-ul">
+<li><code>.lpf(frecuencia)</code> (Low-Pass Filter): Filtro pasa-bajo. Deja pasar las frecuencias graves y recorta las agudas. Muy utilizado para líneas de bajo.</li>
+<li><code>.hpf(frecuencia)</code> (High-Pass Filter): Filtro pasa-alto. Deja pasar las frecuencias agudas y recorta las graves.</li>
+<li><code>.bpf(frecuencia)</code> (Band-Pass Filter): Filtro pasa-banda. Deja pasar un rango específico de frecuencias, atenuando tanto graves como agudos.</li>
+</ul>
+
+<p>
+Además de la frecuencia de corte, los filtros cuentan con un parámetro de resonancia (o factor Q). Si alguna vez has usado un ecualizador paramétrico, es exactamente el mismo concepto: el factor Q determina qué tan ancha o estrecha es la "campana" o el pico de frecuencias que estamos afectando. Un Q alto genera un pico muy estrecho y pronunciado justo en la frecuencia de corte, mientras que un Q bajo genera una curva mucho más suave.
+</p>
+
+<p>
+En Strudel se controla con <code>.lpq()</code>, <code>.hpq()</code> o <code>.bpq()</code>. Esta resonancia amplifica la frecuencia exacta donde ocurre el corte, generando un sonido característico de sintetizadores clásicos como el TB-303.
+</p>
+
+
+<div id="org4c25651" class="figure">
+<p><img src="images/qfactor.jpg" alt="qfactor.jpg">
+</p>
+<p><span class="figure-number">Figura 4: </span>Gráfico que muestra cómo distintos valores de Q afectan la resonancia alrededor de la frecuencia de corte.</p>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Cambia el valor del .lpf y .lpq para escuchar la diferencia
+note("c2*4").s("sawtooth")
+  .lpf(400) 
+  .lpq(15) 
+</code></pre>
+</div>
+
+<p>
+<b>Actividad: Esculpe un bajo</b>
+</p>
+
+<p>
+Usando una onda de sierra como punto de partida, ajusta el filtro pasa-bajo y la resonancia para conseguir dos timbres distintos:
+</p>
+
+<ol class="org-ol">
+<li>Un bajo oscuro y cerrado (frecuencia de corte baja, sin resonancia).</li>
+<li>Un bajo con carácter ácido similar al TB-303 (frecuencia media, resonancia alta).</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Punto de partida — modifica .lpf y .lpq:
+note("[c2 c2 eb2 g2]*2").s("sawtooth")
+  .lpf(300)
+  .lpq(5)
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgbb81b80" class="outline-3">
+<h3>Síntesis FM (Modulación de Frecuencia)</h3>
+<div class="outline-text-3" id="text-5-11">
+<p>
+La síntesis FM utiliza un oscilador para modular la frecuencia de otro oscilador. En lugar de usar filtros convencionales, esta técnica genera espectros armónicos complejos al variar la frecuencia a niveles muy rápidos.
+</p>
+
+<p>
+Es especialmente útil para crear sonidos metálicos, campanas, pianos eléctricos o texturas que son difíciles de lograr con síntesis sustractiva (fue popularizada en los 80s por sintetizadores como el Yamaha DX7).
+</p>
+
+<p>
+En Strudel, se utiliza <code>.fm()</code> para definir la cantidad de modulación (intensidad) y <code>.fmh()</code> para controlar la proporción armónica o frecuencia del oscilador modulador.
+</p>
+
+<p>
+El siguiente bloque incluye diversos ejemplos de modulación de frecuencia programados por el artista glossing:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Ejemplos de Síntesis FM
+// @title FM youtube @by glossing
+setcpm(170 / 4)
+
+// 1. FM Básico: Modulando una onda Sawtooth
+// $_: s("saw")
+//   .fm(slider(3.6, 0, 20))
+//   .fmh(slider(3.4645, 0.5, 4))
+
+// 2. Reese Bass: Usando FM para engordar el sonido de un bajo
+// $_: s("saw").note("F1")
+//   .fm(slider(0.996, 0, 3)).fmh("0.99, 1.01")
+//   .lpf(slider(4121.6, 200, 5000))
+//   .diode(1.3).compressor(-20)
+
+// 3. Secuencia rítmica
+// $: n(irand(12).seg(4)).scale("F:minor")
+//   .s("saw").rel(0.5)
+//   .fm(slider(0.084, 0, 1)).fmwave("pink")
+// $: s("breaks/2").bank("fmdemo").fit().compressor(-20).soft(2).lpf(8000)
+</code></pre>
+</div>
+
+<p>
+<i>Nota: Créditos a Gossling por el código demostrativo y su video tutorial sobre síntesis FM en Strudel en <a href="https://www.youtube.com/watch?v=8ruLuZv1ju8">https://www.youtube.com/watch?v=8ruLuZv1ju8</a></i>
+</p>
+
+<p>
+<b>Actividad: Explora la síntesis FM</b>
+</p>
+
+<p>
+Descomenta cada sección del bloque anterior una por una (borra el <code>//</code> al inicio de cada línea). Antes de pasar a la siguiente, intenta responder:
+</p>
+
+<ul class="org-ul">
+<li>¿Cómo cambia el timbre al subir el valor de <code>.fm()</code>?</li>
+<li>¿Qué diferencia se nota entre un <code>.fmh()</code> cercano a 1 y uno con valor 3 o 4?</li>
+<li>¿En qué se diferencia el Reese Bass del FM básico?</li>
+</ul>
+
+<p>
+No hay una respuesta correcta — el objetivo es desarrollar el oído para reconocer cómo cada parámetro afecta el resultado sonoro.
+</p>
+</div>
+</div>
+<div id="outline-container-orgeb8443d" class="outline-3">
+<h3>Growl Bass</h3>
+<div class="outline-text-3" id="text-5-12">
+<p>
+Un growl (en español, "gruñido") es una técnica de diseño sonoro que combina FM con un filtro en movimiento para generar una textura que imita el gruñido de un instrumento de viento o de una voz gutural. Es un sonido muy utilizado en drum and bass, neurofunk y tecnología de síntesis avanzada.
+</p>
+
+<p>
+La clave está en usar <code>.fm()</code> con una cantidad moderada de modulación y dejar que el filtro (<code>.lpf</code>) haga el trabajo de modelar el carácter del gruñido. Al combinar ambos, la onda de sierra pierde sus frecuencias altas de manera dinámica, creando esa sensación de movimiento y agresión.
+</p>
+
+<p>
+Para lograr el tono rasgado y vocal típico de Skrillex, no basta con FM básica. La clave es:
+</p>
+<ol class="org-ol">
+<li>Usar un filtro pasa-banda (<code>.bpf()</code>) muy resonante en movimiento rápido para crear el efecto "vocal" (formantes).</li>
+<li>Modular la propia cantidad de FM de manera dinámica, para que la distorsión cruja con el ritmo.</li>
+<li>Añadir mucha saturación para ensuciar la textura final.</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Skrillex Growl: FM Modulada + Filtro Pasa-banda rápido + Distorsión
+note("f1(3,8)")
+  .s("sawtooth")
+  .fm(sine.range(1, 6).fast(2)) // FM modulando rápidamente
+  .fmh(0.5)
+  .bpf(sine.range(300, 2500).fast(4)) // Filtro vocal moviéndose
+  .bpq(20) // Alta resonancia para el efecto vowel (Yai/Yoi)
+  .distort(0.9) // Distorsión agresiva
+  .crush(8) // Bitcrush para añadir mugre digital
+  .adsr("0:0.1:0.5:0.1")
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="class-nav-footer">
+  <a href="clase-4.html" class="nav-btn prev">
+    <span class="nav-label">Anterior</span>
+    <span class="nav-title">Clase 4</span>
+  </a>
+  <a href="clase-6.html" class="nav-btn next">
+    <span class="nav-label">Siguiente</span>
+    <span class="nav-title">Clase 6</span>
+  </a>
+</div>
+<a id="back-to-top" href="#" title="Volver al inicio" aria-label="Volver al inicio">↑</a>
+<script>
+(function(){
+  var b=document.getElementById('back-to-top');
+  window.addEventListener('scroll',function(){b.classList.toggle('visible',scrollY>400);});
+  b.addEventListener('click',function(e){e.preventDefault();scrollTo({top:0,behavior:'smooth'});});
+})();
+</script>
+<script src="lightbox.js"></script>
+<script src="search.js"></script>
+</body>
+</html>
