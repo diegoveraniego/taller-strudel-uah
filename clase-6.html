@@ -390,7 +390,7 @@ initNavDrawer();
 <nav id="clase-nav"><a href="index.html">꩜ Inicio</a><a href="clase-1.html">Clase 1</a><a href="clase-2.html">Clase 2</a><a href="clase-3.html">Clase 3</a><a href="clase-4.html">Clase 4</a><a href="clase-5.html">Clase 5</a><a href="clase-6.html" class="nav-active">Clase 6</a><a href="clase-7.html">Clase 7</a><a href="#" id="search-trigger" style="margin-left: auto; text-decoration: none;" title="Buscar en el taller"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a></nav>
 <div id="content">
 <h1 class="title">Clase 6: Recursos de diseño sonoro (Ear Candy)</h1>
-<div id="outline-container-org688e223" class="outline-2">
+<div id="outline-container-org76ec987" class="outline-2">
 <h2>Clase 6: Recursos de diseño sonoro (Ear Candy)</h2>
 <div class="outline-text-2" id="text-6">
 <img src="images/obra_en_proceso.jpg" style="max-width:100%; height:auto;" alt="Obra en proceso">
@@ -399,8 +399,8 @@ initNavDrawer();
 Lo que sigue son recetas de diseño sonoro y técnicas avanzadas para referencia. Ideal para aplicar directamente en tus producciones.
 </p>
 </div>
-<div id="outline-container-orgced53c5" class="outline-4">
-<h4 id="orgced53c5"><span class="section-number-4">6.0.1.</span> Acid Bass (estilo TB-303)</h4>
+<div id="outline-container-org93cd623" class="outline-4">
+<h4 id="org93cd623"><span class="section-number-4">6.0.1.</span> Acid Bass (estilo TB-303)</h4>
 <div class="outline-text-4" id="text-6-0-1">
 <p>
 El sonido clásico del acid house. La base es una onda de sierra (<code>sawtooth</code>) porque es rica en armónicos. Para darle ese clásico "chillido", usamos un filtro de paso bajo (LPF) con una resonancia altísima (<code>.lpq(30)</code>).
@@ -433,26 +433,36 @@ Aquí lo exageramos un poco más añadiendo <code>.distort(0.8)</code> para romp
 </div>
 </div>
 </div>
-<div id="outline-container-org5db3d1b" class="outline-4">
-<h4 id="org5db3d1b"><span class="section-number-4">6.0.2.</span> Reese Bass</h4>
+<div id="outline-container-org1858c10" class="outline-4">
+<h4 id="org1858c10"><span class="section-number-4">6.0.2.</span> Reese Bass</h4>
 <div class="outline-text-4" id="text-6-0-2">
 <p>
-Dos osciladores de sierra casi en la misma frecuencia, con una diferencia de unos 15 cents. Esa pequeña diferencia genera batimentos (interferencia entre las dos ondas) que dan el movimiento interno característico del jungle y el drum and bass:
+Dos osciladores de sierra casi en la misma frecuencia, con una diferencia de unos 15 cents. Esa pequeña diferencia genera batimentos (interferencia entre las dos ondas) que dan el movimiento interno característico del jungle y el drum and bass. Además, agregamos una sub-frecuencia senoidal para darle peso, y usamos <code>.penv()</code> para darle "punch" inicial:
 </p>
 
 <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; max-width:100%; margin-bottom: 1rem;"><iframe style="position:absolute; top:0; left:0; width:100%; height:100%;" src="https://www.youtube.com/embed/yGMv85gpv34" frameborder="0" allowfullscreen></iframe></div>
 
 <div class="org-src-container">
 <pre class="src src-javascript"><code>stack(
-  note("c2*4").s("sawtooth"),
-  note("c2*4").s("sawtooth").detune(25)
-).gain(0.6).lpf(1200).lpq(6).distort(0.4)
+  note("c2*4").s("saw").detune(-12).pan(0.15),
+  note("c2*4").s("saw").detune(12).pan(0.85),
+  note("c2*4").s("sine").gain(0.8).pan(0.5)
+)
+  .lpf(sine.range(350, 1600).slow(4))
+  .lpq(3)
+  .distort(0.7)
+  .gain(0.7)
+  .chorus(2)
+  .penv(0.8) // &lt;- ¡Aquí aplicamos el Pitch Envelope para darle ataque al bajo!
+  .compressor(-20)
+  .room(0.8)
+  .fast(4)
 </code></pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgeab0408" class="outline-4">
-<h4 id="orgeab0408"><span class="section-number-4">6.0.3.</span> Wobble Bass</h4>
+<div id="outline-container-org2a25fc1" class="outline-4">
+<h4 id="org2a25fc1"><span class="section-number-4">6.0.3.</span> Wobble Bass</h4>
 <div class="outline-text-4" id="text-6-0-3">
 <p>
 El filtro se mueve lento con un LFO y ese movimiento define el ritmo. Dubstep clásico, exagerado con más resonancia:
@@ -470,9 +480,34 @@ El filtro se mueve lento con un LFO y ese movimiento define el ritmo. Dubstep cl
 </div>
 </div>
 </div>
-<div id="outline-container-org2c636da" class="outline-4">
-<h4 id="org2c636da"><span class="section-number-4">6.0.4.</span> Chord Stab</h4>
+<div id="outline-container-org28ba649" class="outline-4">
+<h4 id="org28ba649"><span class="section-number-4">6.0.4.</span> Control en tiempo real (Sliders interactivos)</h4>
 <div class="outline-text-4" id="text-6-0-4">
+<p>
+¿Sabías que puedes controlar parámetros como efectos o envolventes en tiempo real usando deslizadores visuales?
+En Strudel puedes usar la función <code>slider("nombre", valor_inicial, minimo, maximo, paso)</code> en casi cualquier parámetro numérico. Esto es ideal para "tocar" efectos en vivo, como un efecto de reducción de bits (<code>.crush()</code>) que destruye la señal imitando procesadores antiguos.
+</p>
+
+<p>
+Pruébalo ejecutando el siguiente código y mueve los sliders que aparecerán en pantalla:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>note("c2(3,8)").s("sawtooth")
+  .crush(slider("crush", 16, 1, 16, 1)) // 1 = totalmente destruido, 16 = limpio
+  .adsr(
+    slider("attack", 0, 0, 1, 0.01),
+    0.1,
+    0,
+    slider("release", 0.1, 0, 1, 0.01)
+  )
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgabb2324" class="outline-4">
+<h4 id="orgabb2324"><span class="section-number-4">6.0.5.</span> Chord Stab</h4>
+<div class="outline-text-4" id="text-6-0-5">
 <p>
 Un acorde con decay muy corto. Lo que le da carácter es la resonancia del filtro y que muere rápido:
 </p>
@@ -486,9 +521,9 @@ Un acorde con decay muy corto. Lo que le da carácter es la resonancia del filtr
 </div>
 </div>
 </div>
-<div id="outline-container-org216f8eb" class="outline-4">
-<h4 id="org216f8eb"><span class="section-number-4">6.0.5.</span> Supersaw</h4>
-<div class="outline-text-4" id="text-6-0-5">
+<div id="outline-container-org160cc9d" class="outline-4">
+<h4 id="org160cc9d"><span class="section-number-4">6.0.6.</span> Supersaw</h4>
+<div class="outline-text-4" id="text-6-0-6">
 <p>
 Varias sierras apiladas, cada una ligeramente desafinada respecto a la anterior. El resultado es ese sonido ancho y denso del trance y el electro. Le agregamos delay para que suene gigante:
 </p>
@@ -505,9 +540,9 @@ Varias sierras apiladas, cada una ligeramente desafinada respecto a la anterior.
 </div>
 </div>
 </div>
-<div id="outline-container-orgae009bd" class="outline-4">
-<h4 id="orgae009bd"><span class="section-number-4">6.0.6.</span> Kick sintético</h4>
-<div class="outline-text-4" id="text-6-0-6">
+<div id="outline-container-org7b5ce3c" class="outline-4">
+<h4 id="org7b5ce3c"><span class="section-number-4">6.0.7.</span> Kick sintético</h4>
+<div class="outline-text-4" id="text-6-0-7">
 <p>
 Un seno grave con decay rápido. El pitch no cae en este ejemplo (para hacerlo más realista habría que modularlo con una envolvente de pitch, que requiere más código):
 </p>
@@ -520,9 +555,9 @@ Un seno grave con decay rápido. El pitch no cae en este ejemplo (para hacerlo m
 </div>
 </div>
 </div>
-<div id="outline-container-orgc5432da" class="outline-4">
-<h4 id="orgc5432da"><span class="section-number-4">6.0.7.</span> Percusión con ruido (snare / hi-hat)</h4>
-<div class="outline-text-4" id="text-6-0-7">
+<div id="outline-container-orga16d0ae" class="outline-4">
+<h4 id="orga16d0ae"><span class="section-number-4">6.0.8.</span> Percusión con ruido (snare / hi-hat)</h4>
+<div class="outline-text-4" id="text-6-0-8">
 <p>
 El snare es ruido blanco con un filtro que deja pasar la parte media-alta, y un decay corto. El hi-hat es lo mismo pero más agudo y más breve:
 </p>
@@ -540,9 +575,9 @@ s("white*8").hpf(8000).adsr("0:0.03:0:0.01")
 </div>
 </div>
 </div>
-<div id="outline-container-orgdc7bc51" class="outline-4">
-<h4 id="orgdc7bc51"><span class="section-number-4">6.0.8.</span> Lo-fi / Bitcrush</h4>
-<div class="outline-text-4" id="text-6-0-8">
+<div id="outline-container-org73fe230" class="outline-4">
+<h4 id="org73fe230"><span class="section-number-4">6.0.9.</span> Lo-fi / Bitcrush</h4>
+<div class="outline-text-4" id="text-6-0-9">
 <p>
 <code>.crush()</code> reduce la resolución de bits de la señal. Con valores bajos (entre 1 y 8) se consigue ese sonido degradado de consola o de cinta vieja. Boards of Canada lo usa mucho para darle esa textura de recuerdo borroso a sus pads:
 </p>
@@ -555,9 +590,9 @@ s("white*8").hpf(8000).adsr("0:0.03:0:0.01")
 </div>
 </div>
 </div>
-<div id="outline-container-orgc5ac6db" class="outline-4">
-<h4 id="orgc5ac6db"><span class="section-number-4">6.0.9.</span> Growl estilo Skrillex</h4>
-<div class="outline-text-4" id="text-6-0-9">
+<div id="outline-container-orgdc2a7cd" class="outline-4">
+<h4 id="orgdc2a7cd"><span class="section-number-4">6.0.10.</span> Growl estilo Skrillex</h4>
+<div class="outline-text-4" id="text-6-0-10">
 <p>
 La diferencia con el growl básico está en <code>.vowel()</code>. Esta función aplica un filtro de formantes que imita la cavidad bucal al pronunciar vocales. Al pasarle un patrón de vocales, el filtro cambia de forma continua, y eso es lo que genera el movimiento de "voz que habla" del bass music más agresivo:
 </p>
@@ -577,9 +612,9 @@ note("[c1 ~ c1 ~]*2")
 </div>
 </div>
 </div>
-<div id="outline-container-org215e092" class="outline-4">
-<h4 id="org215e092"><span class="section-number-4">6.0.10.</span> Risers y Downlifters (Transiciones)</h4>
-<div class="outline-text-4" id="text-6-0-10">
+<div id="outline-container-org4b51e78" class="outline-4">
+<h4 id="org4b51e78"><span class="section-number-4">6.0.11.</span> Risers y Downlifters (Transiciones)</h4>
+<div class="outline-text-4" id="text-6-0-11">
 <p>
 Estos elementos crean tensión (risers) o liberan energía (downlifters) entre secciones. En lugar de solo subir el volumen, prueba estas técnicas poco convencionales:
 </p>
@@ -618,7 +653,7 @@ note("c3*16").s("sawtooth").adsr("0:0.03:0:0").gain(0.6)
 </div>
 </div>
 </div>
-<div id="outline-container-org320362c" class="outline-3">
+<div id="outline-container-org4214fe9" class="outline-3">
 <h3>Taller de modulación avanzada (LFO)</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
