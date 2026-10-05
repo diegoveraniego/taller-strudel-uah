@@ -20,8 +20,6 @@ filename_aliases = {
     "square.png": "square.svg",
     "triangle.jpg": "triangle.svg",
     "triangle.png": "triangle.svg",
-    "acid_eq.png": "Captura de pantalla_20260907_141929.png",
-    "obra_en_proceso.jpg": "Captura de pantalla_20260906_221624.png",
 }
 
 def fix_content_images(content):
