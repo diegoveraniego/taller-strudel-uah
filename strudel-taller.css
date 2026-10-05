@@ -1,5 +1,23 @@
 /* Protesilaos-inspired Academic/Blog Theme (Modus Operandi / Vivendi style) */
 
+.nav-strudel-btn {
+  background: var(--accent);
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  padding: 0.35rem 0.75rem !important;
+  border-radius: 6px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.nav-strudel-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+
 :root {
   /* Light mode (Modus Operandi style) */
   --bg: #ffffff;
