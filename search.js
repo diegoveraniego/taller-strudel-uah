@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
     { url: 'clase-5.html', title: 'Clase 5' },
     { url: 'clase-6.html', title: 'Clase 6' },
     { url: 'clase-7.html', title: 'Clase 7' },
+    { url: 'que-viene-despues.html', title: '¿Qué viene después?' },
     { url: 'cheatsheet.html', title: 'Cheatsheet' },
     { url: 'glosario.html', title: 'Glosario (AuroraX98)' },
     { url: 'encuesta.html', title: 'Encuesta Final' }

@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>꩜ ¿Qué viene después? — Taller de Strudel</title>
+<meta name="author" content="Diego Aliaga"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>꩜</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="strudel-taller.css">
+<style>
+#clase-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  padding: .5rem 2rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+#clase-nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: .9rem;
+  font-weight: 500;
+  padding: .25rem .5rem;
+  border-radius: 4px;
+  transition: color .15s, background .15s;
+}
+#clase-nav a:hover { color: var(--text); background: var(--border); }
+#clase-nav a.nav-active { color: var(--accent); font-weight: 700; }
+
+.community-box {
+  background: var(--desafio-bg);
+  border: 2px solid var(--desafio-border);
+  border-left: 6px solid var(--accent);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+.community-box h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+  color: var(--text);
+}
+.community-box p {
+  margin: 0 0 0.9rem;
+  line-height: 1.55;
+}
+.community-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--accent);
+  color: var(--bg) !important;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 6px;
+  text-decoration: none !important;
+  transition: opacity 0.15s;
+}
+.community-btn:hover {
+  opacity: 0.88;
+}
+.next-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.next-card {
+  background: var(--bg-2);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 1.1rem 1.2rem;
+  text-decoration: none;
+  color: var(--text) !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: border-color 0.15s, transform 0.1s;
+}
+.next-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+.next-card strong {
+  font-size: 1rem;
+  color: var(--accent);
+}
+.next-card span {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://unpkg.com/@strudel/embed@latest"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+hljs.highlightAll();
+const REPL_MARGIN = '800px 0px';
+const REPL_MAX_MOUNTED = 6;
+const holders = new Set();
+const reloading = new WeakSet();
+let activeHolder = null;
+
+function mountRepl(holder) {
+  if (holder.dataset.mounted) return;
+  holder.dataset.mounted = '1';
+  const editor = document.createElement('strudel-repl');
+  editor.innerHTML = '<!--\n' + holder.dataset.code + '\n-->';
+  holder.appendChild(editor);
+}
+
+function unmountRepl(holder) {
+  if (!holder.dataset.mounted || holder === activeHolder) return;
+  holder.dataset.mounted = '';
+  holder.textContent = '';
+}
+
+function silence(holder) {
+  const frame = holder.querySelector('iframe');
+  if (!frame) return;
+  reloading.add(holder);
+  frame.addEventListener('load', () => reloading.delete(holder), { once: true });
+  setTimeout(() => reloading.delete(holder), 8000);
+  frame.src = frame.src;
+}
+
+function holderOf(source) {
+  for (const h of holders) {
+    const frame = h.querySelector('iframe');
+    if (frame && frame.contentWindow === source) return h;
+  }
+  return null;
+}
+
+function setActive(holder) {
+  if (activeHolder === holder) return;
+  activeHolder = holder;
+  holders.forEach(h => h.classList.toggle('is-active', h === holder));
+  holders.forEach(h => {
+    if (h !== holder) silence(h);
+  });
+}
+
+window.addEventListener('message', (e) => {
+  if (e.source == null || typeof e.data !== 'string') return;
+  const holder = holderOf(e.source);
+  if (!holder || reloading.has(holder)) return;
+  if (e.data.trim()) holder.dataset.code = e.data;
+  setActive(holder);
+});
+
+document.querySelectorAll('.src-javascript').forEach(block => {
+  const container = block.closest('.org-src-container');
+  if (!container) return;
+  const holder = document.createElement('div');
+  holder.className = 'repl-holder';
+  holder.dataset.code = block.textContent;
+  container.parentNode.replaceChild(holder, container);
+  holders.add(holder);
+});
+
+if (holders.size) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) mountRepl(e.target);
+      else unmountRepl(e.target);
+    });
+  }, { rootMargin: REPL_MARGIN });
+  holders.forEach(h => io.observe(h));
+
+  const trim = () => {
+    const live = [...holders].filter(h => h.dataset.mounted && h !== activeHolder);
+    if (live.length <= REPL_MAX_MOUNTED) return;
+    live
+      .sort((a, b) => b.getBoundingClientRect().top - a.getBoundingClientRect().top)
+      .slice(REPL_MAX_MOUNTED)
+      .forEach(unmountRepl);
+  };
+  window.addEventListener('scroll', trim, { passive: true });
+}
+const title = document.querySelector('h1.title');
+if (title) title.innerHTML += ' <img src="images/spiral.svg" alt="Strudel" style="height: 1.5em; vertical-align: middle; float: right; margin-top: -0.15em;">';
+const tocHeading = document.querySelector('#table-of-contents h2');
+const tocContent = document.querySelector('#text-table-of-contents');
+if (tocHeading && tocContent) {
+tocHeading.style.cursor = 'pointer';
+tocHeading.innerHTML = '▶ ' + tocHeading.innerHTML;
+tocContent.style.display = 'none';
+tocHeading.addEventListener('click', () => {
+const isHidden = tocContent.style.display === 'none';
+tocContent.style.display = isHidden ? 'block' : 'none';
+tocHeading.innerHTML = tocHeading.innerHTML.replace(isHidden ? '▶' : '▼', isHidden ? '▼' : '▶');
+});
+}
+
+function initNavDrawer() {
+  const toc = document.getElementById('text-table-of-contents');
+  if (!toc) return;
+
+  const toggleBtn = document.createElement('button');
+  toggleBtn.id = 'drawer-toggle';
+  toggleBtn.type = 'button';
+  toggleBtn.setAttribute('aria-label', 'Abrir índice de contenidos (Alt+I)');
+  toggleBtn.setAttribute('title', 'Índice de contenidos (Alt+I)');
+  toggleBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="12" x2="15" y2="12"></line>
+      <line x1="3" y1="18" x2="18" y2="18"></line>
+    </svg>
+    <span>ÍNDICE</span>
+  `;
+  document.body.appendChild(toggleBtn);
+
+  const backdrop = document.createElement('div');
+  backdrop.id = 'drawer-backdrop';
+  document.body.appendChild(backdrop);
+
+  const drawer = document.createElement('aside');
+  drawer.id = 'sidebar-drawer';
+  drawer.setAttribute('aria-label', 'Índice de navegación');
+
+  const header = document.createElement('div');
+  header.className = 'drawer-header';
+  header.innerHTML = `
+    <h3 class="drawer-title">ÍNDICE</h3>
+    <button class="drawer-close" type="button" aria-label="Cerrar ÍNDICE (Esc)">✕</button>
+  `;
+  drawer.appendChild(header);
+
+  const tools = document.createElement('div');
+  tools.className = 'drawer-tools';
+  tools.innerHTML = `
+    <div class="drawer-search-wrapper">
+      <svg class="drawer-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="search" class="drawer-search" placeholder="Filtrar (ej. rand, register, foro)..." aria-label="Filtrar índice">
+    </div>
+  `;
+  drawer.appendChild(tools);
+
+  const content = document.createElement('div');
+  content.className = 'drawer-content';
+  const originalUl = toc.querySelector('ul');
+  if (!originalUl) return;
+  const clonedUl = originalUl.cloneNode(true);
+  content.appendChild(clonedUl);
+  drawer.appendChild(content);
+
+  const footer = document.createElement('div');
+  footer.className = 'drawer-footer';
+  footer.innerHTML = `
+    <span>Atajo: Alt+I · Esc</span>
+    <a href="#" class="drawer-top-link">Inicio ↑</a>
+  `;
+  drawer.appendChild(footer);
+
+  document.body.appendChild(drawer);
+
+  function openDrawer() {
+    drawer.classList.add('is-open');
+    backdrop.classList.add('is-visible');
+    const searchInput = drawer.querySelector('.drawer-search');
+    if (searchInput) setTimeout(() => searchInput.focus(), 150);
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('is-open');
+    backdrop.classList.remove('is-visible');
+  }
+
+  toggleBtn.addEventListener('click', openDrawer);
+  backdrop.addEventListener('click', closeDrawer);
+  header.querySelector('.drawer-close').addEventListener('click', closeDrawer);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+      closeDrawer();
+    } else if (e.altKey && (e.key === 'i' || e.key === 'I')) {
+      e.preventDefault();
+      drawer.classList.contains('is-open') ? closeDrawer() : openDrawer();
+    }
+  });
+
+  drawer.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const href = a.getAttribute('href');
+      if (href === '#') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (href && href.startsWith('#')) {
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+          history.pushState(null, null, href);
+        }
+      }
+      if (window.innerWidth < 1000) {
+        closeDrawer();
+      }
+    });
+  });
+
+  const searchInput = tools.querySelector('.drawer-search');
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    const allLis = content.querySelectorAll('li');
+    if (!q) {
+      allLis.forEach(li => li.style.display = '');
+      return;
+    }
+    allLis.forEach(li => li.style.display = 'none');
+    allLis.forEach(li => {
+      if (li.textContent.toLowerCase().includes(q)) {
+        let curr = li;
+        while (curr && curr !== content) {
+          if (curr.tagName === 'LI') curr.style.display = '';
+          curr = curr.parentElement;
+        }
+      }
+    });
+  });
+}
+initNavDrawer();
+});
+</script>
+</head>
+<body>
+<nav id="clase-nav"><a href="index.html">꩜ Inicio</a><a href="clase-1.html">Clase 1</a><a href="clase-2.html">Clase 2</a><a href="clase-3.html">Clase 3</a><a href="clase-4.html">Clase 4</a><a href="clase-5.html">Clase 5</a><a href="clase-6.html">Clase 6</a><a href="clase-7.html">Clase 7</a><a href="que-viene-despues.html" class="nav-active">¿Qué sigue?</a><a href="cheatsheet.html" class="nav-cheatsheet-btn" style="margin-left: auto;">Cheatsheet</a><a href="glosario.html" class="nav-cheatsheet-btn">Glosario</a><a href="https://warm.strudel.cc/" target="_blank" rel="noopener" class="nav-strudel-btn">Ir a Strudel ꩜</a><a href="#" id="search-trigger" style="text-decoration: none;" title="Buscar en el taller"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a></nav>
+
+<div id="content">
+<div id="table-of-contents" role="doc-toc">
+<h2>Índice de Contenidos</h2>
+<div id="text-table-of-contents" role="region">
+<ul>
+  <li><a href="#sec-intro-despues">¿Qué viene después? Guía para seguir explorando</a>
+    <ul>
+      <li><a href="#sec-randomizacion">1. Randomización, Probabilidad y Música Generativa</a>
+        <ul>
+          <li><a href="#sec-rand-mini">1.1. Azar en la Mini-Notation (? y |)</a></li>
+          <li><a href="#sec-rand-signals">1.2. Señales aleatorias continuas (rand, irand, perlin)</a></li>
+          <li><a href="#sec-rand-mods">1.3. Modificadores probabilísticos (sometimes, often, degradeBy)</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-funciones-propias">2. Crear tus Propias Funciones y Efectos</a>
+        <ul>
+          <li><a href="#sec-fn-js">2.1. Guardar efectos y cadenas en funciones de JavaScript</a></li>
+          <li><a href="#sec-fn-register">2.2. Crear tus propios comandos encadenables con register()</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-estructuras">3. Estructurar Canciones Completas (arrange y variables)</a></li>
+      <li><a href="#sec-ritmos-avanzados">4. Ritmos Euclidianos, Polimetría y Canon (.off y .iter)</a></li>
+      <li><a href="#sec-visuales-midi">5. Visuales Reactivos (Hydra), MIDI y Conexión Externa</a></li>
+      <li><a href="#sec-comunidad-foro">6. Comunidad, Foro Oficial de Preguntas y Siguientes Pasos</a></li>
+    </ul>
+  </li>
+</ul>
+</div>
+</div>
+
+<h1 class="title">¿Qué viene después?</h1>
+
+<div id="sec-intro-despues" class="outline-2">
+<h2>¿Qué viene después? Guía para seguir explorando</h2>
+<div class="outline-text-2">
+<p>
+¡Felicidades por llegar al final de las 7 clases del taller! Ya dominas los pilares del <i>live coding</i> en Strudel: ritmos con <b>mini-notation</b>, armonía con <b>escalas y acordes</b>, <b>efectos y envolventes ADSR</b>, corte de <b>samples</b>, <b>síntesis sustractiva/FM</b>, recursos de <b>Ear Candy</b> y modulación con <b>LFOs</b>.
+</p>
+<p>
+Pero Strudel es un lenguaje vivo y enorme. Esta página reúne las herramientas más entretenidas para que sigas experimentando por tu cuenta: desde cómo hacer que el computador <b>improvise contigo mediante azar</b> y cómo <b>inventar tus propias funciones</b>, hasta dónde hacer preguntas en el <b>foro oficial de la comunidad</b>.
+</p>
+</div>
+
+<!-- 1. RANDOMIZACIÓN -->
+<div id="sec-randomizacion" class="outline-3">
+<h3>1. Randomización, Probabilidad y Música Generativa</h3>
+<div class="outline-text-3">
+<p>
+Uno de los mayores poderes del <i>live coding</i> frente a un DAW tradicional es que no necesitas dibujar cada variación a mano: puedes darle <b>reglas de probabilidad</b> a tu código para que el patrón evolucione solo y nunca suene exactamente igual dos veces.
+</p>
+</div>
+
+<div id="sec-rand-mini" class="outline-4">
+<h4>1.1. Azar dentro de la Mini-Notation (<code>?</code> y <code>|</code>)</h4>
+<div class="outline-text-4">
+<p>
+Sin salir de las comillas de la mini-notation, tienes dos operadores de azar inmediatos:
+</p>
+<ul class="org-ul">
+  <li><b><code>?</code> (Moneda al aire):</b> Si pones un signo de interrogación después de un evento, tiene un <b>50% de probabilidad</b> de sonar o quedarse en silencio. Puedes especificar la probabilidad exacta entre <code>0</code> y <code>1</code> escribiendo, por ejemplo, <code>hh?0.2</code> (20% de probabilidad de eliminarse).</li>
+  <li><b><code>|</code> (Elección aleatoria):</b> Dentro de corchetes <code>[a | b | c]</code>, Strudel elige <b>una sola opción al azar</b> en cada ciclo.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// El hi-hat y las notas fantasma de caja cambian en cada vuelta
+// El último tiempo elige al azar entre clap (cp), rimshot (rim) o crash (cr)
+s("bd [~ sd?0.4] [hh*4?] [cp | rim | cr]")
+  .bank("RolandTR909")
+</code></pre>
+</div>
+</div>
+</div>
+
+<div id="sec-rand-signals" class="outline-4">
+<h4>1.2. Señales aleatorias continuas (<code>rand</code>, <code>irand</code>, <code>perlin</code>)</h4>
+<div class="outline-text-4">
+<p>
+Cuando quieres que un parámetro numérico (como la nota de una escala, el corte del filtro <code>.lpf()</code> o el paneo <code>.pan()</code>) cambie de forma aleatoria o suave:
+</p>
+<ul class="org-ul">
+  <li><b><code>rand</code>:</b> Genera un número decimal aleatorio entre <code>0</code> y <code>1</code> en cada evento. Usa <code>rand.range(min, max)</code> para escalarlo.</li>
+  <li><b><code>irand(n)</code>:</b> Genera un <b>número entero</b> aleatorio entre <code>0</code> y <code>n - 1</code>. ¡Es perfecto para elegir grados de una escala con <code>n(irand(8)).scale("C:minor")</code> o elegir variaciones de un sample!</li>
+  <li><b><code>perlin</code>:</b> Genera <b>ruido Perlin</b> entre <code>0</code> y <code>1</code>. A diferencia de <code>rand</code> (que salta bruscamente), <code>perlin</code> se mueve como una ola suave e impredecible.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Melodía generativa infinita en Do menor pentatónica
+// irand(8) elige grados de la escala al azar y perlin mueve el filtro suavemente
+n(irand(8).segment(8))
+  .scale("C4:minor:pentatonic")
+  .s("sawtooth")
+  .lpf(perlin.range(300, 3200))
+  .lpq(4)
+  .pan(rand.range(0.2, 0.8))
+  .delay(0.4).delaytime(1/8)
+  .room(0.4)
+</code></pre>
+</div>
+</div>
+</div>
+
+<div id="sec-rand-mods" class="outline-4">
+<h4>1.3. Modificadores probabilísticos (<code>sometimes</code>, <code>often</code>, <code>rarely</code>, <code>degradeBy</code>)</h4>
+<div class="outline-text-4">
+<p>
+También puedes aplicar una transformación o efecto <b>solo algunas veces</b> usando la familia de funciones <code>sometimes</code>:
+</p>
+
+<table>
+<thead>
+<tr><th>Función</th><th>Probabilidad</th><th>¿Qué hace?</th><th>Ejemplo</th></tr>
+</thead>
+<tbody>
+<tr><td><code>.always(fn)</code></td><td>100%</td><td>Aplica la función siempre</td><td><code>.always(x =&gt; x.lpf(800))</code></td></tr>
+<tr><td><code>.almostAlways(fn)</code></td><td>90%</td><td>Casi siempre aplica la función</td><td><code>.almostAlways(x =&gt; x.gain(0.8))</code></td></tr>
+<tr><td><code>.often(fn)</code></td><td>75%</td><td>Aplica la función frecuentemente</td><td><code>.often(x =&gt; x.ply(2))</code></td></tr>
+<tr><td><code>.sometimes(fn)</code></td><td>50%</td><td>Aplica la función la mitad de las veces</td><td><code>.sometimes(x =&gt; x.fast(2))</code></td></tr>
+<tr><td><code>.sometimesBy(p, fn)</code></td><td><code>p</code> (0 a 1)</td><td>Tú defines la probabilidad exacta <code>p</code></td><td><code>.sometimesBy(0.3, x =&gt; x.rev())</code></td></tr>
+<tr><td><code>.rarely(fn)</code></td><td>25%</td><td>Aplica la función de vez en cuando</td><td><code>.rarely(x =&gt; x.crush(4))</code></td></tr>
+<tr><td><code>.almostNever(fn)</code></td><td>10%</td><td>Sorpresa ocasional (1 de cada 10 eventos)</td><td><code>.almostNever(x =&gt; x.speed(-1))</code></td></tr>
+<tr><td><code>.someCycles(fn)</code></td><td>50% por ciclo</td><td>Decide por ciclo entero en vez de nota por nota</td><td><code>.someCycles(x =&gt; x.jux(rev))</code></td></tr>
+<tr><td><code>.degradeBy(p)</code></td><td><code>p</code> (0 a 1)</td><td>Silencia aleatoriamente el porcentaje <code>p</code> de notas</td><td><code>.degradeBy(0.35)</code></td></tr>
+</tbody>
+</table>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Un patrón de batería que improvisa fills y efectos por sí solo
+s("bd sd [~ bd] sd, hh*8")
+  .bank("RolandTR808")
+  .sometimes(x => x.ply(2))          // 50%: redobla el golpe
+  .rarely(x => x.speed(0.5).crush(5)) // 25%: baja el pitch y bitcrushea
+  .someCycles(x => x.fast(2))         // En algunos ciclos duplica la velocidad
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 2. CREAR FUNCIONES PROPIAS -->
+<div id="sec-funciones-propias" class="outline-3">
+<h3>2. Crear tus Propias Funciones y Efectos</h3>
+<div class="outline-text-3">
+<p>
+Como Strudel está construido directamente sobre <b>JavaScript</b>, no estás limitado a las funciones que vienen de fábrica. Puedes crear tus propios atajos, sintetizadores personalizados o efectos encadenables para tocar mucho más rápido en vivo.
+</p>
+</div>
+
+<div id="sec-fn-js" class="outline-4">
+<h4>2.1. Guardar efectos y cadenas en funciones de JavaScript</h4>
+<div class="outline-text-4">
+<p>
+Si notas que siempre escribes la misma combinación de efectos (por ejemplo, un filtro ácido, o un delay dub con reverb), puedes guardarla en una constante con la sintaxis flecha <code>const miFuncion = x =&gt; ...</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Definimos dos funciones propias reutilizables:
+const dubEcho = x => x.delay(0.55).delaytime(3/16).delayfeedback(0.65).room(0.5)
+const acidEnv = x => x.s("sawtooth").lpf(400).lpq(12).lpenv(4).lpd(0.18)
+
+// Ahora las aplicamos a cualquier patrón de forma limpia:
+stack(
+  s("bd ~ [~ bd] ~, ~ cp").bank("RolandTR909"),
+  dubEcho(s("rim*4").degradeBy(0.5)),
+  acidEnv(note("c2 c3 eb2 [g2 bb1]*2"))
+)
+</code></pre>
+</div>
+</div>
+</div>
+
+<div id="sec-fn-register" class="outline-4">
+<h4>2.2. Crear tus propios comandos encadenables con <code>register()</code></h4>
+<div class="outline-text-4">
+<p>
+¿Quieres que tu función se pueda encadenar con un punto (<code>.miEfecto()</code>) igual que los comandos nativos de Strudel? Usa <b><code>register('nombre', (parametro, patron) =&gt; ...)</code></b>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// 1. Registramos un efecto propio llamado .acid(frecuencia)
+register('acid', (cutoff, pat) =>
+  pat.s("sawtooth").lpf(cutoff).lpq(14).lpenv(3.5).lpd(0.15).distort(1.5)
+)
+
+// 2. Registramos un "humanizador" que varía el volumen y paneo al azar
+register('human', (amt, pat) =>
+  pat.gain(rand.range(1 - amt, 1)).pan(rand.range(0.5 - amt, 0.5 + amt))
+)
+
+// ¡Ahora podemos usar .acid() y .human() como si fueran parte oficial de Strudel!
+note("c2 [eb2 c3] g1 [bb1 c2]")
+  .acid("<300 600 900 450>")
+  .human(0.25)
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 3. ESTRUCTURAR CANCIONES COMPLETAS -->
+<div id="sec-estructuras" class="outline-3">
+<h3>3. Estructurar Canciones Completas (<code>arrange</code> y variables)</h3>
+<div class="outline-text-3">
+<p>
+Cuando quieras pasar de un loop que se repite a una <b>canción completa</b> con Introducción, Verso, Coro/Drop y Outro, puedes guardar cada pista o sección en variables de JavaScript y ordenarlas en el tiempo con <b><code>arrange([ciclos, patron], ...)</code></b>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Definimos nuestros bloques musicales en constantes:
+const drumsSuave = s("bd ~ sd ~, hh*4").bank("RolandTR808")
+const drumsFull  = s("bd*2 [sd bd] sd [bd*2], hh*8, ~ cp").bank("RolandTR808")
+const bajo       = note("<c2 eb2 f2 g2>*4").s("sawtooth").lpf(600)
+const arpegio    = n("0 2 4 7 9 7 4 2").scale("C4:minor").s("triangle").room(0.4)
+
+// arrange() recibe pares [cantidadDeCiclos, patron]:
+arrange(
+  [2, arpegio],                               // Intro (2 ciclos: solo arpegio)
+  [4, stack(drumsSuave, bajo)],               // Verso (4 ciclos: batería suave + bajo)
+  [4, stack(drumsFull, bajo.lpf(1400), arpegio)] // Drop/Coro (4 ciclos: todo junto)
+)
+</code></pre>
+</div>
+</div>
+</div>
+
+<!-- 4. RITMOS EUCLIDIANOS Y DESFASE -->
+<div id="sec-ritmos-avanzados" class="outline-3">
+<h3>4. Ritmos Euclidianos, Polimetría y Canon (<code>.off</code> y <code>.iter</code>)</h3>
+<div class="outline-text-3">
+<p>
+Si te interesa explorar ritmos complejos de forma muy simple:
+</p>
+<ul class="org-ul">
+  <li><b>Ritmos Euclidianos <code>(pulsos, pasos, rotación)</code>:</b> Distribuyen <code>pulsos</code> de la manera más equitativa posible dentro de <code>pasos</code>. Por ejemplo, <code>"bd(3,8)"</code> genera el clásico tresillo/clave de <i>tresillo habanero / reggaetón / dancehall</i>, y <code>"cp(5,16)"</code> genera la clave de <i>bossa nova</i>.</li>
+  <li><b><code>.off(tiempo, fn)</code>:</b> Crea una copia del patrón desplazada en el tiempo y le aplica una transformación (por ejemplo, subir una quinta justa con <code>.add(7)</code> o una octava con <code>.add(12)</code>), creando cánones y armonías instantáneas.</li>
+  <li><b><code>.iter(n)</code>:</b> Rota el punto de inicio del patrón en cada ciclo, generando variaciones rítmicas hipnóticas.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>stack(
+  // Polirritmia euclidiana: 3 en 8 contra 5 en 16
+  s("bd(3,8), cp(5,16), hh(7,8,1)").bank("RolandTR909").gain(0.8),
+  // Canon melódico con .off(): la copia suena 1/8 de ciclo después y una 5ta más arriba
+  n("0 2 4 6").scale("C4:dorian").s("sawtooth").lpf(1200)
+    .iter(4)
+    .off(1/8, x => x.add(4).lpf(2500).gain(0.65))
+    .room(0.4)
+)
+</code></pre>
+</div>
+</div>
+</div>
+
+<!-- 5. VISUALES, HYDRA Y MIDI -->
+<div id="sec-visuales-midi" class="outline-3">
+<h3>5. Visuales Reactivos (Hydra), MIDI y Conexión Externa</h3>
+<div class="outline-text-3">
+<p>
+Strudel no solo produce sonido en el navegador; también puede dibujar visualizaciones en tiempo real y comunicarse con otros programas o sintetizadores físicos:
+</p>
+<ul class="org-ul">
+  <li><b>Visualizadores integrados:</b> Añade <code>.pianoroll()</code>, <code>._scope()</code> (osciloscopio), <code>._spiral()</code> o <code>._pitchwheel()</code> al final de cualquier patrón para ver la música dibujada dentro del código.</li>
+  <li><b>Hydra (Sintetizador de Video en Vivo):</b> En <a href="https://strudel.cc/" target="_blank" rel="noopener">strudel.cc</a> puedes escribir <code>await initHydra()</code> arriba de tu código y programar visuales psicodélicos con funciones como <code>osc(10, 0.1, 1.2).kaleid(4).out()</code> que reaccionan a tus patrones de Strudel con <code>H(patron)</code>.</li>
+  <li><b>Salida y Entrada MIDI (<code>.midi()</code>):</b> Si conectas un sintetizador por USB o abres un puerto MIDI virtual hacia <b>Ableton Live, Reaper, Bitwig o VCV Rack</b>, basta con agregar <code>.midi('NombreDeTuDispositivo')</code> a tu patrón de notas para que Strudel sea el secuenciador de tu estudio.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>// Prueba los visualizadores integrados directamente aquí:
+note("c3 eb3 g3 bb3 c4 bb3 g3 eb3")
+  .s("sawtooth")
+  .lpf(sine.range(400, 2400).slow(2))
+  ._pianoroll({ labels: 1 })
+</code></pre>
+</div>
+</div>
+</div>
+
+<!-- 6. COMUNIDAD Y FORO OFICIAL -->
+<div id="sec-comunidad-foro" class="outline-3">
+<h3>6. Comunidad, Foro Oficial de Preguntas y Siguientes Pasos</h3>
+<div class="outline-text-3">
+<p>
+Nadie aprende <i>live coding</i> en solitario. La comunidad de Strudel y TidalCycles es abierta, colaborativa y muy activa respondiendo dudas de código de todos los niveles.
+</p>
+
+<div class="community-box">
+  <h4>💬 Foro Oficial de Strudel en Uzu (Lurk.org)</h4>
+  <p>
+    ¿Tienes una duda sobre cómo lograr un sonido, cómo encadenar dos patrones o quieres ver qué están programando otras personas? En el foro oficial <b>Uzu / Strudel</b> puedes hacer preguntas, buscar respuestas de los propios creadores de Strudel y compartir tus fragmentos de código:
+  </p>
+  <a href="https://uzu.lurk.org/c/strudel/26" target="_blank" rel="noopener" class="community-btn">
+    Ir al Foro de Strudel (uzu.lurk.org) ↗
+  </a>
+</div>
+
+<h4>Recursos del Taller para tener siempre a mano</h4>
+<div class="next-grid">
+  <a href="glosario.html" class="next-card">
+    <strong>📖 Glosario y Referencia (ES / EN)</strong>
+    <span>Explora los 576 comandos, 1.872 sonidos y 356 conceptos explicados paso a paso en el proyecto interactivo de AuroraX98.</span>
+  </a>
+  <a href="cheatsheet.html" class="next-card">
+    <strong>⚡ Cheatsheet Imprimible</strong>
+    <span>Hoja de referencia rápida de una mirada con todos los atajos de teclado, efectos, filtros, baterías y LFOs vistos en clase.</span>
+  </a>
+  <a href="encuesta.html" class="next-card">
+    <strong>✅ Lista de Cotejo y Encuesta Final</strong>
+    <span>Autoevalúa tu performance final y descarga tus respuestas para cerrar el taller.</span>
+  </a>
+  <a href="https://uzu.lurk.org/c/strudel/26" target="_blank" rel="noopener" class="next-card">
+    <strong>🌐 Foro Uzu — Comunidad Strudel</strong>
+    <span>Pregunta tus dudas sobre código, reporta ideas y aprende de otros live coders en uzu.lurk.org/c/strudel/26.</span>
+  </a>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="class-nav-footer">
+  <a href="clase-7.html" class="nav-btn prev">
+    <span class="nav-label">Anterior</span>
+    <span class="nav-title">Clase 7 (LFOs)</span>
+  </a>
+  <a href="glosario.html" class="nav-btn next">
+    <span class="nav-label">Explorar</span>
+    <span class="nav-title">Glosario (ES/EN) ꩜</span>
+  </a>
+  <a href="encuesta.html" class="nav-btn next">
+    <span class="nav-label">Cierre</span>
+    <span class="nav-title">Encuesta Final</span>
+  </a>
+</div>
+<a id="back-to-top" href="#" title="Volver al inicio" aria-label="Volver al inicio">↑</a>
+<script>
+(function(){
+  var b=document.getElementById('back-to-top');
+  window.addEventListener('scroll',function(){b.classList.toggle('visible',scrollY>400);});
+  b.addEventListener('click',function(e){e.preventDefault();scrollTo({top:0,behavior:'smooth'});});
+})();
+</script>
+<script src="lightbox.js"></script>
+<script src="search.js"></script>
+</body>
+</html>
