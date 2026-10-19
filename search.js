@@ -48,8 +48,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const pages = [
     { url: 'clase-1.html', title: 'Clase 1' },
     { url: 'clase-2.html', title: 'Clase 2' },
-    { url: 'clase-2-5.html', title: 'Clase 2.5' },
-    { url: 'clase-3.html', title: 'Clase 3' }
+    { url: 'clase-3.html', title: 'Clase 3' },
+    { url: 'clase-4.html', title: 'Clase 4' },
+    { url: 'clase-5.html', title: 'Clase 5' },
+    { url: 'clase-6.html', title: 'Clase 6' },
+    { url: 'cheatsheet.html', title: 'Cheatsheet' }
   ];
   let searchIndex = {}; // url -> { title, textBlocks }
 

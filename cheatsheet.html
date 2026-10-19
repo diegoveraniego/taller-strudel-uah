@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>꩜ Cheatsheet — Taller de Strudel</title>
+<meta name="author" content="Diego Aliaga"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>꩜</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="strudel-taller.css">
+<style>
+#clase-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  padding: .5rem 2rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+#clase-nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: .9rem;
+  font-weight: 500;
+  padding: .25rem .5rem;
+  border-radius: 4px;
+  transition: color .15s, background .15s;
+}
+#clase-nav a:hover { color: var(--text); background: var(--border); }
+#clase-nav a.nav-active { color: var(--accent); font-weight: 700; }
+
+/* ── Theme Overrides for Explicit Light / Dark Selection ──────────────── */
+html[data-theme="light"] {
+  --bg: #ffffff;
+  --bg-2: #f2f2f2;
+  --border: #b5b5b5;
+  --text: #000000;
+  --text-muted: #505050;
+  --accent: #0000bb;
+  --link: #0033cc;
+  --link-visited: #7918a5;
+  --code-bg: #f4f4f4;
+  --desafio-bg: #e5f4fb;
+  --desafio-border: #005fdf;
+  --desafio-text: #0033cc;
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  --bg: #000000;
+  --bg-2: #181818;
+  --border: #555555;
+  --text: #ffffff;
+  --text-muted: #a8a8a8;
+  --accent: #00bcff;
+  --link: #00bcff;
+  --link-visited: #b6a0ff;
+  --code-bg: #111111;
+  --desafio-bg: #002f5a;
+  --desafio-border: #00aaff;
+  --desafio-text: #8cc3f6;
+  color-scheme: dark;
+}
+
+/* ── Cheatsheet Layout & Styling ──────────────────────────────────────── */
+#content.cheatsheet-page {
+  max-width: 1280px;
+  padding: 1.5rem 2rem 4rem;
+}
+
+.cs-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--bg-2);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.cs-search-wrap {
+  position: relative;
+  flex: 1 1 280px;
+  max-width: 440px;
+}
+
+.cs-search-input {
+  width: 100%;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem 0.5rem 2.1rem;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+}
+
+.cs-search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.cs-search-icon {
+  position: absolute;
+  left: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.cs-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.cs-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.45rem 0.85rem;
+  border-radius: 6px;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+
+.cs-btn:hover {
+  border-color: var(--accent);
+  background: var(--bg-2);
+}
+
+.cs-btn-primary {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+}
+
+html[data-theme="dark"] .cs-btn-primary {
+  color: #000000;
+}
+
+.cs-btn-primary:hover {
+  opacity: 0.92;
+  background: var(--accent);
+}
+
+.cs-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-bottom: 2px solid var(--text);
+  padding-bottom: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.cs-header h1 {
+  font-size: 1.85rem;
+  margin: 0;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cs-header-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.cs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.15rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .cs-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cs-card {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.cs-card-header {
+  background: var(--bg-2);
+  border-bottom: 1.5px solid var(--border);
+  padding: 0.45rem 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cs-card-header h2 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+  border: none;
+  padding: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+.cs-card-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.cs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.cs-table th,
+.cs-table td {
+  padding: 0.35rem 0.65rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+}
+
+.cs-table tr:last-child td {
+  border-bottom: none;
+}
+
+.cs-table th {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--bg-2) 55%, var(--bg));
+  font-weight: 600;
+}
+
+.cs-table td:first-child {
+  white-space: nowrap;
+  width: 28%;
+}
+
+.cs-table td:nth-child(2) {
+  color: var(--text);
+  width: 40%;
+}
+
+.cs-table td:nth-child(3) {
+  width: 32%;
+  color: var(--text-muted);
+}
+
+.cs-table code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.76rem;
+  padding: 0.1em 0.3em;
+  background: var(--code-bg);
+  border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+  border-radius: 3px;
+  color: var(--text);
+}
+
+.cs-table td:first-child code {
+  font-weight: 600;
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+}
+
+.cs-pills {
+  padding: 0.55rem 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.cs-drum-pill {
+  font-size: 0.76rem;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.2rem 0.45rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.cs-drum-pill code {
+  font-weight: 700;
+  color: var(--accent);
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* ── Print Styles (Both Light & Dark Printable!) ──────────────────────── */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 7mm;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  #clase-nav,
+  .cs-toolbar,
+  #back-to-top,
+  #drawer-toggle,
+  #drawer-backdrop,
+  #sidebar-drawer,
+  #search-modal,
+  #lightbox {
+    display: none !important;
+  }
+
+  html {
+    font-size: 11px !important;
+  }
+
+  body {
+    background: var(--bg) !important;
+    color: var(--text) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #content.cheatsheet-page {
+    max-width: 100% !important;
+    padding: 4mm !important;
+    margin: 0 !important;
+    background: var(--bg) !important;
+  }
+
+  .cs-header {
+    margin-bottom: 0.6rem !important;
+    padding-bottom: 0.35rem !important;
+  }
+
+  .cs-header h1 {
+    font-size: 1.45rem !important;
+  }
+
+  .cs-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.55rem !important;
+  }
+
+  .cs-card {
+    border-width: 1px !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .cs-card-header {
+    padding: 0.28rem 0.55rem !important;
+  }
+
+  .cs-card-header h2 {
+    font-size: 0.82rem !important;
+  }
+
+  .cs-table th,
+  .cs-table td {
+    padding: 0.2rem 0.45rem !important;
+    font-size: 0.72rem !important;
+    line-height: 1.22 !important;
+  }
+
+  .cs-table code {
+    font-size: 0.68rem !important;
+    padding: 0.05em 0.2em !important;
+  }
+}
+</style>
+</head>
+<body>
+<nav id="clase-nav"><a href="index.html">꩜ Inicio</a><a href="clase-1.html">Clase 1</a><a href="clase-2.html">Clase 2</a><a href="clase-3.html">Clase 3</a><a href="clase-4.html">Clase 4</a><a href="clase-5.html">Clase 5</a><a href="clase-6.html">Clase 6</a><a href="clase-7.html">Clase 7</a><a href="cheatsheet.html" class="nav-cheatsheet-btn nav-active" style="margin-left: auto;">Cheatsheet</a><a href="https://warm.strudel.cc/" target="_blank" rel="noopener" class="nav-strudel-btn">Ir a Strudel ꩜</a><a href="#" id="search-trigger" style="text-decoration: none;" title="Buscar en el taller"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a></nav>
+
+<div id="content" class="cheatsheet-page">
+
+  <!-- Barra de herramientas (oculta al imprimir) -->
+  <div class="cs-toolbar">
+    <div class="cs-search-wrap">
+      <svg class="cs-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="search" id="cs-filter" class="cs-search-input" placeholder="Filtrar función o concepto (ej: lpf, chop, adsr, fm)..." aria-label="Filtrar cheatsheet">
+    </div>
+    <div class="cs-actions">
+      <button type="button" id="theme-toggle-btn" class="cs-btn" title="Alternar entre modo claro y oscuro">
+        <span id="theme-toggle-icon">🌓</span> <span id="theme-toggle-label">Cambiar Tema</span>
+      </button>
+      <button type="button" id="print-light-btn" class="cs-btn" title="Imprimir o guardar PDF en modo claro">
+        ☀️ Imprimir Light
+      </button>
+      <button type="button" id="print-dark-btn" class="cs-btn" title="Imprimir o guardar PDF en modo oscuro">
+        🌙 Imprimir Dark
+      </button>
+      <button type="button" id="print-current-btn" class="cs-btn cs-btn-primary" title="Imprimir en el modo actual">
+        🖨️ Imprimir / PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Encabezado imprimible -->
+  <header class="cs-header">
+    <h1><span>꩜</span> Strudel — Cheatsheet del Taller</h1>
+    <div class="cs-header-meta">strudel.cc · Guía rápida de funciones, sintaxis y síntesis</div>
+  </header>
+
+  <div class="cs-grid" id="cs-grid">
+
+    <!-- 1. Sonido, Samples y Baterías -->
+    <section class="cs-card">
+      <div class="cs-card-header">
+        <h2>1. Sonidos, Samples y Baterías</h2>
+        <span class="cs-card-tag">Clases 1 · 4</span>
+      </div>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Función</th><th>Descripción</th><th>Ejemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>s()</code> / <code>sound()</code></td><td>Selecciona un sample o sintetizador</td><td><code>s("bd hh sd oh")</code></td></tr>
+          <tr><td><code>:n</code> / <code>.n()</code></td><td>Elige variación/índice dentro de la carpeta del sample</td><td><code>s("casio:1")</code> · <code>.n("0 1 2")</code></td></tr>
+          <tr><td><code>.bank()</code></td><td>Cambia el banco de sonido (máquina de ritmo)</td><td><code>s("bd").bank("RolandTR909")</code></td></tr>
+          <tr><td><code>samples()</code></td><td>Carga librería externa desde GitHub o URL</td><td><code>samples('github:yaxu/clean-breaks')</code></td></tr>
+        </tbody>
+      </table>
+      <div class="cs-pills">
+        <span class="cs-drum-pill"><code>bd</code> Bombo / Kick</span>
+        <span class="cs-drum-pill"><code>sd</code> Caja / Snare</span>
+        <span class="cs-drum-pill"><code>rim</code> Rimshot</span>
+        <span class="cs-drum-pill"><code>cp</code> Clap / Palmas</span>
+        <span class="cs-drum-pill"><code>hh</code> Hi-hat cerrado</span>
+        <span class="cs-drum-pill"><code>oh</code> Hi-hat abierto</span>
+        <span class="cs-drum-pill"><code>lt</code> <code>mt</code> <code>ht</code> Toms</span>
+        <span class="cs-drum-pill"><code>rd</code> Ride</span>
+        <span class="cs-drum-pill"><code>cr</code> Crash</span>
+      </div>
+    </section>
+
+    <!-- 2. Mini-notación -->
+    <section class="cs-card">
+      <div class="cs-card-header">
+        <h2>2. Mini-Notación (Secuencias)</h2>
+        <span class="cs-card-tag">Clases 1 · 2 · 4</span>
+      </div>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Símbolo</th><th>Descripción</th><th>Ejemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>~</code> o <code>-</code></td><td>Silencio dentro del patrón</td><td><code>s("bd ~ sd -")</code></td></tr>
+          <tr><td><code>[ ]</code></td><td>Sub-secuencia: divide un paso en partes</td><td><code>s("bd [hh hh] sd")</code></td></tr>
+          <tr><td><code>*</code></td><td>Multiplica: repite más rápido en el paso</td><td><code>s("hh*4")</code></td></tr>
+          <tr><td><code>/</code></td><td>Divide: reproduce más lento entre ciclos</td><td><code>s("bd/2")</code></td></tr>
+          <tr><td><code>&lt; &gt;</code></td><td>Alterna un elemento distinto por cada ciclo</td><td><code>note("&lt;c e g b&gt;")</code></td></tr>
+          <tr><td><code>,</code></td><td>Polifonía: toca varios elementos a la vez</td><td><code>note("c,e,g")</code> · <code>s("bd*4, hh*8")</code></td></tr>
+          <tr><td><code>@</code></td><td>Alarga la duración relativa de un evento</td><td><code>note("c e@2 g")</code></td></tr>
+          <tr><td><code>!</code></td><td>Replica un paso sin acelerar subdivisión</td><td><code>note("c!2 e g")</code></td></tr>
+          <tr><td><code>(k, n)</code></td><td>Ritmo euclidiano: reparte <code>k</code> golpes en <code>n</code> pasos</td><td><code>s("bd(3,8)")</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 3. Tiempo, Paralelismo y Atajos -->
+    <section class="cs-card">
+      <div class="cs-card-header">
+        <h2>3. Tiempo, Pistas y Atajos</h2>
+        <span class="cs-card-tag">Clases 1 · 3 · 6</span>
+      </div>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Función / Atajo</th><th>Descripción</th><th>Ejemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>setcpm()</code></td><td>Tempo global en ciclos por minuto (BPM / beats)</td><td><code>setcpm(120/4)</code></td></tr>
+          <tr><td><code>setcps()</code></td><td>Tempo global en ciclos por segundo</td><td><code>setcps(0.5)</code></td></tr>
+          <tr><td><code>$:</code></td><td>Ejecuta múltiples patrones en paralelo</td><td><code>$: s("bd*4")</code></td></tr>
+          <tr><td><code>_$:</code></td><td>Silencia (mutea) un patrón sin borrarlo</td><td><code>_$: s("hh*8")</code></td></tr>
+          <tr><td><code>stack()</code></td><td>Combina patrones simultáneos en un bloque</td><td><code>stack(s("bd"), s("hh*4"))</code></td></tr>
+          <tr><td><code>hush()</code></td><td>Detiene todos los patrones sonando</td><td><code>hush()</code></td></tr>
+          <tr><td><code>.fast()</code> / <code>.slow()</code></td><td>Acelera o ralentiza el tiempo del patrón</td><td><code>.fast(2)</code> · <code>.slow(4)</code></td></tr>
+          <tr><td><code>Ctrl + Enter</code></td><td>Actualiza el código en vivo (Update)</td><td>Atajo de teclado</td></tr>
+          <tr><td><code>Ctrl + .</code></td><td>Detiene todo el sonido (Stop)</td><td>Atajo de teclado</td></tr>
+          <tr><td><code>Ctrl + /</code></td><td>Comenta o descomenta líneas (<code>//</code>)</td><td>Atajo de teclado</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 4. Notas, Escalas y Acordes -->
+    <section class="cs-card">
+      <div class="cs-card-header">
+        <h2>4. Notas, Escalas y Acordes</h2>
+        <span class="cs-card-tag">Clases 1 · 2</span>
+      </div>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Función</th><th>Descripción</th><th>Ejemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>note()</code></td><td>Altura por cifrado americano o número MIDI</td><td><code>note("c3 eb3 g3 bb3")</code></td></tr>
+          <tr><td><code>#</code> / <code>b</code></td><td>Sostenido (<code>#</code>) o bemol (<code>b</code>) en notas</td><td><code>note("f#3 bb2")</code></td></tr>
+          <tr><td><code>.scale()</code></td><td>Interpreta <code>n()</code> como grados de una escala</td><td><code>n("0 2 4").scale("C:minor")</code></td></tr>
+          <tr><td><code>chord()</code></td><td>Genera acordes por nombre de cifrado</td><td><code>chord("&lt;C G Am F&gt;")</code></td></tr>
+          <tr><td><code>.voicing()</code></td><td>Conduce las voces de un patrón de acordes</td><td><code>chord("&lt;C G&gt;").voicing()</code></td></tr>
+          <tr><td><code>.add()</code></td><td>Suma un valor (transpone alturas o grados)</td><td><code>note("0 3 7".add(20))</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 5. Filtros y Síntesis Sustractiva -->
+    <section class="cs-card">
+      <div class="cs-card-header">
+        <h2>5. Filtros y Resonancia</h2>
+        <span class="cs-card-tag">Clases 3 · 5 · 6</span>
+      </div>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Función</th><th>Descripción</th><th>Ejemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>.lpf()</code></td><td>Filtro paso bajo: corta agudos, deja graves</td><td><code>.lpf(800)</code></td></tr>
+          <tr><td><code>.lpq()</code></td><td>Resonancia (factor Q) del filtro paso bajo</td><td><code>.lpf(400).lpq(15)</code></td></tr>
+          <tr><td><code>.hpf()</code></td><td>Filtro paso alto: corta graves, deja agudos</td><td><code>.hpf(500)</code></td></tr>
+          <tr><td><code>.hpq()</code></td><td>Resonancia (factor Q) del filtro paso alto</td><td><code>.hpf(800).hpq(8)</code></td></tr>
+          <tr><td><code>.bpf()</code></td><td>Filtro paso banda: aisla un rango central</td><td><code>.bpf(1200)</code></td></tr>
+          <tr><td><code>.bpq()</code></td><td>Resonancia del filtro paso banda</td><td><code>.bpf(1000).bpq(20)</code></td></tr>
+          <tr><td><code>.vowel()</code></td><td>Filtro formante que imita vocales (a, e, i, o, u)</td><td><code>.vowel("&lt;a e i o&gt;")</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 6. Envolventes (ADSR) y Dinámica -->
+    <section class="cs-card">
+      <div class="cs-card-header">
+        <h2>6. Envolventes (ADSR) y Dinámica</h2>
+        <span class="cs-card-tag">Clases 3 · 5 · 6</span>
+      </div>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Función</th><th>Descripción</th><th>Ejemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>.adsr()</code></td><td>Envolvente completa (Attack:Decay:Sustain:Release)</td><td><code>.adsr("0:0.1:0.5:0.2")</code></td></tr>
+          <tr><td><code>.attack()</code></td><td>Tiempo en subir de 0 al volumen máximo</td><td><code>.attack(0.05)</code></td></tr>
+          <tr><td><code>.decay()</code></td><td>Tiempo en caer del máximo al nivel sustain</td><td><code>.decay(0.2)</code></td></tr>
+          <tr><td><code>.sustain()</code></td><td>Nivel mantenido mientras dura la nota (0 a 1)</td><td><code>.sustain(0.4)</code></td></tr>
+          <tr><td><code>.release()</code> / <code>.rel()</code></td><td>Tiempo en apagarse tras terminar la nota</td><td><code>.release(0.5)</code></td></tr>
+          <tr><td><code>.penv()</code></td><td>Envolvente de tono (pegada para kicks/bajos)</td><td><code>.penv(0.8)</code></td></tr>
+          <tr><td><code>.fenv()</code></td><td>Envolvente dedicada a abrir/cerrar el filtro</td><td><code>.fenv(2)</code></td></tr>
+          <tr><td><code>.gain()</code></td><td>Volumen / ganancia de salida del patrón</td><td><code>.gain("[.25 1]*4")</code></td></tr>
+          <tr><td><code>.clip()</code></td><td>Recorta o ajusta la duración de cada nota</td><td><code>.clip(0.7)</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 7. Síntesis: Formas de Onda, Aditiva y FM -->
+    <section class="cs-card">
+      <div class="cs-card-header">
+        <h2>7. Síntesis: Ondas, Aditiva y FM</h2>
+        <span class="cs-card-tag">Clases 5 · 6</span>
+      </div>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Función / Onda</th><th>Descripción</th><th>Ejemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>"sine"</code></td><td>Senoidal pura (solo fundamental, sub-bajos/kicks)</td><td><code>note("c2").s("sine")</code></td></tr>
+          <tr><td><code>"sawtooth"</code> / <code>"saw"</code></td><td>Diente de sierra (todos los armónicos, brillante)</td><td><code>note("c2").s("sawtooth")</code></td></tr>
+          <tr><td><code>"square"</code></td><td>Cuadrada (armónicos impares, sonido hueco/8-bit)</td><td><code>note("c3").s("square")</code></td></tr>
+          <tr><td><code>"triangle"</code> / <code>"tri"</code></td><td>Triangular (armónicos impares suaves)</td><td><code>note("c4").s("triangle")</code></td></tr>
+          <tr><td><code>"white"</code> / <code>"pink"</code></td><td>Ruido blanco (brillante) y rosado (cálido)</td><td><code>s("white").adsr("0:.1:0:0")</code></td></tr>
+          <tr><td><code>.partials()</code></td><td>Síntesis aditiva: amplitud de cada armónico</td><td><code>.partials([1, 0.5, 0.25])</code></td></tr>
+          <tr><td><code>.fm()</code></td><td>Síntesis FM: intensidad de modulación</td><td><code>.fm(4)</code></td></tr>
+          <tr><td><code>.fmh()</code></td><td>Proporción armónica del modulador FM</td><td><code>.fm(4).fmh(0.5)</code></td></tr>
+          <tr><td><code>.fmwave()</code> / <code>.fme()</code></td><td>Onda del modulador FM / envolvente FM</td><td><code>.fmwave("pink")</code> · <code>.fme(100)</code></td></tr>
+          <tr><td><code>.detune()</code></td><td>Desafina osciladores (Reese bass / Supersaw)</td><td><code>.detune(12)</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 8. Efectos Espaciales, Distorsión y Color -->
+    <section class="cs-card">
+      <div class="cs-card-header">
+        <h2>8. Efectos Espaciales y Distorsión</h2>
+        <span class="cs-card-tag">Clases 2 · 3 · 5 · 6</span>
+      </div>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Función</th><th>Descripción</th><th>Ejemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>.room()</code></td><td>Reverberación (sensación de espacio)</td><td><code>.room(0.5)</code></td></tr>
+          <tr><td><code>.delay()</code></td><td>Eco (<code>nivel</code> o <code>"nivel:tiempo:feedback"</code>)</td><td><code>.delay(".5:.125:.6")</code></td></tr>
+          <tr><td><code>.delaytime()</code></td><td>Tiempo de repetición del delay</td><td><code>.delay(0.4).delaytime(0.25)</code></td></tr>
+          <tr><td><code>.pan()</code></td><td>Paneo estéreo (<code>0</code> izq, <code>0.5</code> centro, <code>1</code> der)</td><td><code>.pan("0 1")</code></td></tr>
+          <tr><td><code>.distort()</code></td><td>Distorsión agresiva de la onda</td><td><code>.distort(0.8)</code></td></tr>
+          <tr><td><code>.shape()</code></td><td>Saturación waveshaping (calidez / pegada)</td><td><code>.shape(0.3)</code></td></tr>
+          <tr><td><code>.diode()</code> / <code>.soft()</code></td><td>Distorsión de diodos / saturación suave</td><td><code>.diode(1.3)</code> · <code>.soft(2)</code></td></tr>
+          <tr><td><code>.crush()</code></td><td>Bitcrusher: reduce bits (<code>1</code> roto, <code>16</code> limpio)</td><td><code>.crush(4)</code></td></tr>
+          <tr><td><code>.chorus()</code></td><td>Efecto chorus para ensanchar sonido</td><td><code>.chorus(2)</code></td></tr>
+          <tr><td><code>.compressor()</code></td><td>Compresor de rango dinámico (umbral dB)</td><td><code>.compressor(-20)</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 9. Sampling y Granular -->
+    <section class="cs-card">
+      <div class="cs-card-header">
+        <h2>9. Efectos de Sampler y Granular</h2>
+        <span class="cs-card-tag">Clase 4</span>
+      </div>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Función</th><th>Descripción</th><th>Ejemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>.begin()</code> / <code>.end()</code></td><td>Punto de inicio y fin del sample (de <code>0</code> a <code>1</code>)</td><td><code>.begin(0.25).end(0.75)</code></td></tr>
+          <tr><td><code>.cut()</code></td><td>Corta sample anterior del mismo grupo (ej. hi-hats)</td><td><code>s("oh hh").cut(1)</code></td></tr>
+          <tr><td><code>.speed()</code></td><td>Velocidad y pitch del sample (negativo = reversa)</td><td><code>.speed("1 2 -1")</code></td></tr>
+          <tr><td><code>.loopAt()</code></td><td>Ajusta el sample para durar exactamente <code>N</code> ciclos</td><td><code>s("amen").loopAt(2)</code></td></tr>
+          <tr><td><code>.loop()</code> / <code>.fit()</code></td><td>Bucle continuo / ajusta sample a duración del paso</td><td><code>.loop(1)</code> · <code>.fit()</code></td></tr>
+          <tr><td><code>.chop()</code></td><td>Granular: divide el sample en <code>N</code> partes iguales</td><td><code>s("amen").chop(8)</code></td></tr>
+          <tr><td><code>.slice()</code></td><td>Corta en <code>N</code> partes y reordena sin cambiar pitch</td><td><code>.slice(8, "0 1 3 2")</code></td></tr>
+          <tr><td><code>.splice()</code></td><td>Como <code>slice()</code> pero adapta velocidad al paso</td><td><code>.splice(8, "0 1 [2 3]")</code></td></tr>
+          <tr><td><code>.rev()</code></td><td>Invierte el orden de los fragmentos en el ciclo</td><td><code>.chop(8).rev()</code></td></tr>
+          <tr><td><code>.every()</code></td><td>Aplica una función cada <code>N</code> ciclos</td><td><code>.every(3, rev)</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 10. Modulación (LFO), Interactividad y Visualización -->
+    <section class="cs-card">
+      <div class="cs-card-header">
+        <h2>10. Modulación (LFO), Sliders y Visuales</h2>
+        <span class="cs-card-tag">Clases 1 · 3 · 5 · 6</span>
+      </div>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Función / Señal</th><th>Descripción</th><th>Ejemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>sine</code> <code>saw</code> <code>square</code> <code>tri</code></td><td>Osciladores de baja frecuencia (LFOs de 0 a 1)</td><td><code>.gain(sine)</code></td></tr>
+          <tr><td><code>rand</code> / <code>perlin</code></td><td>Señal aleatoria por salto / aleatoria suave continua</td><td><code>.pan(rand)</code> · <code>.lpf(perlin.range(200,2000))</code></td></tr>
+          <tr><td><code>.range(min, max)</code></td><td>Escala linealmente el rango de una señal LFO</td><td><code>sine.range(200, 2000)</code></td></tr>
+          <tr><td><code>.rangex(min, max)</code></td><td>Escala exponencialmente una señal (frecuencias)</td><td><code>saw.rangex(0.2, 5)</code></td></tr>
+          <tr><td><code>.segment()</code> / <code>.seg()</code></td><td>Muestrea una señal continua en <code>N</code> pasos por ciclo</td><td><code>s("white").segment(40)</code></td></tr>
+          <tr><td><code>irand(max)</code></td><td>Enteros aleatorios entre <code>0</code> y <code>max - 1</code></td><td><code>n(irand(12).seg(4))</code></td></tr>
+          <tr><td><code>slider(v,min,max,st)</code></td><td>Deslizador visual interactivo en el código</td><td><code>.lpf(slider(800, 100, 4000, 10))</code></td></tr>
+          <tr><td><code>._pianoroll()</code></td><td>Visualiza las notas y eventos en rollo de piano</td><td><code>s("bd sd")._pianoroll()</code></td></tr>
+          <tr><td><code>._scope()</code></td><td>Osciloscopio: muestra forma de onda en tiempo real</td><td><code>s("sine")._scope()</code></td></tr>
+          <tr><td><code>._spectrum()</code></td><td>Analizador de espectro de frecuencias en vivo</td><td><code>s("saw")._spectrum()</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  </div>
+</div>
+
+<a id="back-to-top" href="#" title="Volver al inicio" aria-label="Volver al inicio">↑</a>
+
+<script>
+(function() {
+  const htmlEl = document.documentElement;
+  const toggleBtn = document.getElementById('theme-toggle-btn');
+  const toggleLabel = document.getElementById('theme-toggle-label');
+  const toggleIcon = document.getElementById('theme-toggle-icon');
+  const printLightBtn = document.getElementById('print-light-btn');
+  const printDarkBtn = document.getElementById('print-dark-btn');
+  const printCurrentBtn = document.getElementById('print-current-btn');
+  const filterInput = document.getElementById('cs-filter');
+
+  function getEffectiveTheme() {
+    const attr = htmlEl.getAttribute('data-theme');
+    if (attr) return attr;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function setTheme(theme) {
+    htmlEl.setAttribute('data-theme', theme);
+    localStorage.setItem('strudel-cs-theme', theme);
+    updateToggleUI(theme);
+  }
+
+  function updateToggleUI(theme) {
+    if (theme === 'dark') {
+      toggleIcon.textContent = '☀️';
+      toggleLabel.textContent = 'Modo Claro';
+    } else {
+      toggleIcon.textContent = '🌙';
+      toggleLabel.textContent = 'Modo Oscuro';
+    }
+  }
+
+  // Inicializar tema guardado o del sistema
+  const saved = localStorage.getItem('strudel-cs-theme');
+  if (saved === 'light' || saved === 'dark') {
+    setTheme(saved);
+  } else {
+    updateToggleUI(getEffectiveTheme());
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    const next = getEffectiveTheme() === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+  });
+
+  function printWithTheme(theme) {
+    const prevAttr = htmlEl.getAttribute('data-theme');
+    htmlEl.setAttribute('data-theme', theme);
+    updateToggleUI(theme);
+    setTimeout(() => {
+      window.print();
+      if (prevAttr) {
+        htmlEl.setAttribute('data-theme', prevAttr);
+        updateToggleUI(prevAttr);
+      }
+    }, 80);
+  }
+
+  printLightBtn.addEventListener('click', () => printWithTheme('light'));
+  printDarkBtn.addEventListener('click', () => printWithTheme('dark'));
+  printCurrentBtn.addEventListener('click', () => {
+    const current = getEffectiveTheme();
+    printWithTheme(current);
+  });
+
+  // Filtro en vivo
+  filterInput.addEventListener('input', () => {
+    const q = filterInput.value.trim().toLowerCase();
+    const cards = document.querySelectorAll('.cs-card');
+    cards.forEach(card => {
+      const rows = card.querySelectorAll('tbody tr');
+      const pills = card.querySelectorAll('.cs-drum-pill');
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        const match = !q || row.textContent.toLowerCase().includes(q);
+        row.style.display = match ? '' : 'none';
+        if (match) visibleCount++;
+      });
+
+      pills.forEach(pill => {
+        const match = !q || pill.textContent.toLowerCase().includes(q);
+        pill.style.display = match ? '' : 'none';
+        if (match) visibleCount++;
+      });
+
+      card.style.display = (!q || visibleCount > 0) ? '' : 'none';
+    });
+  });
+
+  // Back to top
+  const b = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => { b.classList.toggle('visible', scrollY > 400); });
+  b.addEventListener('click', (e) => { e.preventDefault(); scrollTo({ top: 0, behavior: 'smooth' }); });
+})();
+</script>
+<script src="search.js"></script>
+</body>
+</html>
