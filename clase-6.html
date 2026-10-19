@@ -485,7 +485,7 @@ El filtro se mueve lento con un LFO y ese movimiento define el ritmo. Dubstep cl
 <div class="outline-text-4" id="text-6-0-4">
 <p>
 ¿Sabías que puedes controlar parámetros como efectos o envolventes en tiempo real usando deslizadores visuales?
-En Strudel puedes usar la función <code>slider("nombre", valor_inicial, minimo, maximo, paso)</code> en casi cualquier parámetro numérico. Esto es ideal para "tocar" efectos en vivo, como un efecto de reducción de bits (<code>.crush()</code>) que destruye la señal imitando procesadores antiguos.
+En Strudel puedes usar la función <code>slider(valor_inicial, minimo, maximo, paso)</code> en casi cualquier parámetro numérico. Esto es ideal para "tocar" efectos en vivo, como un efecto de reducción de bits (<code>.crush()</code>) que destruye la señal imitando procesadores antiguos.
 </p>
 
 <p>
@@ -494,11 +494,11 @@ Pruébalo ejecutando el siguiente código y mueve los sliders que aparecerán en
 
 <div class="org-src-container">
 <pre class="src src-javascript"><code>note("c2(3,8)").s("sawtooth")
-  .crush(slider("crush", 16, 1, 16, 1)) // 1 = totalmente destruido, 16 = limpio
-  .attack(slider("attack", 0, 0, 1, 0.01))
+  .crush(slider( 9, 1, 16, 1)) // 1 = totalmente destruido, 16 = limpio
+  .attack(slider( 0.7, 0, 1, 0.01))
   .decay(0.1)
   .sustain(0)
-  .release(slider("release", 0.1, 0, 1, 0.01))
+  .release(slider( 0.89, 0, 1, 0.01))
 </code></pre>
 </div>
 </div>
