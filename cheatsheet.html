@@ -69,7 +69,7 @@ html[data-theme="dark"] {
 
 /* ── Cheatsheet Layout & Styling ──────────────────────────────────────── */
 #content.cheatsheet-page {
-  max-width: 1280px;
+  max-width: 1100px;
   padding: 1.5rem 2rem 4rem;
 }
 
@@ -78,25 +78,25 @@ html[data-theme="dark"] {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.75rem;
   background: var(--bg-2);
-  border: 2px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: 8px;
-  padding: 0.85rem 1.2rem;
+  padding: 0.65rem 0.9rem;
   margin-bottom: 1.5rem;
 }
 
 .cs-search-wrap {
   position: relative;
-  flex: 1 1 280px;
-  max-width: 440px;
+  flex: 1 1 260px;
+  max-width: 420px;
 }
 
 .cs-search-input {
   width: 100%;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.85rem;
-  padding: 0.5rem 0.75rem 0.5rem 2.1rem;
+  font-size: 0.82rem;
+  padding: 0.45rem 0.75rem 0.45rem 2.1rem;
   background: var(--bg);
   color: var(--text);
   border: 1px solid var(--border);
@@ -120,45 +120,48 @@ html[data-theme="dark"] {
 
 .cs-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
   align-items: center;
+  gap: 0.35rem;
 }
 
-.cs-btn {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.45rem 0.85rem;
+.cs-action-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  margin: 0 0.2rem;
+}
+
+.cs-icon-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
   border-radius: 6px;
-  border: 1.5px solid var(--border);
+  border: 1px solid var(--border);
   background: var(--bg);
-  color: var(--text);
+  color: var(--text-muted);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  justify-content: center;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 
-.cs-btn:hover {
+.cs-icon-btn svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.cs-icon-btn:hover {
+  color: var(--text);
   border-color: var(--accent);
   background: var(--bg-2);
 }
 
-.cs-btn-primary {
-  background: var(--accent);
-  color: #ffffff;
+.cs-icon-btn.is-active {
+  color: var(--accent);
   border-color: var(--accent);
-}
-
-html[data-theme="dark"] .cs-btn-primary {
-  color: #000000;
-}
-
-.cs-btn-primary:hover {
-  opacity: 0.92;
-  background: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, var(--bg));
 }
 
 .cs-header {
@@ -189,18 +192,13 @@ html[data-theme="dark"] .cs-btn-primary {
 
 .cs-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.15rem;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
   align-items: start;
 }
 
-@media (max-width: 900px) {
-  .cs-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 .cs-card {
+  width: 100%;
   background: var(--bg);
   border: 1.5px solid var(--border);
   border-radius: 6px;
@@ -372,8 +370,8 @@ html[data-theme="dark"] .cs-btn-primary {
   }
 
   .cs-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 0.55rem !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.65rem !important;
   }
 
   .cs-card {
@@ -416,17 +414,32 @@ html[data-theme="dark"] .cs-btn-primary {
       <input type="search" id="cs-filter" class="cs-search-input" placeholder="Filtrar función o concepto (ej: lpf, chop, adsr, fm)..." aria-label="Filtrar cheatsheet">
     </div>
     <div class="cs-actions">
-      <button type="button" id="theme-toggle-btn" class="cs-btn" title="Alternar entre modo claro y oscuro">
-        <span id="theme-toggle-icon">🌓</span> <span id="theme-toggle-label">Cambiar Tema</span>
+      <button type="button" id="theme-light-btn" class="cs-icon-btn" title="Modo claro" aria-label="Modo claro">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="8" r="3.25"></circle>
+          <line x1="8" y1="1.25" x2="8" y2="2.75"></line>
+          <line x1="8" y1="13.25" x2="8" y2="14.75"></line>
+          <line x1="3.22" y1="3.22" x2="4.28" y2="4.28"></line>
+          <line x1="11.72" y1="11.72" x2="12.78" y2="12.78"></line>
+          <line x1="1.25" y1="8" x2="2.75" y2="8"></line>
+          <line x1="13.25" y1="8" x2="14.75" y2="8"></line>
+          <line x1="3.22" y1="12.78" x2="4.28" y2="11.72"></line>
+          <line x1="11.72" y1="4.28" x2="12.78" y2="3.22"></line>
+        </svg>
       </button>
-      <button type="button" id="print-light-btn" class="cs-btn" title="Imprimir o guardar PDF en modo claro">
-        ☀️ Imprimir Light
+      <button type="button" id="theme-dark-btn" class="cs-icon-btn" title="Modo oscuro" aria-label="Modo oscuro">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3z"></path>
+        </svg>
       </button>
-      <button type="button" id="print-dark-btn" class="cs-btn" title="Imprimir o guardar PDF en modo oscuro">
-        🌙 Imprimir Dark
-      </button>
-      <button type="button" id="print-current-btn" class="cs-btn cs-btn-primary" title="Imprimir en el modo actual">
-        🖨️ Imprimir / PDF
+      <span class="cs-action-divider" aria-hidden="true"></span>
+      <button type="button" id="print-btn" class="cs-icon-btn" title="Imprimir / Guardar PDF" aria-label="Imprimir">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5V2h8v3"></path>
+          <rect x="2" y="5" width="12" height="6" rx="1.5"></rect>
+          <path d="M4.5 9.5h7v4.5h-7z" fill="var(--bg)"></path>
+          <circle cx="11.75" cy="7.25" r="0.6" fill="currentColor" stroke="none"></circle>
+        </svg>
       </button>
     </div>
   </div>
@@ -438,6 +451,36 @@ html[data-theme="dark"] .cs-btn-primary {
   </header>
 
   <div class="cs-grid" id="cs-grid">
+
+    <!-- Atajos de Teclado -->
+    <section class="cs-card">
+      <div class="cs-card-header">
+        <h2>Atajos de Teclado (Strudel REPL)</h2>
+        <span class="cs-card-tag">Uso frecuente</span>
+      </div>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Atajo</th><th>Descripción</th><th>Nota / Alternativa</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>Ctrl + Enter</code></td>
+            <td>Reproduce y actualiza el patrón de música.</td>
+            <td>También <code>Alt + Enter</code> o botón <b>Play / Update</b></td>
+          </tr>
+          <tr>
+            <td><code>Ctrl + .</code></td>
+            <td>Detiene la reproducción de sonido.</td>
+            <td>⚠️ A veces choca con el selector de emojis del teclado (alternativa: botón <b>Stop</b> o <code>hush()</code>)</td>
+          </tr>
+          <tr>
+            <td><code>Cmd + /</code> o <code>Ctrl + /</code></td>
+            <td>Alterna (comentar / descomentar) líneas de código.</td>
+            <td>Agrega o quita <code>//</code> al inicio de la línea</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
     <!-- 1. Sonido, Samples y Baterías -->
     <section class="cs-card">
@@ -493,15 +536,15 @@ html[data-theme="dark"] .cs-btn-primary {
       </table>
     </section>
 
-    <!-- 3. Tiempo, Paralelismo y Atajos -->
+    <!-- 3. Tiempo y Pistas Paralelas -->
     <section class="cs-card">
       <div class="cs-card-header">
-        <h2>3. Tiempo, Pistas y Atajos</h2>
+        <h2>3. Tiempo y Pistas Paralelas</h2>
         <span class="cs-card-tag">Clases 1 · 3 · 6</span>
       </div>
       <table class="cs-table">
         <thead>
-          <tr><th>Función / Atajo</th><th>Descripción</th><th>Ejemplo</th></tr>
+          <tr><th>Función</th><th>Descripción</th><th>Ejemplo</th></tr>
         </thead>
         <tbody>
           <tr><td><code>setcpm()</code></td><td>Tempo global en ciclos por minuto (BPM / beats)</td><td><code>setcpm(120/4)</code></td></tr>
@@ -511,9 +554,6 @@ html[data-theme="dark"] .cs-btn-primary {
           <tr><td><code>stack()</code></td><td>Combina patrones simultáneos en un bloque</td><td><code>stack(s("bd"), s("hh*4"))</code></td></tr>
           <tr><td><code>hush()</code></td><td>Detiene todos los patrones sonando</td><td><code>hush()</code></td></tr>
           <tr><td><code>.fast()</code> / <code>.slow()</code></td><td>Acelera o ralentiza el tiempo del patrón</td><td><code>.fast(2)</code> · <code>.slow(4)</code></td></tr>
-          <tr><td><code>Ctrl + Enter</code></td><td>Actualiza el código en vivo (Update)</td><td>Atajo de teclado</td></tr>
-          <tr><td><code>Ctrl + .</code></td><td>Detiene todo el sonido (Stop)</td><td>Atajo de teclado</td></tr>
-          <tr><td><code>Ctrl + /</code></td><td>Comenta o descomenta líneas (<code>//</code>)</td><td>Atajo de teclado</td></tr>
         </tbody>
       </table>
     </section>
@@ -693,12 +733,9 @@ html[data-theme="dark"] .cs-btn-primary {
 <script>
 (function() {
   const htmlEl = document.documentElement;
-  const toggleBtn = document.getElementById('theme-toggle-btn');
-  const toggleLabel = document.getElementById('theme-toggle-label');
-  const toggleIcon = document.getElementById('theme-toggle-icon');
-  const printLightBtn = document.getElementById('print-light-btn');
-  const printDarkBtn = document.getElementById('print-dark-btn');
-  const printCurrentBtn = document.getElementById('print-current-btn');
+  const lightBtn = document.getElementById('theme-light-btn');
+  const darkBtn = document.getElementById('theme-dark-btn');
+  const printBtn = document.getElementById('print-btn');
   const filterInput = document.getElementById('cs-filter');
 
   function getEffectiveTheme() {
@@ -707,20 +744,15 @@ html[data-theme="dark"] .cs-btn-primary {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
 
+  function updateThemeButtons(theme) {
+    lightBtn.classList.toggle('is-active', theme === 'light');
+    darkBtn.classList.toggle('is-active', theme === 'dark');
+  }
+
   function setTheme(theme) {
     htmlEl.setAttribute('data-theme', theme);
     localStorage.setItem('strudel-cs-theme', theme);
-    updateToggleUI(theme);
-  }
-
-  function updateToggleUI(theme) {
-    if (theme === 'dark') {
-      toggleIcon.textContent = '☀️';
-      toggleLabel.textContent = 'Modo Claro';
-    } else {
-      toggleIcon.textContent = '🌙';
-      toggleLabel.textContent = 'Modo Oscuro';
-    }
+    updateThemeButtons(theme);
   }
 
   // Inicializar tema guardado o del sistema
@@ -728,33 +760,12 @@ html[data-theme="dark"] .cs-btn-primary {
   if (saved === 'light' || saved === 'dark') {
     setTheme(saved);
   } else {
-    updateToggleUI(getEffectiveTheme());
+    updateThemeButtons(getEffectiveTheme());
   }
 
-  toggleBtn.addEventListener('click', () => {
-    const next = getEffectiveTheme() === 'dark' ? 'light' : 'dark';
-    setTheme(next);
-  });
-
-  function printWithTheme(theme) {
-    const prevAttr = htmlEl.getAttribute('data-theme');
-    htmlEl.setAttribute('data-theme', theme);
-    updateToggleUI(theme);
-    setTimeout(() => {
-      window.print();
-      if (prevAttr) {
-        htmlEl.setAttribute('data-theme', prevAttr);
-        updateToggleUI(prevAttr);
-      }
-    }, 80);
-  }
-
-  printLightBtn.addEventListener('click', () => printWithTheme('light'));
-  printDarkBtn.addEventListener('click', () => printWithTheme('dark'));
-  printCurrentBtn.addEventListener('click', () => {
-    const current = getEffectiveTheme();
-    printWithTheme(current);
-  });
+  lightBtn.addEventListener('click', () => setTheme('light'));
+  darkBtn.addEventListener('click', () => setTheme('dark'));
+  printBtn.addEventListener('click', () => window.print());
 
   // Filtro en vivo
   filterInput.addEventListener('input', () => {

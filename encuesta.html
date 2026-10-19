@@ -34,33 +34,6 @@
 #clase-nav a:hover { color: var(--text); background: var(--border); }
 #clase-nav a.nav-active { color: var(--accent); font-weight: 700; }
 
-/* ── Explicit Light / Dark Theme Overrides ────────────────────────────── */
-html[data-theme="light"] {
-  --bg: #ffffff;
-  --bg-2: #f2f2f2;
-  --border: #b5b5b5;
-  --text: #000000;
-  --text-muted: #505050;
-  --accent: #0000bb;
-  --link: #0033cc;
-  --link-visited: #7918a5;
-  --code-bg: #f4f4f4;
-  color-scheme: light;
-}
-
-html[data-theme="dark"] {
-  --bg: #000000;
-  --bg-2: #181818;
-  --border: #555555;
-  --text: #ffffff;
-  --text-muted: #a8a8a8;
-  --accent: #00bcff;
-  --link: #00bcff;
-  --link-visited: #b6a0ff;
-  --code-bg: #111111;
-  color-scheme: dark;
-}
-
 #content.survey-page {
   max-width: 960px;
   padding: 1.5rem 2rem 4rem;
@@ -119,8 +92,10 @@ html[data-theme="dark"] {
   border-color: var(--accent);
 }
 
-html[data-theme="dark"] .sv-btn-primary {
-  color: #000000;
+@media (prefers-color-scheme: dark) {
+  .sv-btn-primary {
+    color: #000000;
+  }
 }
 
 .sv-btn-primary:hover {
@@ -470,27 +445,15 @@ html[data-theme="dark"] .sv-btn-primary {
 
 <div id="content" class="survey-page">
 
-  <!-- Barra de controles (oculta al imprimir) -->
+  <!-- Barra de controles -->
   <div class="sv-toolbar">
-    <span class="sv-toolbar-hint">Puedes rellenarla en pantalla y guardar como PDF, o imprimirla en blanco.</span>
+    <span class="sv-toolbar-hint">Tus respuestas se guardan automáticamente en este navegador.</span>
     <div class="sv-actions">
-      <button type="button" id="theme-toggle-btn" class="sv-btn" title="Alternar entre modo claro y oscuro">
-        <span id="theme-toggle-icon">🌓</span> <span id="theme-toggle-label">Cambiar Tema</span>
-      </button>
       <button type="button" id="clear-form-btn" class="sv-btn" title="Dejar todas las casillas en blanco">
         🧹 Limpiar
       </button>
-      <button type="button" id="export-txt-btn" class="sv-btn" title="Descargar respuestas en archivo de texto">
+      <button type="button" id="export-txt-btn" class="sv-btn sv-btn-primary" title="Descargar respuestas en archivo de texto">
         💾 Descargar .txt
-      </button>
-      <button type="button" id="print-light-btn" class="sv-btn" title="Imprimir o guardar PDF en modo claro">
-        ☀️ Imprimir Light
-      </button>
-      <button type="button" id="print-dark-btn" class="sv-btn" title="Imprimir o guardar PDF en modo oscuro">
-        🌙 Imprimir Dark
-      </button>
-      <button type="button" id="print-current-btn" class="sv-btn sv-btn-primary" title="Imprimir o Guardar como PDF">
-        🖨️ Imprimir / Guardar PDF
       </button>
     </div>
   </div>
@@ -686,73 +649,15 @@ html[data-theme="dark"] .sv-btn-primary {
 
 <script>
 (function() {
-  const htmlEl = document.documentElement;
   const form = document.getElementById('strudel-survey-form');
   const dateInput = document.getElementById('survey-date');
-  const toggleBtn = document.getElementById('theme-toggle-btn');
-  const toggleLabel = document.getElementById('theme-toggle-label');
-  const toggleIcon = document.getElementById('theme-toggle-icon');
   const clearBtn = document.getElementById('clear-form-btn');
   const exportBtn = document.getElementById('export-txt-btn');
-  const printLightBtn = document.getElementById('print-light-btn');
-  const printDarkBtn = document.getElementById('print-dark-btn');
-  const printCurrentBtn = document.getElementById('print-current-btn');
 
   // Fecha por defecto hoy
   if (!dateInput.value) {
     dateInput.value = new Date().toISOString().slice(0, 10);
   }
-
-  // Tema Light / Dark
-  function getEffectiveTheme() {
-    const attr = htmlEl.getAttribute('data-theme');
-    if (attr) return attr;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
-
-  function setTheme(theme) {
-    htmlEl.setAttribute('data-theme', theme);
-    localStorage.setItem('strudel-cs-theme', theme);
-    updateToggleUI(theme);
-  }
-
-  function updateToggleUI(theme) {
-    if (theme === 'dark') {
-      toggleIcon.textContent = '☀️';
-      toggleLabel.textContent = 'Modo Claro';
-    } else {
-      toggleIcon.textContent = '🌙';
-      toggleLabel.textContent = 'Modo Oscuro';
-    }
-  }
-
-  const savedTheme = localStorage.getItem('strudel-cs-theme');
-  if (savedTheme === 'light' || savedTheme === 'dark') {
-    setTheme(savedTheme);
-  } else {
-    updateToggleUI(getEffectiveTheme());
-  }
-
-  toggleBtn.addEventListener('click', () => {
-    setTheme(getEffectiveTheme() === 'dark' ? 'light' : 'dark');
-  });
-
-  function printWithTheme(theme) {
-    const prev = htmlEl.getAttribute('data-theme');
-    htmlEl.setAttribute('data-theme', theme);
-    updateToggleUI(theme);
-    setTimeout(() => {
-      window.print();
-      if (prev) {
-        htmlEl.setAttribute('data-theme', prev);
-        updateToggleUI(prev);
-      }
-    }, 80);
-  }
-
-  printLightBtn.addEventListener('click', () => printWithTheme('light'));
-  printDarkBtn.addEventListener('click', () => printWithTheme('dark'));
-  printCurrentBtn.addEventListener('click', () => printWithTheme(getEffectiveTheme()));
 
   // Autoguardado local
   const STORAGE_KEY = 'strudel-encuesta-v1';
