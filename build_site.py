@@ -99,6 +99,7 @@ for i, cls in enumerate(classes):
         active_cls = ' class="nav-active"' if j == class_num else ''
         nav_html += f'<a href="clase-{j}.html"{active_cls}>Clase {j}</a>'
     nav_html += '<a href="cheatsheet.html" class="nav-cheatsheet-btn" style="margin-left: auto;">Cheatsheet</a>'
+    nav_html += '<a href="glosario.html" class="nav-cheatsheet-btn">Glosario</a>'
     nav_html += '<a href="https://warm.strudel.cc/" target="_blank" rel="noopener" class="nav-strudel-btn">Ir a Strudel ꩜</a>'
     nav_html += '<a href="#" id="search-trigger" style="text-decoration: none;" title="Buscar en el taller"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a></nav>'
     
