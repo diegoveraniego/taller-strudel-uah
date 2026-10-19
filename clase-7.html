@@ -39,28 +39,10 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 hljs.highlightAll();
-// ── REPLs de Strudel: un solo patrón sonando, y pocos contexts vivos ──────
-//
-// Por qué se bugea el audio: cada <strudel-repl> es un iframe con su propio
-// AudioContext. Esta página tiene 56 bloques de código, o sea 56 contexts si
-// se montan todos. El navegador corta alrededor de 6: los últimos no arrancan
-// o quedan a otra sample rate, y el audio sale crackleando.
-//
-// Hay dos límites entonces:
-//
-// 1) VENTANA DE MONTAJE. Un REPL se monta al acercarse a la pantalla y se
-//    desmonta al alejarse (liberando el AudioContext). Así el número de
-//    contexts vivos queda acotado por lo que se ve, no por el largo de la
-//    página. El código no se pierde: Strudel nos lo manda por postMessage en
-//    cada evaluación y lo guardamos para el remontaje.
-//
-// 2) UNO SOLO SONANDO. No existe API para mandarle "parate" a otro iframe,
-//    pero Strudel no arranca sin un gesto del usuario: recargar el iframe lo
-//    deja mudo. Al evaluar uno, recargamos los demás montados.
-const REPL_MARGIN = '800px 0px'; // montar antes de que entre en pantalla
-const REPL_MAX_MOUNTED = 6; // tope duro, por si el margen no alcanza
+const REPL_MARGIN = '800px 0px';
+const REPL_MAX_MOUNTED = 6;
 const holders = new Set();
-const reloading = new WeakSet(); // ignora los postMessage de recarga
+const reloading = new WeakSet();
 let activeHolder = null;
 
 function mountRepl(holder) {
@@ -74,18 +56,16 @@ function mountRepl(holder) {
 function unmountRepl(holder) {
   if (!holder.dataset.mounted || holder === activeHolder) return;
   holder.dataset.mounted = '';
-  holder.textContent = ''; // suelta el iframe y su AudioContext
+  holder.textContent = '';
 }
 
 function silence(holder) {
   const frame = holder.querySelector('iframe');
   if (!frame) return;
   reloading.add(holder);
-  // hay que limpiar la marca: si no, el REPL queda excluido para siempre
-  // de volver a activarse (que era un bug de la primera versión).
   frame.addEventListener('load', () => reloading.delete(holder), { once: true });
-  setTimeout(() => reloading.delete(holder), 8000); // red de seguridad
-  frame.src = frame.src; // reinicia el AudioContext -> queda mudo
+  setTimeout(() => reloading.delete(holder), 8000);
+  frame.src = frame.src;
 }
 
 function holderOf(source) {
@@ -105,8 +85,6 @@ function setActive(holder) {
   });
 }
 
-// Cada evaluación manda el código: lo guardamos para poder desmontar y
-// remontar el REPL sin perder lo que el alumno escribió.
 window.addEventListener('message', (e) => {
   if (e.source == null || typeof e.data !== 'string') return;
   const holder = holderOf(e.source);
@@ -129,13 +107,11 @@ if (holders.size) {
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) mountRepl(e.target);
-      else unmountRepl(e.target); // al salir de la ventana, suelta el context
+      else unmountRepl(e.target);
     });
   }, { rootMargin: REPL_MARGIN });
   holders.forEach(h => io.observe(h));
 
-  // Tope duro: si la ventana deja pasar más de los previstos, se desmontan
-  // los más lejanos al elemento que está sonando.
   const trim = () => {
     const live = [...holders].filter(h => h.dataset.mounted && h !== activeHolder);
     if (live.length <= REPL_MAX_MOUNTED) return;
@@ -166,7 +142,6 @@ function initNavDrawer() {
   const toc = document.querySelector('#text-table-of-contents');
   if (!toc) return;
 
-  // 1. Botón pestaña fijo en el lateral izquierdo con icono estilo GNOME
   const toggleBtn = document.createElement('button');
   toggleBtn.id = 'drawer-toggle';
   toggleBtn.type = 'button';
@@ -175,17 +150,14 @@ function initNavDrawer() {
   toggleBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" role="img" aria-hidden="true"><path d="m 6 13 v -10 h -3 c -0.550781 0 -1 0.449219 -1 1 v 8 c 0 0.550781 0.449219 1 1 1 z m 0 0" fill-opacity="0.35"/><path d="m 3 1 c -1.644531 0 -3 1.355469 -3 3 v 8 c 0 1.644531 1.355469 3 3 3 h 10 c 1.644531 0 3 -1.355469 3 -3 v -8 c 0 -1.644531 -1.355469 -3 -3 -3 z m 0 2 h 3 v 10 h -3 c -0.570312 0 -1 -0.429688 -1 -1 v -8 c 0 -0.570312 0.429688 -1 1 -1 z m 4 0 h 6 c 0.570312 0 1 0.429688 1 1 v 8 c 0 0.570312 -0.429688 1 -1 1 h -6 z m 0 0"/></svg>';
   document.body.appendChild(toggleBtn);
 
-  // 2. Backdrop difuminado
   const backdrop = document.createElement('div');
   backdrop.id = 'drawer-backdrop';
   document.body.appendChild(backdrop);
 
-  // 3. Contenedor Drawer
   const drawer = document.createElement('aside');
   drawer.id = 'sidebar-drawer';
   drawer.setAttribute('aria-label', 'ÍNDICE del taller');
 
-  // Cabecera
   const header = document.createElement('div');
   header.className = 'drawer-header';
   header.innerHTML = `
@@ -194,13 +166,12 @@ function initNavDrawer() {
   `;
   drawer.appendChild(header);
 
-  // Herramientas: buscador y píldoras
   const tools = document.createElement('div');
   tools.className = 'drawer-tools';
   tools.innerHTML = `
     <div class="drawer-search-wrapper">
       <svg class="drawer-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input type="search" class="drawer-search" placeholder="Filtrar (ej. lpf, bpm, cut)..." aria-label="Filtrar índice">
+      <input type="search" class="drawer-search" placeholder="Filtrar (ej. lfo, sync, depth)..." aria-label="Filtrar índice">
     </div>
     <div class="drawer-class-pills">
       <span>Clase:</span>
@@ -208,14 +179,12 @@ function initNavDrawer() {
   `;
   drawer.appendChild(tools);
 
-  // Contenido: árbol clonado
   const content = document.createElement('div');
   content.className = 'drawer-content';
   const originalUl = toc.querySelector('ul');
   if (!originalUl) return;
   const clonedUl = originalUl.cloneNode(true);
 
-  // Transformar los li de primer nivel (Clases)
   const pillsContainer = tools.querySelector('.drawer-class-pills');
   const classItems = clonedUl.querySelectorAll(':scope > li');
   classItems.forEach(li => {
@@ -224,7 +193,6 @@ function initNavDrawer() {
     const subUl = li.querySelector(':scope > ul');
 
     if (directLink) {
-      // Píldora de salto directo
       const pill = document.createElement('a');
       pill.className = 'drawer-pill';
       pill.href = directLink.getAttribute('href');
@@ -233,7 +201,6 @@ function initNavDrawer() {
       pill.title = directLink.textContent.trim();
       pillsContainer.appendChild(pill);
 
-      // Cabecera colapsable para la clase
       if (subUl) {
         const headerWrap = document.createElement('div');
         headerWrap.className = 'drawer-class-header';
@@ -259,7 +226,6 @@ function initNavDrawer() {
   content.appendChild(clonedUl);
   drawer.appendChild(content);
 
-  // Pie
   const footer = document.createElement('div');
   footer.className = 'drawer-footer';
   footer.innerHTML = `
@@ -270,7 +236,6 @@ function initNavDrawer() {
 
   document.body.appendChild(drawer);
 
-  // Acciones de apertura y cierre
   function openDrawer() {
     drawer.classList.add('is-open');
     backdrop.classList.add('is-visible');
@@ -287,7 +252,6 @@ function initNavDrawer() {
   backdrop.addEventListener('click', closeDrawer);
   header.querySelector('.drawer-close').addEventListener('click', closeDrawer);
 
-  // Atajos de teclado
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
       closeDrawer();
@@ -297,7 +261,6 @@ function initNavDrawer() {
     }
   });
 
-  // Clic en enlaces de navegación
   drawer.querySelectorAll('a').forEach(a => {
     a.addEventListener('click', (e) => {
       const href = a.getAttribute('href');
@@ -318,7 +281,6 @@ function initNavDrawer() {
     });
   });
 
-  // Filtro / buscador instantáneo
   const searchInput = tools.querySelector('.drawer-search');
   searchInput.addEventListener('input', () => {
     const q = searchInput.value.trim().toLowerCase();
@@ -345,7 +307,6 @@ function initNavDrawer() {
     });
   });
 
-  // ScrollSpy para marcar la sección activa
   const trackedLinks = Array.from(content.querySelectorAll('a[href^="#"]')).filter(a => a.getAttribute('href') !== '#');
   const sections = trackedLinks
     .map(a => {
@@ -388,20 +349,435 @@ initNavDrawer();
 </head>
 <body>
 <nav id="clase-nav"><a href="index.html">꩜ Inicio</a><a href="clase-1.html">Clase 1</a><a href="clase-2.html">Clase 2</a><a href="clase-3.html">Clase 3</a><a href="clase-4.html">Clase 4</a><a href="clase-5.html">Clase 5</a><a href="clase-6.html">Clase 6</a><a href="clase-7.html" class="nav-active">Clase 7</a><a href="cheatsheet.html" class="nav-cheatsheet-btn" style="margin-left: auto;">Cheatsheet</a><a href="https://warm.strudel.cc/" target="_blank" rel="noopener" class="nav-strudel-btn">Ir a Strudel ꩜</a><a href="#" id="search-trigger" style="text-decoration: none;" title="Buscar en el taller"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a></nav>
+
 <div id="content">
-<h1 class="title">Clase 7: Pattern Functions o funciones de patrones</h1>
-<div id="outline-container-org737a078" class="outline-2">
-<h2>Clase 7: Pattern Functions o funciones de patrones</h2>
+<div id="table-of-contents" role="doc-toc">
+<h2>Índice de la Clase</h2>
+<div id="text-table-of-contents" role="region">
+<ul>
+  <li><a href="#sec-lfo-intro">Clase 7: Osciladores de Baja Frecuencia (LFO)</a>
+    <ul>
+      <li><a href="#sec-que-es-lfo">1. ¿Qué es un LFO? Historia y funcionamiento</a></li>
+      <li><a href="#sec-usos-musicales">2. Aplicaciones musicales clásicas</a></li>
+      <li><a href="#sec-signals-vs-lfo">3. Signals vs. LFOs en Strudel</a></li>
+      <li><a href="#sec-aplicar-lfo">4. Aplicando nuestro primer .lfo()</a></li>
+      <li><a href="#sec-config-lfo">5. Configurando el LFO ({ key: value })</a>
+        <ul>
+          <li><a href="#sec-lfo-control">5.1. Parámetro objetivo: control (c)</a></li>
+          <li><a href="#sec-lfo-rate-sync">5.2. Velocidad y Sincronización: rate (r) y sync (s)</a></li>
+          <li><a href="#sec-lfo-depth">5.3. Profundidad relativa (depth) y absoluta (depthabs)</a></li>
+          <li><a href="#sec-lfo-dcoffset">5.4. Centro de modulación: dcoffset (dc)</a></li>
+          <li><a href="#sec-lfo-shape">5.5. Forma de onda: shape (sh)</a></li>
+          <li><a href="#sec-lfo-skew-curve">5.6. Inclinación y Curva: skew (sk) y curve</a></li>
+        </ul>
+      </li>
+      <li><a href="#sec-lfo-avanzado">6. Modulación avanzada: id, FX index y subControl</a></li>
+      <li><a href="#sec-lfo-repaso">7. Repaso — Clase 7</a></li>
+    </ul>
+  </li>
+</ul>
 </div>
 </div>
+
+<h1 class="title">Clase 7: Osciladores de Baja Frecuencia (LFO)</h1>
+
+<div id="sec-lfo-intro" class="outline-2">
+<h2>Clase 7: Osciladores de Baja Frecuencia (LFO)</h2>
+<div class="outline-text-2">
+<blockquote>
+<p>
+<b>Referencia interactiva:</b> Esta sesión adapta los conceptos de síntesis modular y la guía oficial de <a href="https://strudel.cc/learn/lfo/" target="_blank" rel="noopener">Low-frequency oscillators (LFO)</a> de Strudel, basada en el <a href="https://www.youtube.com/watch?v=11frBA9L638" target="_blank" rel="noopener">tutorial en video de glossing</a>. Recuerda que puedes abrir <a href="https://warm.strudel.cc/" target="_blank" rel="noopener">warm.strudel.cc</a> desde el botón superior para probar las funciones más recientes a pantalla completa.
+</p>
+</blockquote>
+</div>
+
+<!-- 1. ¿Qué es un LFO? -->
+<div id="sec-que-es-lfo" class="outline-3">
+<h3>1. ¿Qué es un LFO? Historia y funcionamiento</h3>
+<div class="outline-text-3">
+<p>
+Un <b>LFO</b> (<i>Low-Frequency Oscillation</i> u <b>Oscilador de Baja Frecuencia</b>) es una señal electrónica que oscila generalmente <b>por debajo de los 20 Hz</b> —es decir, por debajo del rango de audición humana— creando un pulso rítmico o un barrido continuo (<i>sweep</i>).
+</p>
+
+<h4>Breve historia</h4>
+<p>
+La oscilación de baja frecuencia se introdujo con los <b>sintetizadores modulares de los años 1960</b>, como el legendario sintetizador <b>Moog</b>. En sus inicios, el efecto de LFO solía descubrirse casi por accidente entre las miles de configuraciones que el operador podía conectar (<i>patchear</i>) con cables. Desde entonces, los LFOs se convirtieron en una pieza indispensable de prácticamente todo sintetizador hardware, sampler e instrumento de software.
+</p>
+
+<h4>Oscilador primario vs. LFO</h4>
+<ul class="org-ul">
+  <li><b>Oscilador primario (Audio):</b> Opera en frecuencias audibles (20 Hz a 20.000 Hz) para generar la señal sonora que escuchamos.</li>
+  <li><b>Oscilador secundario (LFO):</b> Opera a frecuencias muy bajas (&lt; 20 Hz) y funciona como una <b>señal de control</b> que modifica el valor de otro parámetro a lo largo del tiempo, transformando el sonido resultante <i>sin introducir una nueva fuente de audio</i>.</li>
+</ul>
+<p>
+Al igual que un oscilador estándar, un LFO utiliza formas de onda periódicas clásicas (<b>senoidal, diente de sierra, triangular, cuadrada o rampa</b>), además de tablas de ondas o señales aleatorias.
+</p>
+</div>
+</div>
+
+<!-- 2. Aplicaciones musicales -->
+<div id="sec-usos-musicales" class="outline-3">
+<h3>2. Aplicaciones musicales clásicas</h3>
+<div class="outline-text-3">
+<p>
+Un LFO se puede enrutar para controlar casi cualquier parámetro de un sintetizador. Según <b>qué parámetro</b> module y a <b>qué velocidad (<i>rate</i>)</b> se mueva, obtenemos distintos efectos fundamentales en la música electrónica moderna:
+</p>
+
+<ul class="org-ul">
+  <li><b>Vibrato (LFO → Frecuencia / Tono):</b> Al modular la altura musical (<i>pitch</i>) del oscilador, el sonido oscila ligeramente de afinación como la voz de un cantante o el dedo de un violinista.</li>
+  <li><b>Trémolo (LFO → Amplitud / Volumen):</b> Al modular la ganancia (<code>gain</code>), el volumen sube y baja rítmicamente.</li>
+  <li><b>Wobble Bass (LFO → Frecuencia de corte del filtro <code>lpf</code>):</b> Al abrir y cerrar cíclicamente un filtro pasa-bajo —a menudo sincronizado con el tempo del track— se produce el clásico efecto <i>"wobble"</i> característico del <b>Dubstep, Drum &amp; Bass, Bass House y Future Bass</b>.</li>
+  <li><b>Barridos lentos (<i>Sweeps</i>) vs. Efecto <i>Ripple</i>:</b> Una velocidad (<i>rate</i>) muy lenta sobre un filtro da la sensación gradual de que el sonido se acerca o se aclara; en cambio, una velocidad muy alta genera efectos burbujeantes (<i>rippling</i>) o texturas de ciencia ficción.</li>
+</ul>
+<p>
+Además, cuando se combinan varios LFOs a distintas frecuencias o se enlazan a múltiples parámetros simultáneamente, dan la impresión de que el sonido está <b>"vivo"</b> y en constante evolución.
+</p>
+</div>
+</div>
+
+<!-- 3. Signals vs LFOs -->
+<div id="sec-signals-vs-lfo" class="outline-3">
+<h3>3. Signals vs. LFOs en Strudel</h3>
+<div class="outline-text-3">
+<p>
+En Strudel existen dos maneras distintas de modular parámetros:
+</p>
+<ol class="org-ol">
+  <li><b>Signals (<code>sine</code>, <code>saw</code>, <code>rand</code>...):</b> Modulación a <b>nivel de patrón</b> (<i>pattern-level modulation</i>), que vimos en la Clase 3.</li>
+  <li><b><code>.lfo()</code>:</b> Modulación continua directamente a <b>nivel de audio</b> (<i>audio-level modulation</i>) dentro del motor del sintetizador.</li>
+</ol>
+</div>
+</div>
+
+<!-- 4. Aplicando un LFO -->
+<div id="sec-aplicar-lfo" class="outline-3">
+<h3>4. Aplicando nuestro primer <code>.lfo()</code></h3>
+<div class="outline-text-3">
+<p>
+Por defecto, <code>.lfo()</code> modula el parámetro de control que se encuentra <b>inmediatamente a su izquierda</b>.
+</p>
+<p>
+En este primer ejemplo, como <code>.lfo()</code> está justo después de <code>s("saw")</code>, modula directamente la <b>frecuencia (tono)</b> de la onda diente de sierra. Prueba comentarlo con <code>//.lfo()</code> para escuchar y ver en el analizador de espectro cómo cambia:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw").lfo() 
+  .lpf(800)
+  ._spectrum({height: 300, width: 800})
+</code></pre>
+</div>
+
+<p>
+Si en cambio colocamos <code>.lfo()</code> inmediatamente después de <code>.lpf(800)</code>, el LFO modulará la frecuencia de corte del <b>filtro pasa-bajo</b>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw")
+  .lpf(800).lfo() 
+  ._spectrum({height: 300, width: 800})
+</code></pre>
+</div>
+</div>
+</div>
+
+<!-- 5. Configurando el LFO -->
+<div id="sec-config-lfo" class="outline-3">
+<h3>5. Configurando el LFO (<code>{ key: value }</code>)</h3>
+<div class="outline-text-3">
+<p>
+Para ir más allá del comportamiento por defecto, le pasamos a <code>.lfo()</code> un objeto de configuración entre llaves <code>{ }</code> con pares <code>clave: valor</code> separados por comas (igual que hicimos en <code>._spectrum({height: 300, width: 800})</code>).
+</p>
+</div>
+
+<!-- 5.1 Control -->
+<div id="sec-lfo-control" class="outline-4">
+<h4>5.1. Parámetro objetivo: <code>control</code> (alias <code>c</code>)</h4>
+<div class="outline-text-4">
+<p>
+<code>control</code> (o su abreviatura <code>c</code>) define explícitamente qué parámetro será modulado. Esto te permite colocar <code>.lfo()</code> en cualquier parte de la cadena sin depender del orden:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw")
+  .lfo({control: 'lpf'})
+  .lpf(800)
+  ._spectrum({height: 300, width: 800})
+</code></pre>
+</div>
+
+<p>
+Incluso puedes modular parámetros que siempre están presentes aunque no los hayas escrito explícitamente, como <code>gain</code> (creando un efecto de <b>trémolo</b>):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw")
+  .lfo({control: 'gain'})
+  .lpf(800)
+  ._spectrum({height: 300, width: 800})
+</code></pre>
+</div>
+</div>
+</div>
+
+<!-- 5.2 Rate y Sync -->
+<div id="sec-lfo-rate-sync" class="outline-4">
+<h4>5.2. Velocidad y Sincronización: <code>rate</code> (<code>r</code>) y <code>sync</code> (<code>s</code>)</h4>
+<div class="outline-text-4">
+<p>
+<b><code>rate</code> (alias <code>r</code>)</b> determina cuántas veces por segundo (en <b>Hz</b>) oscila el LFO. Además, todos los parámetros dentro de <code>.lfo()</code> aceptan patrones en mini-notación:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw")
+  .lfo({c: 'gain', rate: "<2 4>"})
+  .lpf(800)
+  ._spectrum({height: 300, width: 800})
+</code></pre>
+</div>
+
+<p>
+<b><code>sync</code> (alias <code>s</code>)</b>: En lugar de fijar una frecuencia libre en Hz con <code>rate</code>, puedes usar <code>sync</code> para <b>sincronizar el LFO con el tempo</b> de tus demás patrones. <code>sync</code> expresa la velocidad como <b>"oscilaciones por ciclo"</b>. Prueba cambiar o quitar <code>sync</code> para notar la diferencia frente al bombo:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>$: s("bd*4").bank("TR909").postgain(0.5)
+$: s("saw")
+  .lpf(800)
+  .lfo({sync: "<2 4 8 0.5>"})
+  ._spectrum({height: 300, width: 800})
+</code></pre>
+</div>
+</div>
+</div>
+
+<!-- 5.3 Depth y Depthabs -->
+<div id="sec-lfo-depth" class="outline-4">
+<h4>5.3. Profundidad relativa (<code>depth</code>) y absoluta (<code>depthabs</code>)</h4>
+<div class="outline-text-4">
+<p>
+<b><code>depth</code> (alias <code>dr</code> o <code>dep</code>)</b> controla la <b>profundidad relativa</b>. Su valor por defecto es <code>1</code>, lo que significa que el parámetro sube y baja la mitad del valor base que está siendo modulado (por ejemplo, para una frecuencia base de <code>64 Hz</code>, con <code>depth: 1</code> oscila entre <code>32 Hz</code> y <code>96 Hz</code>):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw").freq(64)
+  .lfo({r: 2, depth: "<1 2 3>"})
+  .lpf(800)
+  ._spectrum({height: 300, width: 800})
+</code></pre>
+</div>
+
+<p>
+<b><code>depthabs</code> (alias <code>da</code>)</b> controla la <b>profundidad absoluta</b> en la unidad exacta del parámetro. Por ejemplo, aquí modulamos el filtro pasa-bajo exactamente <code>250 Hz</code> hacia arriba y hacia abajo alrededor de los <code>800 Hz</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw")
+  .lpf(800)
+  .lfo({r: 2, depthabs: "250"})
+</code></pre>
+</div>
+</div>
+</div>
+
+<!-- 5.4 DC Offset -->
+<div id="sec-lfo-dcoffset" class="outline-4">
+<h4>5.4. Centro de modulación: <code>dcoffset</code> (alias <code>dc</code>)</h4>
+<div class="outline-text-4">
+<p>
+Si no quieres que la modulación suba y baje en la misma proporción respecto al valor base, puedes desplazar el centro con <b><code>dcoffset</code> (alias <code>dc</code>)</b>:
+</p>
+<ul class="org-ul">
+  <li><code>dcoffset: -0.5</code> (valor por defecto): La modulación es simétrica hacia arriba y hacia abajo.</li>
+  <li><code>dcoffset: 0</code>: Toda la modulación <b>incrementa</b> el parámetro a partir del valor base.</li>
+  <li><code>dcoffset: -1</code>: Toda la modulación <b>disminuye</b> el parámetro por debajo del valor base.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw")
+  .lpf(600)
+  .lfo({r: 2, da: "200", dcoffset: "<-0.5 -1 -0.5 0>"})
+</code></pre>
+</div>
+</div>
+</div>
+
+<!-- 5.5 Shape -->
+<div id="sec-lfo-shape" class="outline-4">
+<h4>5.5. Forma de onda: <code>shape</code> (alias <code>sh</code>)</h4>
+<div class="outline-text-4">
+<p>
+Con <b><code>shape</code> (alias <code>sh</code>)</b> cambiamos la forma de la oscilación del LFO. Por defecto es <code>triangle</code>, pero puedes elegir cualquiera de estas 5 formas por su <b>nombre</b> o por su <b>número</b>:
+</p>
+
+<table>
+<thead>
+<tr><th>Forma (<code>shape</code>)</th><th>Número</th><th>Comportamiento</th></tr>
+</thead>
+<tbody>
+<tr><td><code>triangle</code></td><td><code>0</code></td><td>Sube y baja linealmente (por defecto)</td></tr>
+<tr><td><code>sine</code></td><td><code>1</code></td><td>Ondulación suave y redonda</td></tr>
+<tr><td><code>ramp</code></td><td><code>2</code></td><td>Sube gradualmente y cae de golpe</td></tr>
+<tr><td><code>saw</code></td><td><code>3</code></td><td>Cae gradualmente desde arriba y sube de golpe</td></tr>
+<tr><td><code>square</code></td><td><code>4</code></td><td>Salta abruptamente entre dos estados</td></tr>
+</tbody>
+</table>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw")
+  .lpf(800)
+  .lfo({r: 2, shape: "<triangle sine ramp saw square>"})
+  ._spectrum({height: 300, width: 800})
+</code></pre>
+</div>
+
+<p>
+Al poder seleccionar las formas con números del <code>0</code> al <code>4</code>, podemos usar funciones como <code>irand(4)</code> para cambiar la forma del LFO aleatoriamente:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw")
+  .lpf(800)
+  .lfo({r: 2, shape: irand(4)})
+</code></pre>
+</div>
+</div>
+</div>
+
+<!-- 5.6 Skew y Curve -->
+<div id="sec-lfo-skew-curve" class="outline-4">
+<h4>5.6. Inclinación y Curva: <code>skew</code> (<code>sk</code>) y <code>curve</code></h4>
+<div class="outline-text-4">
+<p>
+<b><code>skew</code> (alias <code>sk</code>)</b> permite deformar las ondas <code>triangle</code> y <code>square</code> (su valor por defecto es <code>0.5</code>):
+</p>
+<ul class="org-ul">
+  <li>En <b><code>triangle</code></b>: inclina la punta del triángulo hacia la izquierda o derecha (<code>0</code> la convierte en <code>saw</code> y <code>1</code> en <code>ramp</code>).</li>
+  <li>En <b><code>square</code></b>: modifica el ancho de pulso (<i>pulse width</i>).</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw")
+  .lpf(800)
+  .lfo({r: 2, sh: "<triangle square>/5", skew: "<0 0.25 0.5 0.75 1>"})
+</code></pre>
+</div>
+
+<p>
+<b><code>curve</code></b> cambia la curvatura de la oscilación elevando el LFO a esa potencia (valor por defecto <code>1</code>). Valores mayores a <code>1</code> hacen la curva más pronunciada e intensa; valores entre <code>0</code> y <code>1</code> la suavizan:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw")
+  .lpf(800)
+  .lfo({r: 2, sh: "<triangle>", curve: "<1.3 1 0.75 1>"})
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 6. Modulación avanzada -->
+<div id="sec-lfo-avanzado" class="outline-3">
+<h3>6. Modulación avanzada: <code>id</code>, <code>FX index</code> y <code>subControl</code></h3>
+<div class="outline-text-3">
+
+<h4>Referenciar LFOs por <code>id</code></h4>
+<p>
+Cuando usas varios LFOs en una misma cadena, se numeran automáticamente empezando desde <code>0</code> (el primero es <code>0</code>, el segundo <code>1</code>, etc.). También puedes asignarles un nombre personalizado pasándolo como <b>segundo argumento fuera de las llaves</b>: <code>.lfo({ ... }, "mi_id")</code>. Esto permite modificar un LFO específico más adelante (por ejemplo dentro de <code>.sometimes()</code>):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw").lfo({}, "lfo_freq_saw").lpf(800)
+  .lfo({s: "<4 8 0.5>"}, "lfo_lpf")
+  .sometimes(x => x.lfo({dr: "4"}, "<lfo_lpf lfo_freq_saw>"))
+</code></pre>
+</div>
+
+<h4>Índice de Efecto (<code>fxi</code>)</h4>
+<p>
+Si utilizas <code>.FX()</code> para reordenar tu cadena de efectos, puedes indicar a qué efecto apunta el LFO usando su posición con <code>fxi</code> (empezando desde <code>0</code>):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw").FX(
+  distort(3),
+  gain(0.3), // indice de efecto (fxi) = 1
+  lpf(400)
+).lfo({s: 16, dr: 2, c: "gain", fxi: 1})
+</code></pre>
+</div>
+
+<h4>Modular un LFO con otro LFO (<code>subControl</code> / <code>sc</code>)</h4>
+<p>
+¡Los LFOs también pueden modular a otros LFOs! Si encadenas un segundo <code>.lfo()</code> inmediatamente después de otro, por defecto modulará la <b>velocidad (<code>r</code> o <code>s</code>)</b> del primer LFO:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw").lpf(400).gain(0.8)
+  .lfo({s: 16, dr: 2, c: "gain"})
+  .lfo({s: 0.3, dc: -1, dr: 0.8})
+</code></pre>
+</div>
+
+<p>
+Si en lugar de la velocidad quieres que el segundo LFO module otro parámetro del primer LFO (como su inclinación <code>skew</code> o su profundidad <code>depth</code>), indícalo con <b><code>subControl</code> (alias <code>sc</code>)</b>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-javascript"><code>s("saw").lpf(400).gain(0.8)
+  .lfo({s: 4, dr: 2, c: "gain"})
+  .lfo({s: 0.3, sc: "skew"})
+</code></pre>
+</div>
+
+<div class="desafio">
+<p><b>Desafío de la Clase 7: Diseña tu propio Wobble / Patch evolutivo</b></p>
+<ol class="org-ol">
+  <li>Crea una base rítmica de batería con <code>$: s("bd...").bank("RolandTR909")</code>.</li>
+  <li>En otra pista <code>$:</code>, crea un bajo con <code>s("saw")</code> y un filtro <code>.lpf(600)</code>.</li>
+  <li>Aplica un <code>.lfo()</code> sincronizado al ciclo con <code>sync: "&lt;2 4 8 1&gt;"</code> y experimenta cambiando <code>shape</code>, <code>skew</code> y un segundo LFO con <code>sc</code>.</li>
+</ol>
+</div>
+</div>
+</div>
+
+<!-- 7. Repaso -->
+<div id="sec-lfo-repaso" class="outline-3">
+<h3>7. Repaso — Clase 7</h3>
+<div class="outline-text-3">
+<table>
+<thead>
+<tr><th>Parámetro</th><th>Alias</th><th>¿Qué hace?</th><th>Ejemplo</th></tr>
+</thead>
+<tbody>
+<tr><td><code>.lfo()</code></td><td>—</td><td>Modula a nivel de audio el parámetro anterior</td><td><code>s("saw").lpf(800).lfo()</code></td></tr>
+<tr><td><code>control</code></td><td><code>c</code></td><td>Elige qué parámetro modular (ej. <code>'lpf'</code>, <code>'gain'</code>)</td><td><code>.lfo({c: 'gain'})</code></td></tr>
+<tr><td><code>rate</code></td><td><code>r</code></td><td>Velocidad de oscilación en Hz (veces por segundo)</td><td><code>.lfo({r: "&lt;2 4&gt;"})</code></td></tr>
+<tr><td><code>sync</code></td><td><code>s</code></td><td>Velocidad sincronizada en oscilaciones por ciclo</td><td><code>.lfo({s: "&lt;2 4 8 0.5&gt;"})</code></td></tr>
+<tr><td><code>depth</code></td><td><code>dr</code> / <code>dep</code></td><td>Profundidad relativa al valor del parámetro (def: <code>1</code>)</td><td><code>.lfo({r: 2, dr: 2})</code></td></tr>
+<tr><td><code>depthabs</code></td><td><code>da</code></td><td>Profundidad absoluta en unidades del parámetro</td><td><code>.lfo({r: 2, da: 250})</code></td></tr>
+<tr><td><code>dcoffset</code></td><td><code>dc</code></td><td>Desplaza el centro (<code>-0.5</code> centro, <code>0</code> arriba, <code>-1</code> abajo)</td><td><code>.lfo({r: 2, dc: 0})</code></td></tr>
+<tr><td><code>shape</code></td><td><code>sh</code></td><td>Forma: <code>triangle</code>(0), <code>sine</code>(1), <code>ramp</code>(2), <code>saw</code>(3), <code>square</code>(4)</td><td><code>.lfo({sh: "sine"})</code></td></tr>
+<tr><td><code>skew</code></td><td><code>sk</code></td><td>Inclina <code>triangle</code> o cambia ancho de pulso en <code>square</code></td><td><code>.lfo({sh: "square", sk: 0.2})</code></td></tr>
+<tr><td><code>curve</code></td><td>—</td><td>Curvatura/intensidad de la onda (potencia, def: <code>1</code>)</td><td><code>.lfo({curve: 2})</code></td></tr>
+<tr><td><code>fxi</code></td><td>—</td><td>Apunta a un efecto por su índice dentro de <code>.FX()</code></td><td><code>.lfo({c: "gain", fxi: 1})</code></td></tr>
+<tr><td><code>subControl</code></td><td><code>sc</code></td><td>Hace que un LFO module un atributo del LFO anterior</td><td><code>.lfo({s: 0.3, sc: "skew"})</code></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+</div>
+
 <div class="class-nav-footer">
   <a href="clase-6.html" class="nav-btn prev">
     <span class="nav-label">Anterior</span>
     <span class="nav-title">Clase 6</span>
   </a>
-  <a href="#" class="nav-btn next" style="opacity:0.5; pointer-events:none; border-style:dashed;">
-    <span class="nav-label">Próximamente</span>
-    <span class="nav-title">Clase {class_num+1}</span>
+  <a href="cheatsheet.html" class="nav-btn next">
+    <span class="nav-label">Resumen</span>
+    <span class="nav-title">Cheatsheet ꩜</span>
   </a>
 </div>
 <a id="back-to-top" href="#" title="Volver al inicio" aria-label="Volver al inicio">↑</a>

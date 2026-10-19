@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
     { url: 'clase-4.html', title: 'Clase 4' },
     { url: 'clase-5.html', title: 'Clase 5' },
     { url: 'clase-6.html', title: 'Clase 6' },
+    { url: 'clase-7.html', title: 'Clase 7' },
     { url: 'cheatsheet.html', title: 'Cheatsheet' }
   ];
   let searchIndex = {}; // url -> { title, textBlocks }
